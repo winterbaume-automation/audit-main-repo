@@ -1,0 +1,63 @@
+name: Audit Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: "Commit SHA to audit"
+        required: true
+        type: string
+      commit_author:
+        description: "Author of the commit (name <email>)"
+        required: false
+        type: string
+        default: ""
+      commit_message:
+        description: "Commit message (first line)"
+        required: false
+        type: string
+        default: ""
+      commit_timestamp:
+        description: "ISO8601 timestamp of the commit"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write  # push to audit-log branch
+  issues: write    # file findings issues
+  models: read     # GitHub Models API
+
+concurrency:
+  group: audit-log-branch
+  cancel-in-progress: false  # queue runs, don't cancel
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout audit repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # needed for orphaned branch operations
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run audit script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MONITORED_REPO_TOKEN: ${{ secrets.MONITORED_REPO_TOKEN }}
+          COMMIT_SHA: ${{ inputs.commit_sha }}
+          COMMIT_AUTHOR: ${{ inputs.commit_author }}
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
+          COMMIT_TIMESTAMP: ${{ inputs.commit_timestamp }}
+          AUDIT_REPO: "winterbaume-automation/audit-main-repo"
+          MONITORED_REPO: "moriyoshi/winterbaume"
+        run: python .github/scripts/audit_commit.py
