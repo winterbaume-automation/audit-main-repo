@@ -1,0 +1,23 @@
+{
+  "schema_version": "2",
+  "timestamp": "2026-04-26T18:13:38.700261+00:00",
+  "commit_sha": "f567e50186195fc96b6f6da89145a9267146426e",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Initial.",
+  "commit_timestamp": "2026-04-27T03:12:41+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "diff_chars": 66370765,
+  "estimated_tokens": 16592691,
+  "status": "too_large",
+  "ai_model": null,
+  "agents": [],
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "Diff too large for AI review (16,592,691 estimated tokens, threshold is 100,000).",
+    "findings": []
+  },
+  "issue_url": null
+}
