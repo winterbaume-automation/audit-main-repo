@@ -110,7 +110,7 @@ Routing modes:
 | `whole` | Total patch ≤ 400 KB | Panel sees the whole commit, no Context note. |
 | `focused` | Total > 400 KB, critical+high subset ≤ 400 KB | Panel sees critical+high files plus any low file textually referenced from them; remaining files listed in a Context note as excluded. Issue filed because critical/high were excluded. |
 | `focused-overflow` | Critical+high subset > 400 KB but critical-only ≤ 400 KB | Panel sees critical files only.  Issue filed at high severity. |
-| `panel_skipped` | Even critical-only > 400 KB | Panel does not run; status `panel_skipped`; issue filed at critical severity. |
+| `panel-skipped` | Even critical-only > 400 KB | Panel does not run; status `panel-skipped`; issue filed at critical severity. |
 
 Deterministic structural findings bypass the LLM entirely and always
 reach the issue:
@@ -121,7 +121,7 @@ reach the issue:
   file without re-adding it.
 
 The `too_large` status from earlier schemas no longer exists; it is
-replaced by `routing.mode` plus the `panel_skipped` status.
+replaced by `routing.mode` plus the `panel-skipped` status.
 
 ### 4. Multi-agent discussion
 
@@ -160,7 +160,7 @@ An issue is filed when **any** of the following holds:
 - one or more structural findings exist (binary change, submodule pointer,
   generated-header removal)
 - routing excluded any critical or high file (`focused`,
-  `focused-overflow`, or `panel_skipped` mode)
+  `focused-overflow`, or `panel-skipped` mode)
 
 The issue contains:
 
@@ -172,13 +172,15 @@ The issue contains:
 - Consolidated LLM findings table
 - Collapsible `<details>` sections for each agent's raw JSON
 
-Labels: `integrity-audit`, `severity:<level>`, `routing:<mode>`, plus
-`structural-finding` if any deterministic finding exists.  Labels must be
-pre-created; GitHub silently ignores unknown labels.
+Labels: `integrity-audit`, the severity level (`none` / `low` / `medium`
+/ `high` / `critical`), the routing mode (`whole` / `focused` /
+`focused-overflow` / `panel-skipped`), plus `structural-finding` if any
+deterministic finding exists.  Labels must be pre-created; GitHub
+silently ignores unknown labels.
 
 The effective severity is the maximum of the LLM verdict severity, a
 structural-finding floor of `medium`, an excluded-critical-or-high floor
-of `high`, and a `panel_skipped` floor of `critical`.
+of `high`, and a `panel-skipped` floor of `critical`.
 
 ### 6. Audit log write
 
@@ -203,11 +205,11 @@ write {sha}.json
 git add / commit / push
 ```
 
-### Log entry schema (schema_version: "3")
+### Log entry schema (schema_version: "4")
 
 ```json
 {
-  "schema_version": "3",
+  "schema_version": "4",
   "timestamp": "<ISO 8601>",
   "commit_sha": "...",
   "commit_author": "...",
@@ -221,7 +223,7 @@ git add / commit / push
   "diff_chars": 12480,
   "estimated_tokens": 3120,
   "routing": {
-    "mode": "whole | focused | focused-overflow | panel_skipped",
+    "mode": "whole | focused | focused-overflow | panel-skipped",
     "reason": "Total patch 12,480 chars <= threshold 400,000.",
     "total_patch_chars": 12480,
     "files": [
@@ -245,7 +247,7 @@ git add / commit / push
       "description": "..."
     }
   ],
-  "status": "reviewed | ai_error | panel_skipped",
+  "status": "reviewed | ai-error | panel-skipped",
   "ai_model": "openai/gpt-4o-mini | null",
   "agents": ["Backdoor Hunter", "Supply Chain Inspector", "Integrity Analyst", "Moderator"],
   "discussion": [
@@ -277,7 +279,7 @@ The reconciler does not parse log contents (it only enumerates SHAs from
 | 1 | Missing required env var |
 | 2 | Diff fetch failed (404 / 403 / network) |
 | 4 | Audit log push failed |
-| 5 | AI discussion failed (log still written with `status: "ai_error"`) |
+| 5 | AI discussion failed (log still written with `status: "ai-error"`) |
 
 `reconcile_main.py`:
 
@@ -338,7 +340,7 @@ The response's `status` field describes the ancestry:
 | `missing_base` (synthetic, on 404) | `prev` no longer findable | Aggressive history rewrite |
 
 For any non-`ahead`/`identical` status, a critical issue is filed with labels
-`integrity-audit`, `severity:critical`, `force-push`, the entry is recorded
+`integrity-audit`, `critical`, `force-push`, the entry is recorded
 with `status: "force_push_detected"`, and **no audits are dispatched on this
 tick**.  The next tick after the force push lands becomes the new baseline.
 

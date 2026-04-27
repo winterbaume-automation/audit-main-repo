@@ -70,8 +70,8 @@ def test_excluded_critical_file_files_issue_at_high():
 
 def test_panel_skipped_files_issue_at_critical():
     verdict = {"suspicious": False, "severity": "none"}
-    decision = _decision("panel_skipped", excluded=[_classified("a", "critical")])
-    file_it, sev = should_file_issue(verdict, decision, [], "panel_skipped")
+    decision = _decision("panel-skipped", excluded=[_classified("a", "critical")])
+    file_it, sev = should_file_issue(verdict, decision, [], "panel-skipped")
     assert file_it
     assert sev == "critical"
 

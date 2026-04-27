@@ -47,8 +47,8 @@ Checklist to run before considering any change to this repository complete.
   `_call_model` invocation and the word "json" appears in the corresponding
   system prompt (required for JSON mode to activate).
 - [ ] Rate-limit retry is present (one retry honouring `retry-after` header).
-- [ ] `write_audit_log` is always called, even when `status` is `"too_large"`
-  or `"ai_error"` — the log is the canonical record of every run.
+- [ ] `write_audit_log` is always called, even when `status` is `"panel-skipped"`
+  or `"ai-error"` — the log is the canonical record of every run.
 
 ## Agent prompts
 
@@ -80,14 +80,14 @@ Checklist to run before considering any change to this repository complete.
   `timestamp`, `head_sha`, `status`, `note`; `status` is one of
   `initial`, `ok`, `force_push_detected`.
 - [ ] On force push (status `behind`, `diverged`, or `missing_base`), the
-  reconciler files an issue labelled `integrity-audit`, `severity:critical`,
+  reconciler files an issue labelled `integrity-audit`, `critical`,
   `force-push` and dispatches no audits for that tick.
 
 ## Issue filing
 
-- [ ] Labels `integrity-audit`, `severity:none`, `severity:low`,
-  `severity:medium`, `severity:high`, `severity:critical` are pre-created in
-  this repository.
+- [ ] Labels `integrity-audit`, `none`, `low`, `medium`, `high`,
+  `critical`, `whole`, `focused`, `focused-overflow`, `panel-skipped`,
+  `structural-finding`, `force-push` are pre-created in this repository.
 - [ ] A test run with a deliberately suspicious diff produces an issue with the
   correct title format `[SEVERITY] Integrity finding in {repo}@{sha[:12]}`.
 - [ ] The issue body contains collapsible `<details>` sections for each agent.
@@ -105,7 +105,7 @@ Checklist to run before considering any change to this repository complete.
 - [ ] Structural findings (binary change, submodule pointer change,
   generated-header removal) always result in an issue regardless of LLM
   verdict.
-- [ ] Routing modes `focused`, `focused-overflow`, and `panel_skipped`
+- [ ] Routing modes `focused`, `focused-overflow`, and `panel-skipped`
   always result in an issue when at least one critical or high file was
   excluded.
 - [ ] `pytest .github/scripts/tests/` passes locally and in CI

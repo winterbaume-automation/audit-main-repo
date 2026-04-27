@@ -4,11 +4,10 @@ Open items carried forward from JOURNAL.md consolidation.
 
 ## Pending
 
-- [ ] Pre-create issue labels in the GitHub repository UI:
-  `integrity-audit`, `severity:none`, `severity:low`, `severity:medium`,
-  `severity:high`, `severity:critical`, `force-push`,
-  `routing:whole`, `routing:focused`, `routing:focused-overflow`,
-  `routing:panel_skipped`, `structural-finding`.
+- [x] Pre-create issue labels in the GitHub repository UI:
+  `integrity-audit`, `none`, `low`, `medium`, `high`, `critical`,
+  `force-push`, `whole`, `focused`, `focused-overflow`, `panel-skipped`,
+  `structural-finding`.
 
 - [ ] Add `MONITORED_REPO_TOKEN` as a repository secret if `moriyoshi/winterbaume`
   is private or rate-limit headroom is needed.

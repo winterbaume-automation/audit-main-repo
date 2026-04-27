@@ -325,7 +325,7 @@ History tracking file: `{HEAD_HISTORY_FILE}` on the `audit-log` branch.
     payload = {
         "title": title,
         "body": body,
-        "labels": ["integrity-audit", "severity:critical", "force-push"],
+        "labels": ["integrity-audit", "critical", "force-push"],
     }
     resp = _request("POST", url, _audit_headers(cfg), json=payload)
     if not resp.ok:

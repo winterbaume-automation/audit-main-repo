@@ -74,7 +74,7 @@ def test_panel_skipped_when_critical_only_too_big():
         _classified("docs/x.md", "low", patch_size=100),
     ]
     decision = route_diff(files, threshold=1_000)
-    assert decision.mode == "panel_skipped"
+    assert decision.mode == "panel-skipped"
     assert decision.included == []
     assert len(decision.excluded) == 2
 

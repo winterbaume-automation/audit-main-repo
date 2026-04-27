@@ -22,7 +22,7 @@ highest-classification-wins across all matching rules.  Three routing modes:
                         with a Context note that lists every excluded file.
 * `focused-overflow`  — even the critical+high subset exceeds the threshold;
                         the panel sees critical-only as a best effort, or is
-                        skipped entirely (status `panel_skipped`) when even
+                        skipped entirely (status `panel-skipped`) when even
                         that overflows.
 
 Deterministic structural findings (binary changes, submodule pointer bumps,
@@ -53,7 +53,7 @@ Exit codes:
   1 — missing required env var
   2 — diff fetch failed (404 / 403 / network error)
   4 — audit log push failed
-  5 — AI discussion failed (log still written with status=ai_error)
+  5 — AI discussion failed (log still written with status=ai-error)
 """
 
 from __future__ import annotations
@@ -67,7 +67,12 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
+
+Classification = Literal["critical", "high", "medium", "low"]
+Severity = Literal["none", "low", "medium", "high", "critical"]
+RoutingMode = Literal["whole", "focused", "focused-overflow", "panel-skipped"]
+Status = Literal["unknown", "reviewed", "ai-error", "panel-skipped"]
 
 # `_http` is imported lazily inside the network-touching helpers so that the
 # pure-function layers (parsing, classification, routing) stay free of any
@@ -379,7 +384,7 @@ Respond ONLY with a JSON object — no markdown fences, no extra text:
 @dataclass
 class ManifestRule:
     pattern: str
-    classification: str
+    classification: Classification
     reason: str
     audit_hint: Optional[str] = None
     _regex: Optional[re.Pattern] = None
@@ -393,7 +398,7 @@ class ManifestRule:
 @dataclass
 class Manifest:
     schema_version: str
-    default_classification: str
+    default_classification: Classification
     rules: list[ManifestRule]
     fail_closed: bool = False  # True when the manifest could not be loaded
 
@@ -423,7 +428,7 @@ class FileChange:
 @dataclass
 class ClassifiedFile:
     file: FileChange
-    classification: str
+    classification: Classification
     matched_rules: list[str]
 
 
@@ -436,7 +441,7 @@ class StructuralFinding:
 
 @dataclass
 class RoutingDecision:
-    mode: str  # whole | focused | focused-overflow | panel_skipped
+    mode: RoutingMode
     reason: str
     included: list[ClassifiedFile]
     excluded: list[ClassifiedFile]
@@ -907,7 +912,7 @@ def route_diff(
 
     if crit_chars > threshold:
         return RoutingDecision(
-            mode="panel_skipped",
+            mode="panel-skipped",
             reason=(
                 f"Total {total:,}, high subset {high_chars:,}, critical-only {crit_chars:,} all "
                 f"> threshold {threshold:,}.  Panel skipped; manual review required."
@@ -1132,7 +1137,7 @@ def write_audit_log(cfg, log_entry):
 # Issue filing
 # ---------------------------------------------------------------------------
 
-def _max_severity(*levels: str) -> str:
+def _max_severity(*levels: Severity) -> Severity:
     indices = [SEVERITY_ORDER.index(l) for l in levels if l in SEVERITY_ORDER]
     return SEVERITY_ORDER[max(indices)] if indices else "none"
 
@@ -1141,8 +1146,8 @@ def should_file_issue(
     verdict: dict,
     decision: RoutingDecision,
     structural: list[StructuralFinding],
-    status: str,
-) -> tuple[bool, str]:
+    status: Status,
+) -> tuple[bool, Severity]:
     """
     Returns (should_file, effective_severity).
 
@@ -1167,8 +1172,8 @@ def should_file_issue(
     if excluded_critical_or_high:
         reasons.append("critical_or_high_excluded")
         severity = _max_severity(severity, "high")
-    if status == "panel_skipped":
-        reasons.append("panel_skipped")
+    if status == "panel-skipped":
+        reasons.append("panel-skipped")
         severity = _max_severity(severity, "critical")
     return bool(reasons), severity
 
@@ -1179,8 +1184,8 @@ def file_issue(
     discussion,
     decision: RoutingDecision,
     structural: list[StructuralFinding],
-    status: str,
-    effective_severity: str,
+    status: Status,
+    effective_severity: Severity,
 ):
     sha = cfg["commit_sha"]
     repo = cfg["monitored_repo"]
@@ -1227,15 +1232,15 @@ def file_issue(
         )
     transcript = "\n\n".join(transcript_sections) or "_(panel did not run)_"
 
-    panel_skipped = status == "panel_skipped"
+    is_panel_skipped = status == "panel-skipped"
     heading = (
         "## Manual review required (audit panel skipped)"
-        if panel_skipped
+        if is_panel_skipped
         else "## Integrity Audit Finding"
     )
     files_section_title = (
         "### Change summary (panel did not run; review every file directly)"
-        if panel_skipped
+        if is_panel_skipped
         else "### Files reviewed by the panel"
     )
 
@@ -1285,7 +1290,7 @@ using {AI_MODEL}.*
 
     title = (
         f"[MANUAL REVIEW REQUIRED] Audit panel skipped for {repo}@{sha[:12]}"
-        if panel_skipped
+        if is_panel_skipped
         else f"[{severity_label}] Integrity finding in {repo}@{sha[:12]}"
     )
     owner, repo_name = cfg["audit_repo"].split("/", 1)
@@ -1297,8 +1302,8 @@ using {AI_MODEL}.*
     }
     labels = [
         "integrity-audit",
-        f"severity:{effective_severity}",
-        f"routing:{decision.mode}",
+        effective_severity,
+        decision.mode,
     ]
     if structural:
         labels.append("structural-finding")
@@ -1329,7 +1334,7 @@ def _build_log_entry(
     classified: list[ClassifiedFile],
     decision: RoutingDecision,
     structural: list[StructuralFinding],
-    status: str,
+    status: Status,
     discussion: list[dict],
     verdict: dict,
     issue_url: Optional[str],
@@ -1350,13 +1355,13 @@ def _build_log_entry(
                 None if c.file.path in included_paths
                 else "below_focused_threshold" if decision.mode == "focused"
                 else "below_critical_threshold" if decision.mode == "focused-overflow"
-                else "panel_skipped" if decision.mode == "panel_skipped"
+                else "panel-skipped" if decision.mode == "panel-skipped"
                 else None
             ),
         })
 
     return {
-        "schema_version": "3",
+        "schema_version": "4",
         "timestamp": run_timestamp,
         "commit_sha": cfg["commit_sha"],
         "commit_author": cfg["commit_author"],
@@ -1398,7 +1403,7 @@ def main():
     issue_url: Optional[str] = None
     verdict: Optional[dict] = None
     discussion: list[dict] = []
-    status = "unknown"
+    status: Status = "unknown"
 
     commit = fetch_commit_files(cfg)
     classified = classify_files(commit.files, manifest)
@@ -1411,8 +1416,8 @@ def main():
         f"structural_findings={len(structural)}"
     )
 
-    if decision.mode == "panel_skipped":
-        status = "panel_skipped"
+    if decision.mode == "panel-skipped":
+        status = "panel-skipped"
         verdict = {
             "suspicious": False,
             "severity": "none",
@@ -1447,7 +1452,7 @@ def main():
             )
         except Exception as e:
             print(f"ERROR during agent discussion: {e}", file=sys.stderr)
-            status = "ai_error"
+            status = "ai-error"
             verdict = {
                 "suspicious": False,
                 "severity": "none",
@@ -1489,7 +1494,7 @@ def main():
         print(f"ERROR writing audit log: {e}", file=sys.stderr)
         sys.exit(4)
 
-    if status == "ai_error":
+    if status == "ai-error":
         sys.exit(5)
 
 

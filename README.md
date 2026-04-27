@@ -46,7 +46,7 @@ Useful after closing a force-push issue, or to verify reconciliation after chang
 
 The following labels must exist in this repository before issues can be tagged correctly:
 
-`integrity-audit`, `severity:none`, `severity:low`, `severity:medium`, `severity:high`, `severity:critical`, `force-push`
+`integrity-audit`, `none`, `low`, `medium`, `high`, `critical`, `whole`, `focused`, `focused-overflow`, `panel-skipped`, `structural-finding`, `force-push`
 
 ## Repository layout
 
