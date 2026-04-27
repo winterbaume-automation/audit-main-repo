@@ -488,3 +488,340 @@ itself never ran.
   short comment near `MODELS_ENDPOINT` / `AI_MODEL` documenting the
   pairing would make the next migration less surprising. Not done in
   this session to keep the fix minimal.
+
+## 2026-04-27 — `binary_change` false-positive triage on issue #4
+
+**Author:** moriyoshi (via Claude Code)
+
+### Context
+
+The user reviewed audit issue #4
+( `[MEDIUM] Integrity finding in moriyoshi/winterbaume@f567e5018619`,
+the initial commit of the monitored repo ) and was satisfied with the
+overall verdict but flagged that `.agents/docs/API_COVERAGE.md` and
+many other obviously-text files were emitted as `binary_change`
+structural findings.  Asked whether the classification was correct and
+to look for related goofs.
+
+### Findings
+
+- **Root cause.** `FileChange.is_binary` in
+  `audit_commit.py:417-421` returns `True` whenever `patch is None`
+  and `status` is not `removed` / `unchanged`.  GitHub's commits API
+  omits `patch` in two unrelated cases: actual binary blobs, **and**
+  text files whose patch exceeded the per-response size cap.  The
+  audit cannot tell those apart from the `files[]` payload alone.
+
+- **Evidence.** Direct fetch of
+  `GET /repos/moriyoshi/winterbaume/commits/f567e5018619?per_page=300`
+  shows 221 of 300 files on page 1 with `patch=None`.  Almost all are
+  `.md` / `.rs` / `.toml` / `Cargo.lock` text files reporting large
+  positive `additions` and `deletions=0` ( e.g.
+  `.agents/docs/API_COVERAGE.md` `+12198/-0`, `Cargo.lock`
+  `+14627/-0`, `crates/winterbaume-accessanalyzer/src/handlers.rs`
+  `+565/-0` ).  GitHub returns 9 pages at `per_page=300` for this
+  commit, so the same false-positive pattern likely repeats across
+  the rest.
+
+- **`additions == 0 && deletions == 0` is not a clean discriminator
+  either.**  Direct blob fetch of `LICENSE`
+  ( sha `d645695673349e3947e8e5ae42332d0ac3164cd7` ) returns 11 358
+  bytes of plain Apache 2.0 text with no NUL bytes, yet GitHub
+  reports `+0/-0` AND `patch=None` for it.  So the cleanest fix is
+  to fetch the blob and sniff for NUL bytes ( or honour
+  `.gitattributes` ) rather than trust diff metadata.
+
+### Other goofs in the same blast radius
+
+1. `audit_commit.py:754` — structural-finding description text says
+   "Binary file added; verify the blob by hand" for files that are
+   plain text.  Misleads the reviewer.
+
+2. `audit_commit.py:858-859` — `_compose_patch` writes
+   `Binary files a/X and b/X differ` into the composed patch shown to
+   the LLM panel for these false binaries.  The panel sees an opaque
+   placeholder where it could see real, classifiable text.
+
+3. `audit_commit.py:832` — `_find_cross_refs` joins only
+   patches that exist, so any `mod` / `use` / `include_str!` refs
+   declared in the omitted-patch files are invisible to the
+   cross-reference pull-in pass.  For issue #4 this means the new
+   crate sources never qualified as cross-refs even though most were
+   classified `medium/default`.
+
+4. **Severity-escalation side effect.**  200+ false `binary_change`
+   findings pushed the issue-#4 commit into MEDIUM
+   `structural-finding` territory and effectively buried the one
+   genuine LLM finding ( `remote_fetch_execute` at
+   `release.yml:49`, the well-known cargo-dist installer ).
+
+### Work done
+
+- No code changes this session; this was a triage / diagnosis pass.
+- Recorded the fix as a single prioritised TODO entry in
+  `.agents/docs/TODO.md` ( four sub-tasks: replace heuristic via
+  blob sniff, refetch and synthesise patches for text files, clean up
+  misleading description / placeholder text, revisit severity
+  escalation once the false-positive volume drops ).
+- Cross-referenced the existing TODO about refetching truncated
+  criticals via the contents API so the two efforts can be unified.
+
+### Open questions for follow-up
+
+- Per-file blob fetches add an API round-trip per "looks-binary" file.
+  For an initial commit of this size that is ~hundreds of extra calls.
+  Worth measuring against the rate-limit headroom before turning the
+  fix on by default, or gating it on `classification in (critical,
+  high)` first and broadening later.
+- Whether `binary_change` should remain a structural finding at all
+  once the heuristic is reliable — true binary additions to a
+  predominantly text repo are still suspicious, but the description
+  text and severity weighting want a second look.
+
+## 2026-04-27 — Port `tackle-todos` skill from monitored repo
+
+**Author:** moriyoshi (via Claude Code)
+
+### Context
+
+The user wanted the `tackle-todos` skill from `moriyoshi/winterbaume`
+( the monitored repo ) available here as well, so future TODO sweeps
+in the audit pipeline repo can reuse the same pattern: scan
+`TODO.md` and source-code `TODO`/`FIXME` comments, build a
+consolidated list, and dispatch agents to resolve as many items as
+possible.  Direct copy was not appropriate because the upstream
+skill is shaped around a Cargo workspace with many service crates,
+whereas this repo is two Python files plus a manifest.
+
+### Work done
+
+- Created `.agents/skills/tackle-todos/SKILL.md`, adapted from
+  `moriyoshi/winterbaume/.agents/skills/tackle-todos/SKILL.md`.
+- Mirrored the upstream wiring by symlinking
+  `.claude/skills -> ../.agents/skills` so Claude Code's skill
+  picker discovers the new skill.
+
+### Adaptations from the upstream skill
+
+- **Repo shape preamble.**  Added an explicit list of the actual
+  files the skill operates on ( `audit_commit.py`,
+  `reconcile_main.py`, `_http.py`, `tests/`, `workflows/*.yml`,
+  `monitored_repo_classification.json` ) and a warning that the
+  small surface area concentrates almost every TODO on the same
+  one or two files.
+
+- **Comment-scan pattern.**  Switched the source-code scan from
+  `// TODO` / `// FIXME` in `crates/**/*.rs` to `# TODO` / `# FIXME`
+  in `.github/scripts/**/*.py`, plus workflows and config.  Excluded
+  `__pycache__`, `.pytest_cache`, `.venv`.
+
+- **Categorisation.**  Replaced the AWS-flavoured upstream
+  categories ( `systematic`, `behavioural`, `serialization` ) with
+  audit-pipeline categories: `detection-bug`, `api-resilience`,
+  `panel-quality`, `infrastructure`, `observability`, `test-only`,
+  `design`.  The `binary_change` cluster from issue #4 is the
+  prototypical `detection-bug` entry.
+
+- **Parallelism caveat.**  Upstream defaults to parallel agents in
+  worktrees because per-service crates are naturally disjoint.  In
+  this repo two agents touching `audit_commit.py` ( ~1500 lines )
+  will conflict, so the adapted skill defaults to **sequential**
+  dispatch and only recommends `isolation: worktree` when work
+  units are demonstrably disjoint.
+
+- **Test command.**  Replaced
+  `cargo test -p winterbaume-{service} -- --maxfail=5` with
+  `uv run pytest .github/scripts/tests/test_<module>.py --maxfail=5`
+  ( plus `--lf` for last-failing ), matching the conventions in
+  `CLAUDE.md` and `pyproject.toml`.
+
+- **Repo-rule reminders.**  Added the audit-repo-specific rules the
+  executing agent must obey: no `git checkout` / `git restore`, no
+  discretionary or unsigned commits, British-English spelling in
+  repo-authored docs, no full-width parentheses or colons in
+  `AGENTS.md` / `README.md` / `.agents/docs/**`, temporary files
+  under `.agents/tmp/` rather than `/tmp`.
+
+- **Filter argument.**  Kept the optional `[filter]` argument but
+  re-described useful filters for this repo ( category names like
+  `detection-bug`, module names like `audit_commit` /
+  `reconcile_main`, free-form keywords like `binary` / `truncation`
+  / `force-push` / `panel` ) instead of AWS service names.
+
+### Design notes
+
+- Considered making the skill silently delegate to the upstream
+  copy by reference, but rejected that — the audit repo is intended
+  to be self-contained and audit-able on its own, and a future
+  reader should not have to clone a second repo to understand a
+  skill that ships here.
+- Kept the upstream's overall step structure ( collect → scan →
+  consolidate → filter → plan → dispatch → reconcile ) so anyone
+  fluent in the upstream skill can use this one without re-learning
+  the workflow; only the specifics inside each step changed.
+
+### Follow-ups
+
+- First real exercise of the skill will be the `binary_change`
+  detection-bug cluster recorded in the previous TODO entry; that
+  will tell us whether the categorisation and the
+  sequential-by-default dispatch model are the right defaults, or
+  whether the skill needs a second pass once we have field
+  experience.
+- The skill currently assumes `.agents/tmp/` is writable.  No
+  `.gitignore` entry has been added for it yet — worth
+  double-checking before the first real run so we do not
+  accidentally commit `consolidated-todos.md`.
+
+## 2026-04-27 — First `tackle-todos` sweep ( six work units )
+
+### Context
+
+First exercise of the newly-ported `tackle-todos` skill against the
+full pending list in `.agents/docs/TODO.md`.  No `# TODO` / `# FIXME`
+comments existed in `.github/scripts/`, `.github/workflows/`, or
+`.github/config/`, so all work units came from the TODO.md list.  The
+sweep was dispatched strictly sequentially per the skill's repo-shape
+note that almost every TODO lands on `audit_commit.py`.
+
+Seven items in TODO.md were operational ( secrets, multi-repo config,
+manual `workflow_dispatch` runs, post-month manifest tuning, scheduled
+reconciler verification, force-push validation ); these need user
+action and were not candidates for agent dispatch.  The remaining
+items were grouped into six work units.
+
+### Work done
+
+- **WU-1: `binary_change` false-positive fix + truncated-patch
+  refetch.**  TODO #14 sub-tasks 1-3 bundled with TODO #8 ( the
+  refetch path ) since TODO #14 sub-task 2 explicitly flagged the
+  overlap.  `FileChange.is_binary` is now a stored field, set during
+  a new `_resolve_patch_omissions` pass that fetches the blob via
+  `GET /repos/{owner}/{repo}/git/blobs/{sha}` and sniffs the first
+  8 KB for NUL bytes ( authoritative ); extension fallback for
+  rate-limited blob fetches.  Text files with `patch=None` get a
+  synthesised unified diff so the LLM panel sees the content.  The
+  same refetch path runs for critical / high files when the patch
+  looks API-truncated ( per-file blob cost gate keeps it off the
+  long tail ).  New `text_patch_unavailable` finding type fires only
+  when reconstruction failed.  TODO #14 sub-task 4 ( whether
+  `binary_change` should still escalate severity at all ) is a design
+  decision and was deliberately left open, with a note that the
+  false-positive volume motivating it has now been eliminated.
+
+- **WU-2: Trojan-source / Unicode pre-scan.**  TODO #6.  New
+  `unicode_risk` structural finding fires on bidi controls
+  ( U+202A-U+202E and U+2066-U+2069 ) introduced on `+` lines,
+  zero-width characters in identifier-looking tokens of added code,
+  and mixed-script identifiers.  Mixed-script detection scoped to
+  Latin / Cyrillic / Greek to keep i18n false-positive risk low; CJK,
+  Hebrew, and Arabic mixed with Latin is not flagged.  BOM at the
+  very start of a `new file` is exempted.  Bidi controls on `-` lines
+  that vanish on the `+` side ( i.e. an attack being removed ) do not
+  fire.
+
+- **WU-3: Lockfile delta parser.**  TODO #7.  New `lockfile_delta`
+  structural finding emits one entry per changed package across
+  `Cargo.lock`, `package-lock.json`, `pnpm-lock.yaml`, `uv.lock`,
+  `poetry.lock` ( basename match so monorepos like
+  `crates/foo/Cargo.lock` work ).  Detects version bumps, source /
+  registry changes, git-rev pin rotations, integrity-only churn for
+  packages whose version did not move.  Stdlib-only ( regex
+  extractors over the patch-reconstructed pre / post text; `tomllib`
+  was rejected because partial fragments from a unified diff are
+  rarely valid TOML ).  Unparseable patches collapse to a single
+  "could not be parsed deterministically" finding rather than crash.
+
+- **WU-4: Preflight skip when log already exists.**  TODO #12.  New
+  `audit_already_exists(cfg)` walks the `audit-log` branch via the
+  Git Trees API and short-circuits `main()` when
+  `logs/*/{commit_sha}.json` is present anywhere ( the date directory
+  may differ from today ).  Falls back to the Contents API when the
+  tree response is itself `truncated`.  `AUDIT_FORCE_RERUN=1`
+  bypasses the check for the explicit re-audit case.  Eliminates the
+  duplicate-audit cost in the rare reconciler-vs-push-trigger race.
+
+- **WU-5: File-mode flip / symlink change detection.**  TODO #9.
+  Gated behind `AUDIT_DETECT_MODE_CHANGES` ( default off ) because of
+  the per-tick API cost.  When enabled, two recursive Trees-API
+  fetches ( one per side of the diff ) catch `100644 → 100755`
+  flips; a per-symlink Contents-API call resolves the `target`
+  field, since the recursive Trees response does not include it.
+  New finding types: `mode_flip_executable`,
+  `mode_flip_non_executable`, `symlink_added`,
+  `symlink_target_changed`, `symlink_removed`.
+  `mode_check_unavailable` fires once per audit when trees are
+  unfetchable or `truncated=True` left a path uncovered.
+
+- **WU-6: Reconciler tracks workflow-file SHAs.**  TODO #13.  New
+  `workflow_history.json` on the `audit-log` branch records the SHAs
+  of `audit-commit.yml` ( in the audit repo ) and `trigger-audit.yml`
+  ( in the monitored repo ) on every tick.  Tampering files a
+  `[CRITICAL] Audit-pipeline workflow {modified|removed}` issue with
+  the new `workflow-tamper` label.  Detection runs alongside
+  force-push detection, never blocks the audit-dispatch loop.  404
+  on `trigger-audit.yml` is treated as "not yet installed" ( per
+  TODO #2's still-pending status ) — silent, no issue.
+
+### Test surface
+
+Test count rose from 50 ( pre-sweep baseline ) to **129 passed**
+across the same `uv run pytest .github/scripts/tests/` run.
+
+| Work unit | Tests added | Cumulative |
+|---|---|---|
+| WU-1 | +19 ( new `test_patch_resolution.py` + 1 in `test_structural.py` ) | 69 |
+| WU-2 | +7 in `test_structural.py` | 76 |
+| WU-3 | +12 ( new `test_lockfile_delta.py` ) | 88 |
+| WU-4 | +10 ( new `test_preflight.py` ) | 98 |
+| WU-5 | +16 ( new `test_mode_changes.py` ) | 114 |
+| WU-6 | +15 ( new `test_workflow_tamper.py` ) | 129 |
+
+Every WU mocked the HTTP layer via `monkeypatch` against `_http.get`
+or `_http.request`; no real network calls were made in any test.
+
+### Decisions worth recording
+
+- **Strict sequential dispatch** rather than the parallel-with-worktrees
+  variant the skill's `Step 4` allows.  The reasoning recorded for
+  this sweep: every WU except WU-6 touches `audit_commit.py`, and the
+  one disjoint WU-6 was small enough that the worktree-and-merge-back
+  coordination would have cost more than the wall-clock saving.  This
+  is field experience for the skill's "parallel only when files are
+  disjoint" guidance.
+- **Sub-task 4 of TODO #14 ( binary_change severity escalation )
+  intentionally left open.**  The false-positive volume that
+  motivated re-evaluating the policy has been eliminated by sub-tasks
+  1-3, so the urgency is reduced and a real audit run on the
+  issue-#4 commit will give us actual data to decide on rather than
+  hypotheticals.
+- **No `tomllib` for the lockfile parser.**  Partial diff
+  reconstruction rarely produces valid TOML ( hunks omit surrounding
+  tables ), so `tomllib.loads` would crash on most realistic patches.
+  Per-`[[package]]` regex extraction is robust to truncation and
+  produces the same end result.
+- **`AUDIT_DETECT_MODE_CHANGES` defaults to off.**  Two extra
+  Trees-API calls per audited commit is a real cost on a high-traffic
+  monitored repo; the gate keeps the feature opt-in until we have
+  evidence it earns its keep.
+
+### Follow-ups
+
+- **TODO #14 sub-task 4** ( binary_change severity escalation policy )
+  remains open as a design decision.  Recommend: trigger a
+  re-audit of `moriyoshi/winterbaume@f567e5018619` ( the original
+  issue-#4 commit ) once WU-1 is deployed, count the resulting
+  `binary_change` findings, and decide on policy from real numbers.
+- **Operational TODO items #1-#5, #10, #11** remain open.  None of
+  them are agent-actionable; they are user-side tasks ( secrets,
+  multi-repo workflow installation, live test runs, post-month
+  manifest tuning ).
+- **Reconciler `main()` orchestration is still untested.**  WU-6
+  added focused unit tests for the new helpers but did not extend
+  test coverage to the subprocess / git layer; matches the brief but
+  worth keeping on a separate "reconciler test infrastructure" item
+  for a later sweep.
+- **`.agents/tmp/` `.gitignore`.**  Carried forward from the prior
+  journal entry — `.agents/tmp/consolidated-todos.md` was created
+  during this sweep.  Verify it stays untracked before any commit
+  involving these changes.

@@ -47,6 +47,18 @@ Optional env vars:
   COMMIT_AUTHOR        — "Name <email>" from the push event
   COMMIT_MESSAGE       — first line of the commit message
   COMMIT_TIMESTAMP     — ISO8601 commit timestamp
+  AUDIT_FORCE_RERUN    — when "1" or "true" (case-insensitive), bypass the
+                         preflight that skips commits already audited.
+                         The preflight searches the `audit-log` branch for
+                         any `logs/*/{sha}.json` and short-circuits if found,
+                         eliminating duplicate-audit cost in
+                         reconciler-vs-push-trigger races; see TODO #12 history.
+  AUDIT_DETECT_MODE_CHANGES
+                       — when "1" or "true" (case-insensitive), enable
+                         file-mode-flip and symlink-target-change detection
+                         via the Git Trees API.  Adds 2 API calls per audited
+                         commit (one tree per side of the diff), so the check
+                         is opt-in.  Default: disabled.
 
 Exit codes:
   0 — success
@@ -410,15 +422,26 @@ class FileChange:
     status: str
     additions: int
     deletions: int
-    patch: Optional[str]  # None for binary or omitted-by-API
+    patch: Optional[str]  # None when binary, omitted by API, or removed
     blob_sha: Optional[str]
-
-    @property
-    def is_binary(self) -> bool:
-        # Patch is omitted by the API for binary changes.  A removed file may
-        # also have patch=None but status=removed; treat removals as not-binary
-        # for routing purposes.
-        return self.patch is None and self.status not in ("removed", "unchanged")
+    # `is_binary` is set authoritatively by the patch-resolution pass
+    # (`_resolve_patch_omissions`) which probes the blob for NUL bytes.  It
+    # defaults to False so unit tests that construct FileChange directly do
+    # not need to know about the resolution layer; tests that want to
+    # exercise binary handling set it explicitly.
+    is_binary: bool = False
+    # True iff the API omitted the patch for a text file (size cap) or the
+    # patch we have is suspected truncated.  Distinguished from `is_binary`
+    # so structural-finding logic does not confuse the two.
+    patch_omitted: bool = False
+    # True iff `patch` was reconstructed from a blob fetch because the
+    # original was missing or truncated.  Lets the composer emit an
+    # explanatory header for the panel.
+    patch_synthesised: bool = False
+    # True iff the blob fetch itself failed (rate limit / 404) so the panel
+    # has neither a real patch nor a synthesised one.  Surfaces as a
+    # `text_patch_unavailable` structural finding.
+    patch_unavailable: bool = False
 
     @property
     def patch_chars(self) -> int:
@@ -694,6 +717,255 @@ def fetch_commit_files(cfg) -> CommitData:
 
 
 # ---------------------------------------------------------------------------
+# Blob fetch and patch synthesis
+#
+# The GitHub commits API omits the per-file `patch` in two unrelated cases:
+# (1) genuine binary blobs, and (2) text files whose unified diff exceeded
+# the per-response size cap (~3 K lines per file).  The latter must NOT be
+# treated as binary.  These helpers probe the blob to disambiguate, and
+# synthesise a unified-diff patch from the post-image when the API patch
+# was missing or truncated.
+# ---------------------------------------------------------------------------
+
+# Extension fallback for cases where the blob fetch itself fails (rate
+# limited or 404).  Only used as a last resort.
+_BINARY_EXTENSIONS = frozenset({
+    ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff", ".webp", ".ico",
+    ".pdf", ".so", ".dylib", ".dll", ".zip", ".tar", ".gz", ".bz2",
+    ".xz", ".7z", ".wasm", ".bin", ".class", ".jar", ".o", ".obj",
+    ".exe", ".woff", ".woff2", ".ttf", ".otf", ".eot", ".mp3", ".mp4",
+    ".mov", ".avi", ".webm", ".flac", ".ogg",
+})
+
+# Heuristic: if the patch we received is at least this many lines AND the
+# file's reported additions+deletions materially exceed what the patch
+# actually contains, assume the API truncated the patch and refetch.
+# GitHub doc says ~3000 lines per file, so we use a slightly lower
+# threshold to catch borderline cases.  Documented as a heuristic because
+# the API exposes no `patch_truncated` flag (verified against
+# https://docs.github.com/en/rest/commits/commits as of 2026-04).
+_TRUNCATION_LINE_THRESHOLD = 2_900
+
+
+def _is_binary_extension(path: str) -> bool:
+    lower = path.lower()
+    for ext in _BINARY_EXTENSIONS:
+        if lower.endswith(ext):
+            return True
+    return False
+
+
+def _looks_truncated(patch: str, additions: int, deletions: int) -> bool:
+    """
+    Heuristic: GitHub does not expose a per-file `patch_truncated` flag,
+    so we infer truncation when the patch we received accounts for far
+    fewer lines than the file's reported additions+deletions.  Threshold
+    pairs the documented ~3000-line cap with a safety margin.
+    """
+    if not patch:
+        return False
+    lines = patch.count("\n")
+    if lines < _TRUNCATION_LINE_THRESHOLD:
+        return False
+    expected = additions + deletions
+    # Allow a generous fudge factor: the patch contains hunk headers and
+    # context lines, so it is usually larger than additions+deletions, not
+    # smaller.  If it is meaningfully smaller, it was truncated.
+    return expected > 0 and lines < expected * 0.5
+
+
+def _fetch_blob_soft(cfg: dict, sha: str) -> Optional[bytes]:
+    """
+    Fetch a blob's raw bytes.  Returns None on rate-limit / 404 / network
+    error so the caller can fall back to extension heuristics; never
+    exits the process.
+    """
+    if not sha:
+        return None
+    import _http as http
+    import base64
+
+    owner, repo = cfg["monitored_repo"].split("/", 1)
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if cfg["monitored_token"]:
+        headers["Authorization"] = f"Bearer {cfg['monitored_token']}"
+
+    url = f"https://api.github.com/repos/{owner}/{repo}/git/blobs/{sha}"
+    try:
+        resp = http.get(url, headers=headers, timeout=30)
+    except http.HTTPError as e:
+        print(f"WARNING: blob fetch network error for {sha}: {e}", file=sys.stderr)
+        return None
+
+    if resp.status_code in (403, 429):
+        print(
+            f"WARNING: blob fetch rate-limited (HTTP {resp.status_code}) for {sha}; "
+            f"falling back to extension heuristic.",
+            file=sys.stderr,
+        )
+        return None
+    if resp.status_code == 404:
+        print(f"WARNING: blob {sha} not found; falling back to extension heuristic.", file=sys.stderr)
+        return None
+    if not resp.ok:
+        print(
+            f"WARNING: blob fetch returned {resp.status_code} for {sha}: {resp.text[:200]}",
+            file=sys.stderr,
+        )
+        return None
+
+    payload = resp.json()
+    encoding = payload.get("encoding", "base64")
+    raw = payload.get("content", "")
+    if encoding == "base64":
+        try:
+            return base64.b64decode(raw)
+        except (ValueError, TypeError) as e:
+            print(f"WARNING: failed to decode blob {sha}: {e}", file=sys.stderr)
+            return None
+    if encoding == "utf-8":
+        return raw.encode("utf-8", errors="replace")
+    print(f"WARNING: unknown blob encoding {encoding!r} for {sha}", file=sys.stderr)
+    return None
+
+
+def _is_binary_bytes(blob: bytes) -> bool:
+    """Authoritative binary sniff: NUL byte in the first 8 KB => binary."""
+    return b"\x00" in blob[:8192]
+
+
+def _synthesise_patch_from_blob(file: FileChange, blob: bytes) -> str:
+    """
+    Reconstruct a unified-diff patch from the post-image of the file.
+
+    For added files we emit every line as `+`-prefixed under a single
+    `@@ -0,0 +N,N @@` hunk; for removed files we emit `-`-prefixed under
+    `@@ -1,N +0,0 @@`.  For modified/renamed/copied files we have only
+    the post-image (we would need the parent commit's blob to construct
+    a proper diff), so we emit every line as a context line under
+    `@@ -1,N +1,N @@` together with an audit note explaining the trade-off.
+    """
+    try:
+        text = blob.decode("utf-8")
+    except UnicodeDecodeError:
+        text = blob.decode("utf-8", errors="replace")
+
+    if text and not text.endswith("\n"):
+        text_lines = text.split("\n")
+        no_trailing = True
+    else:
+        text_lines = text[:-1].split("\n") if text else []
+        no_trailing = False
+    n = len(text_lines)
+
+    lines: list[str] = []
+    if file.status == "added":
+        lines.append(f"@@ -0,0 +1,{n} @@")
+        lines.extend(f"+{l}" for l in text_lines)
+    elif file.status == "removed":
+        lines.append(f"@@ -1,{n} +0,0 @@")
+        lines.extend(f"-{l}" for l in text_lines)
+    else:
+        # modified / renamed / copied: we only have the post-image so we
+        # cannot compute a real diff without fetching the parent blob.
+        # Emit as full-file context with an audit note so the panel sees
+        # the content and knows nothing has been highlighted.
+        lines.append(
+            "# audit-note: patch was omitted by API; rendering full post-image only"
+        )
+        lines.append(f"@@ -1,{n} +1,{n} @@")
+        lines.extend(f" {l}" for l in text_lines)
+    if no_trailing:
+        lines.append("\\ No newline at end of file")
+    return "\n".join(lines) + "\n"
+
+
+def _resolve_patch_omissions(cfg: dict, files: list[FileChange]) -> None:
+    """
+    For each file with `patch is None` (and status not in
+    removed/unchanged), or with a patch that looks truncated, probe the
+    blob to decide whether the file is genuinely binary or just had its
+    text patch omitted by the API.  Mutates `files` in place.
+
+    For "missing patch" we always probe, regardless of classification:
+    without this we cannot tell binary-vs-text and cannot avoid the
+    `binary_change` false-positive cluster.
+
+    For "truncated patch" we leave it to the caller to gate by
+    classification (see `_resolve_truncated_patches_for_critical`).
+    """
+    for f in files:
+        if f.patch is not None:
+            continue
+        if f.status in ("removed", "unchanged"):
+            # Removals legitimately have no post-image to fetch.
+            continue
+
+        blob = _fetch_blob_soft(cfg, f.blob_sha or "")
+        if blob is None:
+            # Fallback to extension heuristic.  If it looks like a binary
+            # extension treat it as binary (no false-positive there);
+            # otherwise mark text-but-unavailable so the structural-finding
+            # layer can surface it as `text_patch_unavailable`.
+            if _is_binary_extension(f.path):
+                f.is_binary = True
+            else:
+                f.patch_omitted = True
+                f.patch_unavailable = True
+            continue
+
+        if _is_binary_bytes(blob):
+            f.is_binary = True
+            continue
+
+        # Text file whose patch was omitted by the API: synthesise.
+        f.patch = _synthesise_patch_from_blob(f, blob)
+        f.patch_omitted = True
+        f.patch_synthesised = True
+
+
+def _resolve_truncated_patches_for_critical(
+    cfg: dict,
+    classified: list[ClassifiedFile],
+) -> None:
+    """
+    For critical and high files whose patch looks truncated by the API,
+    refetch the blob and replace the patch with a synthesised post-image
+    rendering.  Lower-classification files keep the truncated patch (cost
+    gate against the per-file blob API).
+
+    Modified-status files lose the original `-/+` markers because we only
+    fetch the post-image; that trade-off is documented in
+    `_synthesise_patch_from_blob`.
+    """
+    for c in classified:
+        if c.classification not in ("critical", "high"):
+            continue
+        f = c.file
+        if f.patch is None:
+            continue  # already handled by _resolve_patch_omissions
+        if not _looks_truncated(f.patch, f.additions, f.deletions):
+            continue
+        blob = _fetch_blob_soft(cfg, f.blob_sha or "")
+        if blob is None:
+            f.patch_omitted = True
+            f.patch_unavailable = True
+            continue
+        if _is_binary_bytes(blob):
+            # Surprising — a binary file should not have produced a patch
+            # at all.  Treat as binary and drop the truncated patch.
+            f.patch = None
+            f.is_binary = True
+            continue
+        f.patch = _synthesise_patch_from_blob(f, blob)
+        f.patch_omitted = True
+        f.patch_synthesised = True
+
+
+# ---------------------------------------------------------------------------
 # Classification
 # ---------------------------------------------------------------------------
 
@@ -751,8 +1023,22 @@ def detect_structural_findings(files: list[FileChange]) -> list[StructuralFindin
                     type="binary_change",
                     path=f.path,
                     description=(
-                        f"Binary file {f.status}; content is not visible to the LLM panel. "
-                        f"Verify the blob (sha={f.blob_sha or 'unknown'}) by hand."
+                        f"Binary file {f.status} (NUL bytes detected in blob); content "
+                        f"is not visible to the LLM panel.  Verify the blob "
+                        f"(sha={f.blob_sha or 'unknown'}) by hand."
+                    ),
+                )
+            )
+        elif f.patch_unavailable:
+            findings.append(
+                StructuralFinding(
+                    type="text_patch_unavailable",
+                    path=f.path,
+                    description=(
+                        f"Text file {f.status} but the unified diff was omitted by the "
+                        f"GitHub API and the blob fetch failed (rate limit or 404), so "
+                        f"no patch was reconstructed.  Verify the blob "
+                        f"(sha={f.blob_sha or 'unknown'}) by hand."
                     ),
                 )
             )
@@ -776,7 +1062,173 @@ def detect_structural_findings(files: list[FileChange]) -> list[StructuralFindin
                     ),
                 )
             )
+        if f.patch:
+            unicode_desc = _detect_unicode_risk(f.patch)
+            if unicode_desc:
+                findings.append(
+                    StructuralFinding(
+                        type="unicode_risk",
+                        path=f.path,
+                        description=(
+                            f"Suspicious Unicode in added lines: {unicode_desc}.  "
+                            f"These can disguise the visual reading of code from the "
+                            f"patch even when the byte-level diff is correct."
+                        ),
+                    )
+                )
+        if f.patch and _is_lockfile_path(f.path):
+            findings.extend(_detect_lockfile_delta(f.path, f.patch))
     return findings
+
+
+# Bidi-control codepoints (Trojan Source — CVE-2021-42574).
+_BIDI_CONTROLS: dict[str, str] = {
+    "\u202a": "U+202A LRE",
+    "\u202b": "U+202B RLE",
+    "\u202c": "U+202C PDF",
+    "\u202d": "U+202D LRO",
+    "\u202e": "U+202E RLO",
+    "\u2066": "U+2066 LRI",
+    "\u2067": "U+2067 RLI",
+    "\u2068": "U+2068 FSI",
+    "\u2069": "U+2069 PDI",
+}
+
+# Zero-width / invisible codepoints used to disguise identifiers.
+_ZERO_WIDTH: dict[str, str] = {
+    "\u200b": "U+200B ZWSP",
+    "\u200c": "U+200C ZWNJ",
+    "\u200d": "U+200D ZWJ",
+    "\ufeff": "U+FEFF BOM",
+}
+
+# Identifier-token pattern: ASCII identifier-ish characters plus any
+# non-ASCII letter-ish characters and the zero-width invisibles, so we can
+# reach inside the token when scanning for hazards.
+_IDENT_TOKEN_RE = re.compile(
+    r"[A-Za-z_\u0080-\uFFFF\u200b\u200c\u200d\ufeff]"
+    r"[A-Za-z0-9_\u0080-\uFFFF\u200b\u200c\u200d\ufeff]*"
+)
+
+
+def _script_of(ch: str) -> Optional[str]:
+    """
+    Return a coarse Unicode-script label for `ch`, or None if the character
+    is not a letter we care about for mixed-script detection.
+
+    Scoped to the high-signal homoglyph attack scripts called out in the
+    brief: Latin (ASCII letters) and Cyrillic / Greek.  Other scripts return
+    None, which means a Latin+Han or Latin+Hebrew identifier will not be
+    flagged as mixed-script — this is a deliberate scope reduction to keep
+    false-positive noise low on legitimate i18n content.
+    """
+    cp = ord(ch)
+    # Latin (ASCII letters only — Latin-1 supplement etc. is excluded so
+    # umlauts / accents in legitimate identifiers do not collide).
+    if (0x41 <= cp <= 0x5A) or (0x61 <= cp <= 0x7A):
+        return "Latin"
+    # Cyrillic + Cyrillic Supplement.
+    if (0x0400 <= cp <= 0x04FF) or (0x0500 <= cp <= 0x052F):
+        return "Cyrillic"
+    # Greek + Coptic, Greek Extended.
+    if (0x0370 <= cp <= 0x03FF) or (0x1F00 <= cp <= 0x1FFF):
+        return "Greek"
+    return None
+
+
+def _detect_unicode_risk(patch: str) -> Optional[str]:
+    """
+    Inspect a unified diff and return a human-readable description of any
+    Unicode-Trojan / homoglyph hazards present in *added* lines but not
+    already present on the *removed* side (so removing an attack does not
+    fire a finding).  Returns None if nothing suspicious is found.
+    """
+    is_new_file = False
+    added_lines: list[str] = []
+    removed_text_chars: set[str] = set()
+    for raw in patch.splitlines():
+        # Diff metadata.
+        if raw.startswith("diff --git") or raw.startswith("index "):
+            continue
+        if raw.startswith("+++") or raw.startswith("---"):
+            continue
+        if raw.startswith("@@"):
+            continue
+        # `new file mode …` is part of extended header; flag it.
+        if raw.startswith("new file"):
+            is_new_file = True
+            continue
+        if raw.startswith("+"):
+            added_lines.append(raw[1:])
+        elif raw.startswith("-"):
+            for ch in raw[1:]:
+                if ch in _BIDI_CONTROLS or ch in _ZERO_WIDTH:
+                    removed_text_chars.add(ch)
+        # context / other lines: ignore
+
+    if not added_lines:
+        return None
+
+    notes: list[str] = []
+    seen_bidi: set[str] = set()
+    seen_zw: set[tuple[str, str]] = set()  # (label, identifier)
+    seen_mixed: set[tuple[str, frozenset[str]]] = set()
+
+    for idx, line in enumerate(added_lines):
+        # Bidi controls — additions only, and only those that didn't appear
+        # somewhere on the `-` side (which would be removal of an attack).
+        for ch, label in _BIDI_CONTROLS.items():
+            if ch in line and ch not in removed_text_chars and label not in seen_bidi:
+                seen_bidi.add(label)
+                notes.append(f"bidi control {label}")
+
+        # Zero-width hazards inside identifier-looking tokens.
+        for m in _IDENT_TOKEN_RE.finditer(line):
+            token = m.group(0)
+            # BOM at the very first character of the very first added line of
+            # a `new file` patch is a legitimate UTF-8 BOM, not an attack.
+            for ch, label in _ZERO_WIDTH.items():
+                if ch not in token:
+                    continue
+                if (
+                    ch == "\ufeff"
+                    and is_new_file
+                    and idx == 0
+                    and m.start() == 0
+                    and token.startswith("\ufeff")
+                ):
+                    continue
+                # Strip invisibles to recover a printable identifier handle.
+                visible = token
+                for invisible in _ZERO_WIDTH:
+                    visible = visible.replace(invisible, "")
+                key = (label, visible)
+                if key in seen_zw:
+                    continue
+                seen_zw.add(key)
+                handle = visible if visible else "(empty)"
+                notes.append(f"zero-width {label} in identifier '{handle}'")
+
+            # Mixed-script identifier detection.
+            scripts = {_script_of(c) for c in token}
+            scripts.discard(None)
+            if len(scripts) >= 2:
+                visible = token
+                for invisible in _ZERO_WIDTH:
+                    visible = visible.replace(invisible, "")
+                script_set = frozenset(scripts)
+                key2 = (visible, script_set)
+                if key2 in seen_mixed:
+                    continue
+                seen_mixed.add(key2)
+                scripts_str = "+".join(sorted(scripts))  # type: ignore[arg-type]
+                notes.append(
+                    f"mixed-script identifier '{visible}' ({scripts_str})"
+                )
+
+    if not notes:
+        return None
+    return ", ".join(notes)
 
 
 def _generated_header_removed(patch: str) -> bool:
@@ -789,6 +1241,955 @@ def _generated_header_removed(patch: str) -> bool:
         elif line.startswith("+") and not line.startswith("+++") and GENERATED_HEADER in line:
             added = True
     return removed and not added
+
+
+# ---------------------------------------------------------------------------
+# Lockfile delta detection
+# ---------------------------------------------------------------------------
+
+# Canonical lockfile basenames the deterministic delta parser handles.  Match
+# on basename (case-sensitive) so monorepo paths like `crates/foo/Cargo.lock`
+# are picked up.
+_LOCKFILE_BASENAMES: frozenset[str] = frozenset(
+    {
+        "Cargo.lock",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "uv.lock",
+        "poetry.lock",
+    }
+)
+
+
+def _is_lockfile_path(path: str) -> bool:
+    return path.rsplit("/", 1)[-1] in _LOCKFILE_BASENAMES
+
+
+def _reconstruct_pre_post_from_patch(
+    patch: str,
+) -> tuple[Optional[str], Optional[str]]:
+    """
+    Replay a unified diff to reconstruct the *before* and *after* text fragments
+    that the patch makes visible.  Lines beginning with `-` (excluding the `---`
+    file header) are pre-only; `+` (excluding `+++`) are post-only; ` ` are in
+    both; `\\` (no newline at EOF) and other metadata are skipped.
+
+    Returns `(pre_text, post_text)` if at least one usable hunk was decoded.
+    Returns `(None, None)` if the patch contains no decodable hunks at all,
+    so the caller can emit the unparseable-fallback finding.
+
+    Note: this only recovers the regions visible in hunks.  Lockfile parsing
+    therefore operates on partial documents — that is fine because we extract
+    per-package fragments via regex, not whole-document parsing.
+    """
+    pre_parts: list[str] = []
+    post_parts: list[str] = []
+    in_hunk = False
+    saw_hunk = False
+    for raw in patch.splitlines():
+        if raw.startswith("@@"):
+            in_hunk = True
+            saw_hunk = True
+            # Insert a sentinel newline between hunks so adjacent regions do
+            # not glue together and create false `[[package]]` matches.
+            if pre_parts:
+                pre_parts.append("")
+            if post_parts:
+                post_parts.append("")
+            continue
+        if not in_hunk:
+            # File-level diff metadata (diff --git, index, ---, +++, mode
+            # lines, etc.) — ignore.
+            continue
+        if raw.startswith("\\"):
+            # `\ No newline at end of file` marker.
+            continue
+        if raw.startswith("+") and not raw.startswith("+++"):
+            post_parts.append(raw[1:])
+        elif raw.startswith("-") and not raw.startswith("---"):
+            pre_parts.append(raw[1:])
+        elif raw.startswith(" "):
+            pre_parts.append(raw[1:])
+            post_parts.append(raw[1:])
+        elif raw == "":
+            # An empty patch line is a context line on a blank source line.
+            pre_parts.append("")
+            post_parts.append("")
+        else:
+            # Unrecognised line in a hunk — diff is likely truncated.  Bail.
+            return (None, None)
+
+    if not saw_hunk:
+        return (None, None)
+    return ("\n".join(pre_parts), "\n".join(post_parts))
+
+
+# Cargo.lock / uv.lock / poetry.lock all share the `[[package]]` array-table
+# shape.  We extract per-package fragments by splitting on the table header
+# and then pulling name / version / source / git-rev fields with regex.  We
+# deliberately do NOT call `tomllib.loads` on the partial text reconstructed
+# from a hunk — that text is almost always not a valid TOML document because
+# the diff only includes the hunks, not the surrounding tables.
+
+_TOML_PACKAGE_HEADER_RE = re.compile(r"(?m)^\[\[package\]\]\s*$")
+_TOML_NAME_RE = re.compile(r'(?m)^name\s*=\s*"([^"]+)"\s*$')
+_TOML_VERSION_RE = re.compile(r'(?m)^version\s*=\s*"([^"]+)"\s*$')
+_TOML_SOURCE_RE = re.compile(r'(?m)^source\s*=\s*"([^"]+)"\s*$')
+# Poetry `[package.source]` sub-table fields.
+_TOML_SOURCE_URL_RE = re.compile(r'(?m)^url\s*=\s*"([^"]+)"\s*$')
+_TOML_SOURCE_REFERENCE_RE = re.compile(r'(?m)^reference\s*=\s*"([^"]+)"\s*$')
+# uv source table is inline `source = { git = "...", rev = "..." }` or sub-table.
+_TOML_GIT_INLINE_RE = re.compile(
+    r'source\s*=\s*\{[^}]*\bgit\s*=\s*"([^"]+)"[^}]*\}'
+)
+_TOML_REV_INLINE_RE = re.compile(
+    r'source\s*=\s*\{[^}]*\brev\s*=\s*"([^"]+)"[^}]*\}'
+)
+
+
+@dataclass
+class _TomlPackageFacts:
+    """Per-package facts extracted from a TOML lockfile fragment."""
+
+    version: Optional[str] = None
+    source: Optional[str] = None
+    git_url: Optional[str] = None
+    git_rev: Optional[str] = None
+    # Poetry's `[package.source]` sub-table.
+    source_url: Optional[str] = None
+    source_reference: Optional[str] = None
+
+
+def _extract_toml_packages(text: str) -> dict[str, _TomlPackageFacts]:
+    """
+    Scan `text` (a partial TOML lockfile fragment recovered from a diff) and
+    return `{name: _TomlPackageFacts}` for every `[[package]]` block whose
+    `name` is present.  Packages without a `name` are silently dropped — they
+    are typically truncated context-only fragments and have no identity.
+    """
+    out: dict[str, _TomlPackageFacts] = {}
+    # Prepend an anchor so str split keeps text before the first header out.
+    splits = _TOML_PACKAGE_HEADER_RE.split(text)
+    # The first split is whatever appears before the first `[[package]]` —
+    # discard it.  Remaining items are the body of each `[[package]]` block,
+    # terminated by either the next `[[package]]` (already consumed by split)
+    # or the next `[`-table header (which we trim out below).
+    for body in splits[1:]:
+        # Trim at the next non-package table header so we don't bleed into
+        # `[[patch]]`, `[metadata]`, etc.  We deliberately keep `[package.*]`
+        # sub-tables inside the body (poetry uses `[package.source]`,
+        # `[package.dependencies]`, etc.); only `[metadata]`, `[[patch]]`,
+        # and similar siblings end the package.
+        next_table = re.search(
+            r"(?m)^\[(?!\[package\]\]|package\.)[^\n]*$",
+            body,
+        )
+        if next_table:
+            body = body[: next_table.start()]
+
+        name_m = _TOML_NAME_RE.search(body)
+        if not name_m:
+            continue
+        name = name_m.group(1)
+
+        facts = _TomlPackageFacts()
+        ver_m = _TOML_VERSION_RE.search(body)
+        if ver_m:
+            facts.version = ver_m.group(1)
+        src_m = _TOML_SOURCE_RE.search(body)
+        if src_m:
+            facts.source = src_m.group(1)
+            # Cargo.lock encodes git deps as `git+<url>#<rev>` inside the
+            # source string.
+            git_m = re.match(r"git\+([^#]+)#([0-9a-f]+)", facts.source)
+            if git_m:
+                facts.git_url = git_m.group(1)
+                facts.git_rev = git_m.group(2)
+
+        # uv.lock-style inline source table.
+        if facts.git_url is None:
+            inline_git = _TOML_GIT_INLINE_RE.search(body)
+            if inline_git:
+                facts.git_url = inline_git.group(1)
+                inline_rev = _TOML_REV_INLINE_RE.search(body)
+                if inline_rev:
+                    facts.git_rev = inline_rev.group(1)
+
+        # Poetry `[package.source]` sub-table.  Look for it within the body.
+        sub = re.search(
+            r"(?ms)^\[package\.source\]\s*$(.*?)(?=^\[|\Z)",
+            body,
+        )
+        if sub:
+            sub_body = sub.group(1)
+            url_m = _TOML_SOURCE_URL_RE.search(sub_body)
+            if url_m:
+                facts.source_url = url_m.group(1)
+                if facts.git_url is None:
+                    facts.git_url = url_m.group(1)
+            ref_m = _TOML_SOURCE_REFERENCE_RE.search(sub_body)
+            if ref_m:
+                facts.source_reference = ref_m.group(1)
+                if facts.git_rev is None:
+                    facts.git_rev = ref_m.group(1)
+
+        # Last-write-wins is acceptable: the diff fragment only contains a
+        # given package once unless the whole table is being rewritten, in
+        # which case the final state is what matters.
+        out[name] = facts
+    return out
+
+
+# package-lock.json: extract per-`packages` map entries.  We treat each
+# `"node_modules/<...>": { ... }` (or `"": { ... }` for the root) as one row.
+# The body is balanced-brace; we find it by matching `{` to the next `}` at
+# the same nesting depth.
+
+@dataclass
+class _NpmPackageFacts:
+    version: Optional[str] = None
+    resolved: Optional[str] = None
+    integrity: Optional[str] = None
+
+
+def _extract_npm_packages(text: str) -> dict[str, _NpmPackageFacts]:
+    out: dict[str, _NpmPackageFacts] = {}
+    # Keys we care about: any `"<key>": {` where the key starts the line of a
+    # `packages` member.  We don't enforce that we are *inside* `"packages":`
+    # because the diff fragment may not show that context line.  Instead we
+    # accept any string-key whose immediate value is an object containing
+    # `version` / `resolved` / `integrity` lockfile fields.
+    key_re = re.compile(r'(?m)^\s*"([^"]*)"\s*:\s*\{')
+    for m in key_re.finditer(text):
+        key = m.group(1)
+        # Skip well-known top-level scalar keys.
+        if key in {"name", "version", "lockfileVersion", "requires", "dependencies", "packages"}:
+            continue
+        # Find the matching close-brace at the same nesting depth.
+        depth = 1
+        i = m.end()
+        in_str = False
+        escape = False
+        end = -1
+        while i < len(text):
+            ch = text[i]
+            if escape:
+                escape = False
+            elif ch == "\\" and in_str:
+                escape = True
+            elif ch == '"':
+                in_str = not in_str
+            elif not in_str:
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        end = i
+                        break
+            i += 1
+        if end < 0:
+            # Unbalanced — likely a hunk that cuts mid-object.  Use what we
+            # have so far for field extraction.
+            body = text[m.end() :]
+        else:
+            body = text[m.end() : end]
+        facts = _NpmPackageFacts()
+        ver_m = re.search(r'"version"\s*:\s*"([^"]+)"', body)
+        if ver_m:
+            facts.version = ver_m.group(1)
+        res_m = re.search(r'"resolved"\s*:\s*"([^"]+)"', body)
+        if res_m:
+            facts.resolved = res_m.group(1)
+        int_m = re.search(r'"integrity"\s*:\s*"([^"]+)"', body)
+        if int_m:
+            facts.integrity = int_m.group(1)
+        # Only keep entries that look like real packages (have at least one
+        # of the lockfile fields).  This filters out random nested objects
+        # picked up from truncated context.
+        if facts.version or facts.resolved or facts.integrity:
+            out[key] = facts
+    return out
+
+
+# pnpm-lock.yaml: regex extractor.  pnpm-lock.yaml is whitespace-sensitive
+# YAML; the repo has no PyYAML dependency and we are forbidden from adding
+# one, so this minimal extractor pulls per-package keys (`/<name>@<version>:`
+# in v5, or `<name>@<version>:` in v6+) plus the indented `resolution.tarball`
+# / `resolution.integrity` / `resolution.commit` lines.  When the shape
+# defeats this extractor, the caller falls back to the unparseable finding.
+
+@dataclass
+class _PnpmPackageFacts:
+    tarball: Optional[str] = None
+    integrity: Optional[str] = None
+    commit: Optional[str] = None
+
+
+_PNPM_PKG_KEY_RE = re.compile(
+    r"(?m)^  /?(?P<key>[^\s:][^\s]*@[^\s:]+):\s*$"
+)
+
+
+def _extract_pnpm_packages(text: str) -> dict[str, _PnpmPackageFacts]:
+    out: dict[str, _PnpmPackageFacts] = {}
+    matches = list(_PNPM_PKG_KEY_RE.finditer(text))
+    for idx, m in enumerate(matches):
+        key = m.group("key")
+        start = m.end()
+        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
+        body = text[start:end]
+        facts = _PnpmPackageFacts()
+        # `resolution:` block lines: look for tarball / integrity / commit
+        # under any indent level greater than 4 spaces.
+        for line in body.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("tarball:"):
+                facts.tarball = stripped.split(":", 1)[1].strip()
+            elif stripped.startswith("integrity:"):
+                facts.integrity = stripped.split(":", 1)[1].strip()
+            elif stripped.startswith("commit:"):
+                facts.commit = stripped.split(":", 1)[1].strip()
+        out[key] = facts
+    return out
+
+
+def _detect_lockfile_delta(path: str, patch: str) -> list[StructuralFinding]:
+    """
+    Parse a lockfile patch and emit one `lockfile_delta` finding per changed
+    package.  Falls back to a single "could not be parsed deterministically"
+    finding when the diff is too truncated to reconstruct usable pre/post
+    fragments, so we never silently miss a change.
+    """
+    basename = path.rsplit("/", 1)[-1]
+    pre, post = _reconstruct_pre_post_from_patch(patch)
+    if pre is None or post is None:
+        return [_lockfile_unparseable(path, basename)]
+
+    try:
+        if basename in {"Cargo.lock", "uv.lock", "poetry.lock"}:
+            return _diff_toml_lockfile(path, basename, pre, post)
+        if basename == "package-lock.json":
+            return _diff_npm_lockfile(path, basename, pre, post)
+        if basename == "pnpm-lock.yaml":
+            return _diff_pnpm_lockfile(path, basename, pre, post)
+    except Exception:
+        # Any unexpected shape collapses to the unparseable fallback rather
+        # than crashing the audit.
+        return [_lockfile_unparseable(path, basename)]
+    return []
+
+
+def _lockfile_unparseable(path: str, basename: str) -> StructuralFinding:
+    return StructuralFinding(
+        type="lockfile_delta",
+        path=path,
+        description=(
+            f"{basename}: lockfile changed but could not be parsed "
+            f"deterministically; review by hand."
+        ),
+    )
+
+
+def _diff_toml_lockfile(
+    path: str, basename: str, pre: str, post: str
+) -> list[StructuralFinding]:
+    pre_pkgs = _extract_toml_packages(pre)
+    post_pkgs = _extract_toml_packages(post)
+    findings: list[StructuralFinding] = []
+    names = sorted(set(pre_pkgs) | set(post_pkgs))
+    for name in names:
+        pre_f = pre_pkgs.get(name)
+        post_f = post_pkgs.get(name)
+        desc = _describe_toml_change(basename, name, pre_f, post_f)
+        if desc is not None:
+            findings.append(
+                StructuralFinding(type="lockfile_delta", path=path, description=desc)
+            )
+    if not findings and (pre_pkgs or post_pkgs):
+        # We saw packages in the diff but none of them looked changed.  This
+        # happens when the hunk only touches header / metadata lines.  Stay
+        # silent — the LLM panel handles non-package edits.
+        return []
+    if not findings and not pre_pkgs and not post_pkgs:
+        # Diff did not surface a single named package — could be a tiny
+        # comment-only change, or it could be a heavily truncated hunk that
+        # missed every `name = "..."` line.  Emit the unparseable finding
+        # so we don't silently miss a real change.
+        return [_lockfile_unparseable(path, basename)]
+    return findings
+
+
+def _describe_toml_change(
+    basename: str,
+    name: str,
+    pre: Optional[_TomlPackageFacts],
+    post: Optional[_TomlPackageFacts],
+) -> Optional[str]:
+    if pre is None and post is not None:
+        # Added.
+        if post.git_url and post.git_rev:
+            return (
+                f"{basename}: {name} added at git+{post.git_url}#{post.git_rev}, "
+                f"git-pinned dependency introduced."
+            )
+        if post.version:
+            src = post.source or "registry"
+            return f"{basename}: {name} {post.version} added (source {src})."
+        return f"{basename}: {name} added."
+    if pre is not None and post is None:
+        # Removed.
+        if pre.version:
+            return f"{basename}: {name} {pre.version} removed."
+        return f"{basename}: {name} removed."
+
+    # Both sides present — compare.
+    assert pre is not None and post is not None
+    notes: list[str] = []
+    if pre.version != post.version and (pre.version or post.version):
+        notes.append(
+            f"{pre.version or '(none)'} \u2192 {post.version or '(none)'}"
+        )
+    # Source flip (registry vs git etc.)
+    pre_src = pre.source or pre.source_url
+    post_src = post.source or post.source_url
+    if pre_src != post_src and (pre_src or post_src):
+        notes.append(
+            f"source {pre_src or '(none)'} \u2192 {post_src or '(none)'}"
+        )
+    # Git-rev pin rotation — flag separately so a same-version different-rev
+    # change ("pin rotate") is visible.
+    pre_rev = pre.git_rev or pre.source_reference
+    post_rev = post.git_rev or post.source_reference
+    if pre_rev != post_rev and (pre_rev or post_rev):
+        # Avoid double-reporting when the rev change is already implicit in
+        # the source change.
+        if not any(n.startswith("source ") for n in notes):
+            notes.append(
+                f"git rev {pre_rev or '(none)'} \u2192 {post_rev or '(none)'}"
+            )
+        elif pre.version == post.version:
+            # Same version, different rev — explicit pin-rotate.
+            notes.append(
+                f"git rev {pre_rev or '(none)'} \u2192 {post_rev or '(none)'}"
+            )
+    if not notes:
+        return None
+    return f"{basename}: {name} " + ", ".join(notes) + "."
+
+
+def _diff_npm_lockfile(
+    path: str, basename: str, pre: str, post: str
+) -> list[StructuralFinding]:
+    pre_pkgs = _extract_npm_packages(pre)
+    post_pkgs = _extract_npm_packages(post)
+    findings: list[StructuralFinding] = []
+    keys = sorted(set(pre_pkgs) | set(post_pkgs))
+    for key in keys:
+        pre_f = pre_pkgs.get(key)
+        post_f = post_pkgs.get(key)
+        desc = _describe_npm_change(basename, key, pre_f, post_f)
+        if desc is not None:
+            findings.append(
+                StructuralFinding(type="lockfile_delta", path=path, description=desc)
+            )
+    if not findings and not pre_pkgs and not post_pkgs:
+        return [_lockfile_unparseable(path, basename)]
+    return findings
+
+
+def _describe_npm_change(
+    basename: str,
+    key: str,
+    pre: Optional[_NpmPackageFacts],
+    post: Optional[_NpmPackageFacts],
+) -> Optional[str]:
+    label = key or "(root)"
+    if pre is None and post is not None:
+        bits: list[str] = []
+        if post.version:
+            bits.append(post.version)
+        if post.resolved:
+            bits.append(f"resolved {post.resolved}")
+        if post.integrity:
+            bits.append(f"integrity {post.integrity}")
+        suffix = (" " + ", ".join(bits)) if bits else ""
+        return f"{basename}: {label} added{suffix}."
+    if pre is not None and post is None:
+        return f"{basename}: {label} {pre.version or ''} removed.".replace("  ", " ")
+
+    assert pre is not None and post is not None
+    notes: list[str] = []
+    version_changed = pre.version != post.version and (pre.version or post.version)
+    if version_changed:
+        notes.append(
+            f"{pre.version or '(none)'} \u2192 {post.version or '(none)'}"
+        )
+    if pre.resolved != post.resolved and (pre.resolved or post.resolved):
+        notes.append(
+            f"resolved {pre.resolved or '(none)'} \u2192 {post.resolved or '(none)'}"
+        )
+    # If the version changed, the integrity must have changed too — that's
+    # implied, not a separate event.  Suppress.  Only surface integrity when
+    # the version did NOT change (pin-rotate / re-publish).
+    if (
+        not version_changed
+        and pre.integrity != post.integrity
+        and (pre.integrity or post.integrity)
+    ):
+        notes.append(
+            f"integrity {pre.integrity or '(none)'} \u2192 {post.integrity or '(none)'}"
+        )
+    if not notes:
+        return None
+    return f"{basename}: {label} " + ", ".join(notes) + "."
+
+
+def _diff_pnpm_lockfile(
+    path: str, basename: str, pre: str, post: str
+) -> list[StructuralFinding]:
+    pre_pkgs = _extract_pnpm_packages(pre)
+    post_pkgs = _extract_pnpm_packages(post)
+    findings: list[StructuralFinding] = []
+    keys = sorted(set(pre_pkgs) | set(post_pkgs))
+    for key in keys:
+        pre_f = pre_pkgs.get(key)
+        post_f = post_pkgs.get(key)
+        desc = _describe_pnpm_change(basename, key, pre_f, post_f)
+        if desc is not None:
+            findings.append(
+                StructuralFinding(type="lockfile_delta", path=path, description=desc)
+            )
+    if not findings and not pre_pkgs and not post_pkgs:
+        return [_lockfile_unparseable(path, basename)]
+    return findings
+
+
+def _describe_pnpm_change(
+    basename: str,
+    key: str,
+    pre: Optional[_PnpmPackageFacts],
+    post: Optional[_PnpmPackageFacts],
+) -> Optional[str]:
+    if pre is None and post is not None:
+        if post.commit:
+            return (
+                f"{basename}: {key} added with git commit {post.commit}, "
+                f"git-pinned dependency introduced."
+            )
+        if post.tarball:
+            return f"{basename}: {key} added with tarball {post.tarball}."
+        return f"{basename}: {key} added."
+    if pre is not None and post is None:
+        return f"{basename}: {key} removed."
+
+    assert pre is not None and post is not None
+    notes: list[str] = []
+    if pre.tarball != post.tarball and (pre.tarball or post.tarball):
+        notes.append(
+            f"tarball {pre.tarball or '(none)'} \u2192 {post.tarball or '(none)'}"
+        )
+    if pre.commit != post.commit and (pre.commit or post.commit):
+        notes.append(
+            f"commit {pre.commit or '(none)'} \u2192 {post.commit or '(none)'}"
+        )
+    # Integrity is implied by tarball changes; only surface if tarball is
+    # stable but integrity changed (pin-rotate).
+    if (
+        pre.tarball == post.tarball
+        and pre.integrity != post.integrity
+        and (pre.integrity or post.integrity)
+    ):
+        notes.append(
+            f"integrity {pre.integrity or '(none)'} \u2192 {post.integrity or '(none)'}"
+        )
+    if not notes:
+        return None
+    return f"{basename}: {key} " + ", ".join(notes) + "."
+
+
+# ---------------------------------------------------------------------------
+# File-mode flips and symlink-target changes
+#
+# Both attack vectors are stored in the Git tree (the file's `mode` field)
+# rather than in the file contents, so they are completely invisible in the
+# unified-diff `patch`.  Detecting them requires comparing the parent's tree
+# with the new commit's tree.
+#
+# Implementation choice: we use the Git Trees API (`recursive=1`) for both
+# sides, not the per-file Contents API.  Rationale:
+#   1. The Contents API does NOT expose the executable bit in its JSON
+#      response.  It returns `type="file"` regardless of whether the mode is
+#      `100644` or `100755`, so it cannot detect mode flips at all.
+#   2. The Trees API DOES include the `mode` field on every entry, and a
+#      single recursive fetch covers all files.  Two API calls (parent +
+#      commit) is a flat cost regardless of how many files changed — cheaper
+#      than per-file Contents calls for any non-trivial commit.
+#
+# When the recursive tree is `truncated` (very large repositories), we fall
+# back to per-file Contents API calls for symlink-target detection, since
+# that is the only thing the Contents API can still answer.  Mode-flip
+# detection becomes best-effort and is silently dropped for affected files;
+# we emit a single `mode_check_unavailable` finding to make the limitation
+# visible.
+# ---------------------------------------------------------------------------
+
+# Git tree modes we care about.
+_MODE_NON_EXECUTABLE = "100644"
+_MODE_EXECUTABLE = "100755"
+_MODE_SYMLINK = "120000"
+
+
+def _mode_changes_enabled() -> bool:
+    """Return True when ``AUDIT_DETECT_MODE_CHANGES`` env var requests the
+    extra check.  Recognises ``1`` / ``true`` (case-insensitive)."""
+    return os.environ.get("AUDIT_DETECT_MODE_CHANGES", "").strip().lower() in (
+        "1",
+        "true",
+    )
+
+
+def _fetch_recursive_tree(
+    cfg: dict, sha: str
+) -> tuple[Optional[dict[str, dict]], bool, bool]:
+    """
+    Fetch the recursive Git tree for ``sha`` and return
+    ``(by_path, truncated, ok)``.
+
+    ``by_path`` maps path -> raw tree entry dict (keys ``mode``, ``type``,
+    ``sha``).  ``truncated`` mirrors the API's ``truncated`` flag.  ``ok`` is
+    False when the call failed for any reason (network, 4xx, 5xx, malformed
+    JSON), in which case ``by_path`` is None — callers must treat this as
+    "we cannot tell" rather than "no changes".
+
+    Never exits the process.  Errors are logged to stderr and reported via
+    the ``ok`` return.
+    """
+    import _http as http
+
+    owner, repo = cfg["monitored_repo"].split("/", 1)
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if cfg["monitored_token"]:
+        headers["Authorization"] = f"Bearer {cfg['monitored_token']}"
+
+    url = (
+        f"https://api.github.com/repos/{owner}/{repo}/git/trees/{sha}?recursive=1"
+    )
+    try:
+        resp = http.get(url, headers=headers, timeout=30)
+    except http.HTTPError as e:
+        print(
+            f"WARNING: mode-change tree fetch network error for {sha}: {e}",
+            file=sys.stderr,
+        )
+        return None, False, False
+
+    if not resp.ok:
+        print(
+            f"WARNING: mode-change tree fetch returned {resp.status_code} "
+            f"for {sha}: {resp.text[:200]}",
+            file=sys.stderr,
+        )
+        return None, False, False
+
+    try:
+        payload = resp.json()
+    except Exception as e:
+        print(
+            f"WARNING: mode-change tree response was not valid JSON for "
+            f"{sha}: {e}",
+            file=sys.stderr,
+        )
+        return None, False, False
+
+    by_path: dict[str, dict] = {}
+    for entry in payload.get("tree", []):
+        path = entry.get("path")
+        if not path:
+            continue
+        by_path[path] = entry
+    return by_path, bool(payload.get("truncated", False)), True
+
+
+def _fetch_symlink_target_via_contents(
+    cfg: dict, path: str, ref: str
+) -> Optional[str]:
+    """
+    Soft fetch a symlink's target string via the Contents API at ``ref``.
+
+    Returns the target string when the path is a symlink at that ref, or
+    None when the path doesn't exist, isn't a symlink, or the fetch failed.
+    Never exits the process.
+    """
+    import _http as http
+    import urllib.parse
+
+    owner, repo = cfg["monitored_repo"].split("/", 1)
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if cfg["monitored_token"]:
+        headers["Authorization"] = f"Bearer {cfg['monitored_token']}"
+
+    quoted = urllib.parse.quote(path)
+    url = (
+        f"https://api.github.com/repos/{owner}/{repo}/contents/{quoted}"
+        f"?ref={ref}"
+    )
+    try:
+        resp = http.get(url, headers=headers, timeout=30)
+    except http.HTTPError as e:
+        print(
+            f"WARNING: contents fetch network error for {path}@{ref}: {e}",
+            file=sys.stderr,
+        )
+        return None
+    if not resp.ok:
+        return None
+    try:
+        payload = resp.json()
+    except Exception:
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if payload.get("type") != "symlink":
+        return None
+    target = payload.get("target")
+    return target if isinstance(target, str) else None
+
+
+def _detect_mode_changes(
+    cfg: dict,
+    commit: CommitData,
+    classified: list[ClassifiedFile],
+) -> list[StructuralFinding]:
+    """
+    Detect file-mode flips (100644 <-> 100755) and symlink-target changes
+    that are invisible in the unified-diff patch.
+
+    See the section docstring above for the rationale on using the Trees API
+    rather than per-file Contents calls.
+
+    Errors are non-fatal: any failure to fetch a tree results in a single
+    ``mode_check_unavailable`` finding and the function returns.
+    """
+    if not commit.parents:
+        # Initial commit — nothing to diff modes against.
+        return []
+    parent_sha = commit.parents[0]
+
+    new_tree, new_truncated, new_ok = _fetch_recursive_tree(cfg, commit.sha)
+    parent_tree, parent_truncated, parent_ok = _fetch_recursive_tree(cfg, parent_sha)
+
+    if not new_ok or not parent_ok:
+        return [
+            StructuralFinding(
+                type="mode_check_unavailable",
+                path="",
+                description=(
+                    "File-mode / symlink-target check was requested via "
+                    "AUDIT_DETECT_MODE_CHANGES but the Git Trees API call "
+                    "failed.  Mode flips and symlink-target changes for "
+                    "this commit could not be verified."
+                ),
+            )
+        ]
+
+    findings: list[StructuralFinding] = []
+    truncated_warning_emitted = False
+
+    # Index commit.files by path for status lookup.  The classified list and
+    # commit.files share the same FileChange instances, but we accept the
+    # already-built classified argument to keep the signature aligned with
+    # the brief.
+    files_by_path: dict[str, FileChange] = {c.file.path: c.file for c in classified}
+
+    for path, fc in files_by_path.items():
+        status = fc.status
+        # Resolve the "previous" path for renames so we can pick up the
+        # parent-side entry.
+        prev_path = fc.previous_path or path
+
+        new_entry = new_tree.get(path) if new_tree is not None else None
+        parent_entry = parent_tree.get(prev_path) if parent_tree is not None else None
+
+        # Symlink target changes (modified, renamed, added).
+        if status == "added":
+            new_mode = (new_entry or {}).get("mode")
+            if new_mode == _MODE_SYMLINK:
+                # New symlink — surface so reviewer eyeballs the target.
+                target = _resolve_symlink_target(
+                    cfg, path, commit.sha, new_entry, new_truncated
+                )
+                target_str = target or "(target unavailable)"
+                findings.append(
+                    StructuralFinding(
+                        type="symlink_added",
+                        path=path,
+                        description=(
+                            f"New symlink {path} \u2192 {target_str}; "
+                            f"verify target is intentional."
+                        ),
+                    )
+                )
+            elif new_entry is None and new_truncated:
+                # Tree truncated and we can't see this path; we have no
+                # reliable way to detect a newly added symlink.  The
+                # mode_check_unavailable finding emitted below covers this.
+                truncated_warning_emitted = truncated_warning_emitted or new_truncated
+            continue
+
+        if status == "removed":
+            # Only emit symlink_removed when the parent-side entry was a
+            # symlink.  A regular-file removal is uninteresting here.
+            parent_mode = (parent_entry or {}).get("mode")
+            if parent_mode == _MODE_SYMLINK:
+                findings.append(
+                    StructuralFinding(
+                        type="symlink_removed",
+                        path=prev_path,
+                        description=(
+                            f"Symlink {prev_path} was removed in this commit."
+                        ),
+                    )
+                )
+            continue
+
+        # modified / renamed / copied / changed: compare both sides.
+        new_mode = (new_entry or {}).get("mode")
+        parent_mode = (parent_entry or {}).get("mode")
+
+        # If either side is missing because of truncation, fall through to
+        # symlink-only detection via Contents API.  Otherwise we may still be
+        # able to rule out a mode flip.
+        new_missing_due_to_trunc = new_entry is None and new_truncated
+        parent_missing_due_to_trunc = parent_entry is None and parent_truncated
+
+        if new_missing_due_to_trunc or parent_missing_due_to_trunc:
+            truncated_warning_emitted = True
+            # Best-effort symlink-target detection via Contents API.
+            new_target = _fetch_symlink_target_via_contents(cfg, path, commit.sha)
+            old_target = _fetch_symlink_target_via_contents(cfg, prev_path, parent_sha)
+            if new_target is not None and old_target is not None and new_target != old_target:
+                findings.append(
+                    StructuralFinding(
+                        type="symlink_target_changed",
+                        path=path,
+                        description=(
+                            f"Symlink {path} target changed from "
+                            f"{old_target} \u2192 {new_target}."
+                        ),
+                    )
+                )
+            elif new_target is not None and old_target is None:
+                # Was not a symlink before, now is — surface as new symlink
+                # for review.
+                findings.append(
+                    StructuralFinding(
+                        type="symlink_added",
+                        path=path,
+                        description=(
+                            f"New symlink {path} \u2192 {new_target}; "
+                            f"verify target is intentional."
+                        ),
+                    )
+                )
+            continue
+
+        # Both sides visible in the trees.
+        # Mode flips (file -> exec or vice versa).
+        if (
+            parent_mode == _MODE_NON_EXECUTABLE
+            and new_mode == _MODE_EXECUTABLE
+        ):
+            findings.append(
+                StructuralFinding(
+                    type="mode_flip_executable",
+                    path=path,
+                    description=(
+                        f"File {path} mode changed from 100644 to 100755 "
+                        f"(now executable)."
+                    ),
+                )
+            )
+        elif (
+            parent_mode == _MODE_EXECUTABLE
+            and new_mode == _MODE_NON_EXECUTABLE
+        ):
+            findings.append(
+                StructuralFinding(
+                    type="mode_flip_non_executable",
+                    path=path,
+                    description=(
+                        f"File {path} mode changed from 100755 to 100644 "
+                        f"(no longer executable)."
+                    ),
+                )
+            )
+
+        # Symlink-target change: both sides are symlinks but target differs.
+        if parent_mode == _MODE_SYMLINK and new_mode == _MODE_SYMLINK:
+            new_target = _resolve_symlink_target(
+                cfg, path, commit.sha, new_entry, new_truncated
+            )
+            old_target = _resolve_symlink_target(
+                cfg, prev_path, parent_sha, parent_entry, parent_truncated
+            )
+            if (
+                new_target is not None
+                and old_target is not None
+                and new_target != old_target
+            ):
+                findings.append(
+                    StructuralFinding(
+                        type="symlink_target_changed",
+                        path=path,
+                        description=(
+                            f"Symlink {path} target changed from "
+                            f"{old_target} \u2192 {new_target}."
+                        ),
+                    )
+                )
+
+    if (new_truncated or parent_truncated) and truncated_warning_emitted:
+        findings.append(
+            StructuralFinding(
+                type="mode_check_unavailable",
+                path="",
+                description=(
+                    "Git Trees API returned truncated=true; mode-flip "
+                    "detection is best-effort for affected files and may "
+                    "have been silently skipped.  Symlink-target changes "
+                    "were resolved via the Contents API where possible."
+                ),
+            )
+        )
+
+    return findings
+
+
+def _resolve_symlink_target(
+    cfg: dict,
+    path: str,
+    ref: str,
+    tree_entry: Optional[dict],
+    truncated: bool,
+) -> Optional[str]:
+    """
+    Best-effort symlink target resolution.  Tree entries from the recursive
+    Git Trees API don't carry the symlink target string (only mode + sha),
+    so we always go through the Contents API to read it.  Returns None when
+    the target couldn't be resolved.
+    """
+    # The tree_entry is currently unused but accepted for forward
+    # compatibility (a future caller may pass a pre-fetched contents-API
+    # blob to avoid the extra round-trip).
+    del tree_entry, truncated
+    return _fetch_symlink_target_via_contents(cfg, path, ref)
 
 
 # ---------------------------------------------------------------------------
@@ -853,10 +2254,25 @@ def _compose_patch(included: list[ClassifiedFile]) -> str:
         f = c.file
         header = f"diff --git a/{f.previous_path or f.path} b/{f.path}\n"
         header += f"# audit: classification={c.classification} status={f.status}\n"
+        if f.status == "added" and f.patch_synthesised:
+            header += "new file mode 100644\n"
+        elif f.status == "removed" and f.patch_synthesised:
+            header += "deleted file mode 100644\n"
+        if f.patch_synthesised:
+            header += (
+                "# audit: patch reconstructed from blob (original was omitted "
+                "or truncated by the GitHub API)\n"
+            )
         if f.patch:
             chunks.append(header + f.patch)
         elif f.is_binary:
             chunks.append(header + f"Binary files a/{f.path} and b/{f.path} differ\n")
+        elif f.patch_unavailable:
+            chunks.append(
+                header
+                + f"# (text patch unavailable; blob fetch failed for "
+                f"sha={f.blob_sha or 'unknown'})\n"
+            )
         else:
             chunks.append(header + f"# (no patch body; status={f.status})\n")
     return "\n".join(chunks)
@@ -1085,6 +2501,161 @@ def run_agent_discussion(panel_context: str, github_token: str):
 # ---------------------------------------------------------------------------
 # Audit log (orphaned branch)
 # ---------------------------------------------------------------------------
+
+def audit_already_exists(cfg) -> bool:
+    """
+    Check whether the commit at ``cfg["commit_sha"]`` has already been
+    audited by walking the ``audit-log`` branch's Git tree.
+
+    Looks for any entry of the form ``logs/<date>/<sha>.json`` regardless of
+    the date directory, since the date reflects when the audit ran (not the
+    commit date) and a stale reconciler may pick up a SHA already audited on
+    an earlier day.
+
+    Returns ``True`` iff such an entry is found.  On any non-determinative
+    failure (404 means the audit-log branch doesn't exist yet, which is the
+    normal first-run case; other errors mean we cannot tell), returns
+    ``False`` so that the audit proceeds rather than spuriously skipping.
+    Non-404 failures emit a stderr warning.
+    """
+    import _http as http
+
+    sha = cfg["commit_sha"]
+    audit_repo = cfg["audit_repo"]
+    token = cfg["github_token"]
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    target_suffix = f"/{sha}.json"
+
+    tree_url = (
+        f"https://api.github.com/repos/{audit_repo}/git/trees/audit-log?recursive=1"
+    )
+    try:
+        resp = http.get(tree_url, headers=headers, timeout=30)
+    except http.HTTPError as e:
+        print(
+            f"WARNING: preflight tree fetch network error: {e}; assuming no prior audit.",
+            file=sys.stderr,
+        )
+        return False
+
+    if resp.status_code == 404:
+        # audit-log branch does not exist yet (normal first-run case).
+        return False
+    if not resp.ok:
+        print(
+            f"WARNING: preflight tree fetch returned {resp.status_code}; "
+            f"assuming no prior audit.",
+            file=sys.stderr,
+        )
+        return False
+
+    try:
+        payload = resp.json()
+    except Exception as e:
+        print(
+            f"WARNING: preflight tree response was not valid JSON: {e}; "
+            f"assuming no prior audit.",
+            file=sys.stderr,
+        )
+        return False
+
+    for entry in payload.get("tree", []):
+        path = entry.get("path", "")
+        if (
+            path.startswith("logs/")
+            and path.endswith(target_suffix)
+            and path.count("/") == 2
+        ):
+            return True
+
+    if not payload.get("truncated"):
+        return False
+
+    # Tree response was truncated; fall back to the contents API which
+    # paginates per-directory.
+    contents_url = (
+        f"https://api.github.com/repos/{audit_repo}/contents/logs?ref=audit-log"
+    )
+    try:
+        listing = http.get(contents_url, headers=headers, timeout=30)
+    except http.HTTPError as e:
+        print(
+            f"WARNING: preflight contents fetch network error: {e}; "
+            f"assuming no prior audit.",
+            file=sys.stderr,
+        )
+        return False
+
+    if listing.status_code == 404:
+        return False
+    if not listing.ok:
+        print(
+            f"WARNING: preflight contents fetch returned {listing.status_code}; "
+            f"assuming no prior audit.",
+            file=sys.stderr,
+        )
+        return False
+
+    try:
+        date_entries = listing.json()
+    except Exception as e:
+        print(
+            f"WARNING: preflight contents response was not valid JSON: {e}; "
+            f"assuming no prior audit.",
+            file=sys.stderr,
+        )
+        return False
+
+    if not isinstance(date_entries, list):
+        return False
+
+    target_name = f"{sha}.json"
+    for date_entry in date_entries:
+        if not isinstance(date_entry, dict):
+            continue
+        if date_entry.get("type") != "dir":
+            continue
+        date_path = date_entry.get("path") or ""
+        if not date_path.startswith("logs/"):
+            continue
+        date_url = (
+            f"https://api.github.com/repos/{audit_repo}/contents/{date_path}"
+            f"?ref=audit-log"
+        )
+        try:
+            files_resp = http.get(date_url, headers=headers, timeout=30)
+        except http.HTTPError as e:
+            print(
+                f"WARNING: preflight per-date fetch network error for "
+                f"{date_path}: {e}; continuing.",
+                file=sys.stderr,
+            )
+            continue
+        if files_resp.status_code == 404:
+            continue
+        if not files_resp.ok:
+            print(
+                f"WARNING: preflight per-date fetch returned "
+                f"{files_resp.status_code} for {date_path}; continuing.",
+                file=sys.stderr,
+            )
+            continue
+        try:
+            files_listing = files_resp.json()
+        except Exception:
+            continue
+        if not isinstance(files_listing, list):
+            continue
+        for f in files_listing:
+            if isinstance(f, dict) and f.get("name") == target_name:
+                return True
+
+    return False
+
 
 def write_audit_log(cfg, log_entry):
     sha = cfg["commit_sha"]
@@ -1350,6 +2921,9 @@ def _build_log_entry(
             "matched_rules": c.matched_rules,
             "patch_chars": c.file.patch_chars,
             "is_binary": c.file.is_binary,
+            "patch_omitted": c.file.patch_omitted,
+            "patch_synthesised": c.file.patch_synthesised,
+            "patch_unavailable": c.file.patch_unavailable,
             "included_in_panel": c.file.path in included_paths,
             "exclusion_reason": (
                 None if c.file.path in included_paths
@@ -1393,11 +2967,28 @@ def _build_log_entry(
     }
 
 
+def _force_rerun_requested() -> bool:
+    """Return True when ``AUDIT_FORCE_RERUN`` env var requests bypassing the
+    preflight skip check.  Recognises ``1``/``true`` (case-insensitive)."""
+    return os.environ.get("AUDIT_FORCE_RERUN", "").strip().lower() in ("1", "true")
+
+
 def main():
     cfg = load_config()
     manifest = load_manifest()
     if manifest.fail_closed:
         print("Manifest failed to load; every file will be classified critical.", file=sys.stderr)
+
+    # Preflight: skip if this commit already has an audit log on the
+    # `audit-log` branch.  Eliminates duplicate-audit cost in the rare race
+    # where the push trigger and the scheduled reconciler both dispatch an
+    # audit for the same SHA.  Set AUDIT_FORCE_RERUN=1 to bypass.
+    if not _force_rerun_requested() and audit_already_exists(cfg):
+        print(
+            f"Audit already exists for {cfg['commit_sha']}; skipping.",
+            file=sys.stderr,
+        )
+        sys.exit(0)
 
     run_timestamp = datetime.now(timezone.utc).isoformat()
     issue_url: Optional[str] = None
@@ -1406,8 +2997,18 @@ def main():
     status: Status = "unknown"
 
     commit = fetch_commit_files(cfg)
+    # Disambiguate "no patch" cases (binary vs API-omitted text) and
+    # synthesise replacement patches for text files whose diff was
+    # omitted.  Mutates `commit.files` in place.
+    _resolve_patch_omissions(cfg, commit.files)
     classified = classify_files(commit.files, manifest)
+    # For critical / high files whose patch looks truncated by the API,
+    # refetch the blob and replace the patch.  Lower-classification files
+    # keep the truncated patch (per-file blob API cost gate).
+    _resolve_truncated_patches_for_critical(cfg, classified)
     structural = detect_structural_findings(commit.files)
+    if _mode_changes_enabled():
+        structural.extend(_detect_mode_changes(cfg, commit, classified))
     decision = route_diff(classified)
 
     print(
