@@ -72,7 +72,7 @@ jobs:
           # Controls how many discussion rounds the agent panel runs.
           # Hard-coded here (not a workflow_dispatch input) so an attacker
           # with dispatch permission cannot inflate model-call cost.
-          AUDIT_MAX_ROUNDS: "1"
+          AUDIT_MAX_ROUNDS: "3"
           AUDIT_REPO: "winterbaume-automation/audit-main-repo"
           MONITORED_REPO: "moriyoshi/winterbaume"
           # Wand layer: directs git_log / git_blame / git_show_file etc.
