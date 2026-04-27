@@ -63,7 +63,7 @@ winterbaume-automation/audit-main-repo
 ## Technology choices
 
 - **GitHub Models API** (`openai/gpt-4o-mini`, OpenAI-compatible endpoint at
-  `https://models.inference.ai.azure.com`) — no external AI service required;
+  `https://models.github.ai/inference`) — no external AI service required;
   auth reuses the workflow's `GITHUB_TOKEN` with `models: read` permission.
 - **Python 3.12 stdlib only** — no third-party runtime dependencies. A
   small in-tree `_http` module wraps `urllib.request` to give the audit

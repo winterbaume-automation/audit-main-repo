@@ -412,3 +412,79 @@ operational papercuts that surfaced once the audit pipeline was running.
   workflow-file SHA tripwire for this repo's own scripts** all remain
   on the TODO list from the prior entry; none addressed in this
   session.
+
+## 2026-04-27 — GitHub Models endpoint migration
+
+**Author:** moriyoshi (via Claude Code)
+
+### Trigger
+
+Workflow run
+[24973890820](https://github.com/winterbaume-automation/audit-main-repo/actions/runs/24973890820/job/73121895881)
+(`workflow_dispatch` against commit `f567e501`) failed with exit code 5.
+The audit log was still written and issue #2 was filed; the panel
+itself never ran.
+
+### Findings
+
+- The script logged
+  `API error 400: {"error":{"code":"unknown_model","message":"Unknown model: openai/gpt-4o-mini"}}`
+  before short-circuiting into the `ai-error` status.
+- Exit code 5 is by design - `audit_commit.py:1497-1498` exits non-zero
+  whenever `status == "ai-error"` so the failure surfaces in the Actions
+  UI rather than being silently buried in the audit log. The CI failure
+  itself was therefore working as intended; the underlying API
+  rejection was not.
+- Root cause was a mismatch between endpoint and model id, not a
+  vanished model. The script targeted the legacy Azure-hosted endpoint
+  `https://models.inference.ai.azure.com`, which historically expects
+  bare model ids (`gpt-4o-mini`), while the configured id
+  `openai/gpt-4o-mini` is the publisher-prefixed form used by the newer
+  GitHub-hosted catalogue endpoint `https://models.github.ai/inference`.
+  The previous run 27 minutes earlier had succeeded, suggesting the
+  legacy endpoint had only just stopped accepting prefixed ids on
+  GitHub's side.
+- The user also confirmed that `openai/gpt-4o-mini` had not yet been
+  enabled for the org in the GitHub Models settings, which is a
+  separate prerequisite that needs to be in place before the next
+  re-run.
+
+### Work done
+
+- Updated `MODELS_ENDPOINT` in `.github/scripts/audit_commit.py:81`
+  from `https://models.inference.ai.azure.com` to
+  `https://models.github.ai/inference`. The path suffix
+  (`/chat/completions`) and the `AI_MODEL` value
+  (`openai/gpt-4o-mini`) are unchanged - the new endpoint is the one
+  whose catalogue uses publisher-prefixed ids natively, so flipping
+  the URL is the smallest faithful fix.
+- Refreshed the matching reference in `.agents/docs/OVERVIEW.md:65-66`
+  so the "Technology choices" section no longer points at the legacy
+  URL.
+- Confirmed via Grep that no other source, test, or doc still
+  references `models.inference.ai.azure.com`.
+- Committed as `f82702b` on `main`; not pushed.
+
+### Design notes
+
+- Considered the alternative of keeping the legacy endpoint and
+  stripping the `openai/` prefix from `AI_MODEL` instead. Rejected
+  because the legacy endpoint is on a deprecation path; preserving the
+  publisher-prefixed id and moving to the supported endpoint is the
+  more durable fix and matches what the surrounding docs already
+  describe.
+- Did not touch the `ai-error` exit-code contract. Treating an API
+  outage as a CI failure rather than a silent `ai-error` log entry is
+  the right default for an audit pipeline - a green workflow with
+  `status: ai-error` would be easy to overlook.
+
+### Follow-ups
+
+- The org needs to enable `openai/gpt-4o-mini` in the GitHub Models
+  catalogue before the workflow can be re-run; the endpoint change on
+  its own does not unblock the panel.
+- Worth a future thought: the model id and endpoint are coupled (bare
+  vs. publisher-prefixed) but live as two independent constants. A
+  short comment near `MODELS_ENDPOINT` / `AI_MODEL` documenting the
+  pairing would make the next migration less surprising. Not done in
+  this session to keep the fix minimal.

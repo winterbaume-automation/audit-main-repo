@@ -78,7 +78,7 @@ Status = Literal["unknown", "reviewed", "ai-error", "panel-skipped"]
 # pure-function layers (parsing, classification, routing) stay free of any
 # import-time side effects when exercised by unit tests.
 
-MODELS_ENDPOINT = "https://models.inference.ai.azure.com"
+MODELS_ENDPOINT = "https://models.github.ai/inference"
 AI_MODEL = "openai/gpt-4o-mini"
 CHAR_THRESHOLD = 400_000  # ~100 K tokens at 4 chars/token
 MANIFEST_PATH = (
