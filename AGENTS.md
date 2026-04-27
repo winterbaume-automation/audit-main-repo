@@ -75,6 +75,7 @@ The user's shell uses prezto, which sets aliases and options that break non-inte
 
 ## Git Workflow
 
+* ❌ Never make unsigned commits.
 * ❌ Neither do `git checkout` nor `git restore`. The other coding agent is concurrently working on the same directory.
 * ❌ Never make discretionary commits.
 
