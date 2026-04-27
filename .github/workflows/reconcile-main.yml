@@ -11,10 +11,10 @@ name: Reconcile Main
 
 on:
   schedule:
-    # Every 30 minutes.  GitHub-hosted cron is best-effort and may run
+    # Every one hour.  GitHub-hosted cron is best-effort and may run
     # late by 5-15 minutes; that is acceptable for a safety net.
-    - cron: "*/30 * * * *"
-  workflow_dispatch: {}
+    - cron: "27 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write   # push head-history.json to the audit-log branch
