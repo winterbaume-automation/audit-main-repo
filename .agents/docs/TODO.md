@@ -6,7 +6,9 @@ Open items carried forward from JOURNAL.md consolidation.
 
 - [ ] Pre-create issue labels in the GitHub repository UI:
   `integrity-audit`, `severity:none`, `severity:low`, `severity:medium`,
-  `severity:high`, `severity:critical`, `force-push`.
+  `severity:high`, `severity:critical`, `force-push`,
+  `routing:whole`, `routing:focused`, `routing:focused-overflow`,
+  `routing:panel_skipped`, `structural-finding`.
 
 - [ ] Add `MONITORED_REPO_TOKEN` as a repository secret if `moriyoshi/winterbaume`
   is private or rate-limit headroom is needed.
@@ -21,8 +23,29 @@ Open items carried forward from JOURNAL.md consolidation.
 - [ ] Verify that a second run with a different SHA appends to the `audit-log`
   branch without conflict.
 
-- [ ] Consider adding a `too_large` issue (or a workflow summary annotation)
-  so oversized commits surface visibly rather than silently passing.
+- [ ] Review and tune the initial sensitivity manifest at
+  `.github/config/monitored_repo_classification.json` after the first
+  month of real audit data; in particular, look at `routing.mode`
+  distribution across audited commits and adjust globs that produce too
+  many false-positive `focused` modes.
+
+- [ ] Implement a deterministic Trojan-source / Unicode pre-scan
+  ( bidi controls U+202A-U+202E and U+2066-U+2069, zero-width characters
+  in identifiers, mixed-script identifiers ) and surface as structural
+  findings.
+
+- [ ] Implement a deterministic lockfile delta parser ( `Cargo.lock`,
+  `package-lock.json`, `pnpm-lock.yaml`, `uv.lock`, `poetry.lock` ) that
+  reports registry / source / git-rev pin changes as structural findings
+  rather than relying on the LLM to spot them in noisy diffs.
+
+- [ ] When a per-file `patch` is truncated by the GitHub API ( ~3 K
+  lines ) for a critical or high file, refetch via the contents API and
+  reconstruct.
+
+- [ ] Detect file-mode flips ( chmod +x on a checked-in file ) and
+  symlink target changes by issuing a contents-API call per modified
+  file; gate behind a flag because of the per-file API cost.
 
 - [ ] Verify the first scheduled run of `reconcile-main.yml` lands within
   ~30 min of merge: confirm `head-history.json` appears on the `audit-log`
@@ -44,4 +67,5 @@ Open items carried forward from JOURNAL.md consolidation.
 
 ## Completed
 
-_(none yet)_
+- [x] File-by-file routing with a static sensitivity manifest replaces
+  the silent `too_large` skip.  See JOURNAL.md entry of 2026-04-27.

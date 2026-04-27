@@ -76,25 +76,52 @@ queue, then executes once the reconciler tick has finished.
 Reads and validates required environment variables.  Exits with code `1` on
 any missing required variable so the workflow step fails visibly.
 
-### 2. Diff fetch
+### 2. Commit fetch
 
 ```
-GET /repos/{owner}/{repo}/commits/{sha}
-Accept: application/vnd.github.diff
+GET /repos/{owner}/{repo}/commits/{sha}?per_page=100
+Accept: application/vnd.github+json
 ```
+
+Returns a structured `files[]` array per file: `filename`,
+`previous_filename`, `status`, `additions`, `deletions`, `patch`, `sha`.
+Pagination is followed via the `Link: rel="next"` header so commits with
+more than 100 files are fully enumerated.  `truncated` from the API is
+recorded in the audit log.  For merge commits the diff is against the
+first parent only; this is logged via `is_merge: true`.
 
 Auth uses `MONITORED_REPO_TOKEN` when set; falls back to unauthenticated for
 public repositories.  Exits with code `2` on `403`/`404`.
 
-### 3. Token-size gate
+### 3. Sensitivity manifest and routing
 
-```
-estimated_tokens = len(diff_text) // 4
-too_large        = len(diff_text) > 400_000  (~100 K tokens)
-```
+A static manifest at `.github/config/monitored_repo_classification.json`
+classifies every path in the monitored repo as `critical`, `high`,
+`medium`, or `low`.  Each file is matched against every glob rule and
+**highest-classification-wins** — manifest order is documentation only,
+not a security control.  The manifest loads fail-closed: a missing or
+malformed manifest classifies every path as `critical` so the panel
+cannot be silenced by corrupting the manifest.
 
-If `too_large`, the entire AI discussion is skipped and the audit log entry
-records `status: "too_large"`.  No issue is filed.
+Routing modes:
+
+| Mode | When | Behaviour |
+|---|---|---|
+| `whole` | Total patch ≤ 400 KB | Panel sees the whole commit, no Context note. |
+| `focused` | Total > 400 KB, critical+high subset ≤ 400 KB | Panel sees critical+high files plus any low file textually referenced from them; remaining files listed in a Context note as excluded. Issue filed because critical/high were excluded. |
+| `focused-overflow` | Critical+high subset > 400 KB but critical-only ≤ 400 KB | Panel sees critical files only.  Issue filed at high severity. |
+| `panel_skipped` | Even critical-only > 400 KB | Panel does not run; status `panel_skipped`; issue filed at critical severity. |
+
+Deterministic structural findings bypass the LLM entirely and always
+reach the issue:
+
+- `binary_change` — patch is omitted by the API; blob SHA is recorded.
+- `submodule_pointer` — patch contains `Subproject commit`.
+- `generated_header_removed` — `//! Do not edit manually` removed from a
+  file without re-adding it.
+
+The `too_large` status from earlier schemas no longer exists; it is
+replaced by `routing.mode` plus the `panel_skipped` status.
 
 ### 4. Multi-agent discussion
 
@@ -127,16 +154,31 @@ per API call.
 
 ### 5. Issue filing
 
-If `verdict.suspicious == true` and `status == "reviewed"`, an issue is
-created in this repository containing:
+An issue is filed when **any** of the following holds:
 
-- Commit metadata table
-- Moderator summary
-- Consolidated findings table (with `raised_by` column)
-- Collapsible `<details>` sections showing each agent's raw JSON response
+- `verdict.suspicious == true` and `status == "reviewed"`
+- one or more structural findings exist (binary change, submodule pointer,
+  generated-header removal)
+- routing excluded any critical or high file (`focused`,
+  `focused-overflow`, or `panel_skipped` mode)
 
-Labels `integrity-audit` and `severity:<level>` are applied.  Labels must be
+The issue contains:
+
+- Commit metadata table (with routing mode and reason)
+- Summary
+- Structural findings table
+- Files-reviewed table (path, classification, matched rules, included
+  yes/no, patch chars)
+- Consolidated LLM findings table
+- Collapsible `<details>` sections for each agent's raw JSON
+
+Labels: `integrity-audit`, `severity:<level>`, `routing:<mode>`, plus
+`structural-finding` if any deterministic finding exists.  Labels must be
 pre-created; GitHub silently ignores unknown labels.
+
+The effective severity is the maximum of the LLM verdict severity, a
+structural-finding floor of `medium`, an excluded-critical-or-high floor
+of `high`, and a `panel_skipped` floor of `critical`.
 
 ### 6. Audit log write
 
@@ -161,11 +203,11 @@ write {sha}.json
 git add / commit / push
 ```
 
-### Log entry schema (schema_version: "2")
+### Log entry schema (schema_version: "3")
 
 ```json
 {
-  "schema_version": "2",
+  "schema_version": "3",
   "timestamp": "<ISO 8601>",
   "commit_sha": "...",
   "commit_author": "...",
@@ -173,9 +215,37 @@ git add / commit / push
   "commit_timestamp": "...",
   "monitored_repo": "moriyoshi/winterbaume",
   "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": ["..."],
+  "api_truncated": false,
   "diff_chars": 12480,
   "estimated_tokens": 3120,
-  "status": "reviewed | too_large | ai_error",
+  "routing": {
+    "mode": "whole | focused | focused-overflow | panel_skipped",
+    "reason": "Total patch 12,480 chars <= threshold 400,000.",
+    "total_patch_chars": 12480,
+    "files": [
+      {
+        "path": "crates/foo/src/auth/lib.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "high",
+        "matched_rules": ["auth_module"],
+        "patch_chars": 1024,
+        "is_binary": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "binary_change | submodule_pointer | generated_header_removed",
+      "path": "...",
+      "description": "..."
+    }
+  ],
+  "status": "reviewed | ai_error | panel_skipped",
   "ai_model": "openai/gpt-4o-mini | null",
   "agents": ["Backdoor Hunter", "Supply Chain Inspector", "Integrity Analyst", "Moderator"],
   "discussion": [
@@ -193,6 +263,9 @@ git add / commit / push
   "issue_url": null
 }
 ```
+
+The reconciler does not parse log contents (it only enumerates SHAs from
+`logs/{date}/*.json` filenames), so the schema bump is invisible to it.
 
 ## Exit codes
 

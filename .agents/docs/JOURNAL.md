@@ -188,3 +188,124 @@ A single PR that ( a ) regenerates a `wire.rs` to push the diff past
 `build.rs` change that loads the fixture at compile time, ( d ) carries a
 commit message complimenting the auditor. All four top-tier weaknesses fire
 at once and the only artefact is a `status: "too_large"` log line.
+
+## 2026-04-27 — File-by-file routing with a static sensitivity manifest
+
+**Author:** moriyoshi (via Claude Code)
+
+### Work done
+
+Closes threats #1 and #2 from the threat-model entry above ( silent skip on
+oversized commits; binary fixtures invisible to the diff ) and partially
+closes #5 ( per-file truncation flag now surfaced ).
+
+- `.github/config/monitored_repo_classification.json` ( new ) — JSON
+  manifest mapping path globs to one of `critical / high / medium / low`,
+  with `reason` and optional `audit_hint` per rule.  No new runtime
+  dependency ( stdlib `json` and a small home-grown glob → regex
+  translator suffice ).
+- `.github/scripts/audit_commit.py` rewritten:
+  - Switched from `application/vnd.github.diff` to
+    `application/vnd.github+json` so the script gets the structured
+    `files[]` array, follows `Link: rel="next"` pagination, and surfaces
+    `truncated` and `is_merge` per commit.
+  - `load_manifest()` is fail-closed — a missing or malformed manifest
+    classifies every path as `critical` so the panel cannot be silenced
+    by corrupting the manifest itself.
+  - `classify_files()` uses highest-classification-wins across all
+    matching rules.  Renames classify against the higher of old and new
+    paths so an attacker cannot launder a `crates/foo/auth/` file into a
+    `crates/foo/misc/` folder to escape the panel.
+  - `route_diff()` returns one of four modes — `whole`, `focused`,
+    `focused-overflow`, `panel_skipped` — replacing the binary `too_large`
+    skip with a graceful degradation that always reaches the panel for
+    critical paths.
+  - Cross-reference inclusion: low-classification files referenced from
+    included files via `mod`, `use crate::…`, or `include!()` are pulled
+    back into the panel context so the panel does not lose obvious local
+    context.
+  - `detect_structural_findings()` deterministically reports binary
+    changes, submodule pointer changes, and removal of the auto-generated
+    `//! Do not edit manually` header.  These bypass the LLM and always
+    file an issue.
+  - `should_file_issue()` files an issue when **any** of LLM-suspicious,
+    structural finding present, critical/high excluded by routing, or
+    panel skipped is true.  Effective severity is the max across all
+    signals.
+  - Audit log schema bumped to `"3"` with new `routing` and
+    `structural_findings` blocks; reconciler is unaffected because it
+    only enumerates `logs/{date}/*.json` filenames.
+  - Moderator prompt now instructs the model to downgrade severity and
+    confidence when a finding's evidence is absent from the filtered
+    diff.
+- `.github/scripts/tests/` ( new ) — 49 pytest cases covering the glob
+  translator, classification ( highest-wins, renames, fail-closed manifest
+  variants, real-manifest smoke ), routing across all four modes,
+  cross-reference inclusion, structural finding detection, and the
+  issue-filing gate.
+- `.github/workflows/audit-tests.yml` ( new ) — runs `py_compile` and the
+  pytest suite on PRs touching `.github/scripts/**` or
+  `.github/config/**`.  Does not gate the auditor itself.
+- `.agents/docs/ARCHITECTURE.md` updated: replaced the "Token-size gate"
+  section with the routing table, expanded the "Issue filing" section to
+  cover the new gate logic, bumped the log schema example to v3.
+- `.agents/docs/QUALITY_GATE.md` gained a "Routing and manifest" section.
+
+### Design decisions
+
+- **JSON over YAML for the manifest.** The workflow's `pip install`
+  surface is currently `requests` only.  Adding `PyYAML` for a
+  configuration file that any maintainer will read once a quarter is
+  poor value; JSON is verbose but cheaper.  The manifest carries a
+  `_comment` key for cases where a YAML-style comment would be helpful.
+- **Highest-wins ordering** rather than first-match-wins.  Manifest order
+  becomes documentation, not a security control — a refactor that
+  reorders the file cannot silently downgrade a path.  Cost is one
+  extra pass per file, which is negligible.
+- **Fail-closed manifest loading.** A missing or malformed manifest is
+  the exact failure mode an attacker would arrange ( delete the file,
+  introduce a typo via a separate commit ).  Failing closed makes that
+  attack visible — every path becomes critical, the panel is forced into
+  `panel_skipped` for any large commit, and a critical-severity issue is
+  filed.
+- **No per-file panel fan-out.** An earlier draft considered running the
+  four-agent panel per file in `focused-overflow`.  Cost is N × 4
+  calls and the agents lose cross-file context.  Better to file a
+  human-review issue and let a person triage; the panel's job is to
+  triage, not to substitute for review when the budget is exceeded.
+- **Cross-reference inclusion is a heuristic, not a guarantee.** It
+  catches the easy case where a low-classified helper is referenced
+  from a high-classified file.  It is not a defence against
+  adversarially-named symbols; that belongs to a separate Trojan-source
+  / Unicode pre-scan ( deferred ).
+- **Structural findings live alongside the LLM verdict, not inside it.**
+  Binary additions and submodule swaps are deterministic; routing them
+  through `gpt-4o-mini` adds latency and noise without improving
+  signal.  The issue body splits them into their own table so a human
+  triages on the deterministic data first.
+- **`audit-commit.yml` unchanged.** No new pip dependency, no new env
+  var, no new permission.  The change is entirely inside
+  `audit_commit.py` plus the new manifest JSON.
+- **`reconcile_main.py` untouched.** Per the script's
+  `audited_shas()` ( filename-only enumeration ), it does not parse log
+  contents, so the schema bump from v2 to v3 is invisible.
+
+### Known limitations and follow-ups
+
+- Patch truncation per file ( the API truncates `patch` above ~3 K lines
+  and returns the file with `patch` set to a short marker or omitted ).
+  The script currently treats omitted patches as binary; a follow-up
+  should fetch via the contents API for high-value files when this
+  occurs.
+- Lockfile semantic delta parsing is still LLM-only; deterministic
+  parsers for `Cargo.lock`, `package-lock.json`, etc. would catch
+  registry / source / git-rev pin changes more reliably.
+- Mode flips ( chmod +x on a checked-in script ) are not detected; the
+  files[] API does not expose modes.  A separate contents-API call per
+  modified file would close this; deferred for cost reasons.
+- The cross-reference scanner only knows Rust idioms ( `mod`,
+  `use crate::`, `include!`, `include_str!`, `include_bytes!` ).
+  Generalising to other languages would be straightforward when needed.
+- Trojan-source / Unicode pre-scan, lockfile delta parser, and
+  workflow-file SHA tripwire for this repo's own scripts remain on the
+  TODO list.

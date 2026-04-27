@@ -90,6 +90,25 @@ Checklist to run before considering any change to this repository complete.
   correct title format `[SEVERITY] Integrity finding in {repo}@{sha[:12]}`.
 - [ ] The issue body contains collapsible `<details>` sections for each agent.
 
+## Routing and manifest
+
+- [ ] `.github/config/monitored_repo_classification.json` parses as JSON
+  and has `schema_version: "1"`.
+- [ ] Classification logic is highest-wins across all matching rules
+  (manifest order is documentation only, not a security control).
+- [ ] `load_manifest()` fails closed: a missing or malformed manifest
+  classifies every path as `critical`.
+- [ ] Every audit log entry contains a `routing` block with `mode`,
+  `reason`, `total_patch_chars`, and a per-file `files` array.
+- [ ] Structural findings (binary change, submodule pointer change,
+  generated-header removal) always result in an issue regardless of LLM
+  verdict.
+- [ ] Routing modes `focused`, `focused-overflow`, and `panel_skipped`
+  always result in an issue when at least one critical or high file was
+  excluded.
+- [ ] `pytest .github/scripts/tests/` passes locally and in CI
+  (`audit-tests.yml`).
+
 ## Documentation
 
 - [ ] British English throughout all repo-authored documents.
