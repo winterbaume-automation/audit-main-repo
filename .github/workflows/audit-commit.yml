@@ -50,16 +50,20 @@ jobs:
       # Shallow clone of the monitored repo so the agent wand layer
       # ( agent_tools.py ) can answer git_log / git_blame /
       # git_show_file requests locally before falling back to the
-      # GitHub API.  fetch-depth: 50 keeps the disk footprint tiny;
-      # any older commit the panel asks about is still served via the
-      # API fallback inside the wand shim.
+      # GitHub API.  --depth 50 keeps the disk footprint tiny; any
+      # older commit the panel asks about is still served via the API
+      # fallback inside the wand shim.
+      #
+      # Plain `git clone` ( not actions/checkout ) because the
+      # monitored repo is public and we have no MONITORED_REPO_TOKEN
+      # to feed to the action; actions/checkout rejects an empty
+      # token at the Basic-auth step.  Switch back to actions/checkout
+      # with `token:` if the monitored repo ever goes private.
       - name: Shallow clone monitored repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-        with:
-          repository: moriyoshi/winterbaume
-          token: ${{ secrets.MONITORED_REPO_TOKEN }}
-          path: monitored-repo
-          fetch-depth: 50
+        run: |
+          git clone --depth 50 \
+            https://github.com/moriyoshi/winterbaume.git \
+            monitored-repo
 
       - name: Run audit script
         env:

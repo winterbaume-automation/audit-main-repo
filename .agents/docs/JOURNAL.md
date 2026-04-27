@@ -1211,3 +1211,79 @@ which boundaries we have already cleared.
   `AUDIT_WAND_MAX_CALLS` limit ( default 5 ) and the
   `_TOOL_LOOP_HARD_CAP` ( 8 ).
 
+
+## 2026-04-27 — Workflow fix: anonymous monitored-repo clone
+
+### Trigger
+
+The first run of `audit-commit.yml` after the wand layer landed
+( [run 24981108738](https://github.com/winterbaume-automation/audit-main-repo/actions/runs/24981108738/job/73143285863) )
+failed at the new `Shallow clone monitored repo` step.
+
+### Findings
+
+- The freshly added step used `actions/checkout@v6.0.2` with
+  `token: ${{ secrets.MONITORED_REPO_TOKEN }}`.  That secret has
+  never been provisioned ( and per the standing TODO it's only
+  needed if `moriyoshi/winterbaume` goes private ), so the
+  expression evaluated to an empty string.
+- `actions/checkout` does not treat an empty token as "unauthenticated";
+  it still configures the local git config with an
+  `AUTHORIZATION: basic <empty:>` extra-header, which GitHub's
+  HTTPS endpoint rejects as malformed Basic auth.  The clone fails
+  with `fatal: could not read Username` rather than gracefully
+  falling back to an anonymous fetch.
+- The monitored repo is public, so no auth is required for read
+  access.  We were paying the auth cost for nothing on the happy
+  path and breaking entirely on the missing-secret path.
+
+### Work done
+
+- Replaced the second `actions/checkout` invocation in
+  `.github/workflows/audit-commit.yml` with a plain
+  `git clone --depth 50 https://github.com/moriyoshi/winterbaume.git monitored-repo`
+  `run:` step.  Keeps `MONITORED_REPO_PATH` pointed at the same
+  workspace path as before so the wand shim's local-first lookup
+  is unaffected.
+- Left the comment block above the step explaining that the switch
+  back to `actions/checkout` with a `token:` is the correct fix if
+  the monitored repo ever goes private; future readers should not
+  need to re-derive this.
+- Left the `MONITORED_REPO_TOKEN` env passthrough on the
+  `Run audit script` step intact.  The audit script and the wand
+  layer still honour it for the GraphQL blame fallback and for
+  raised-rate-limit REST reads when it is set; if a token gets
+  added later, no further workflow edit is needed.
+
+### Decisions worth recording
+
+- **Unauthenticated clone over conditional auth.**  An earlier draft
+  considered branching on whether `MONITORED_REPO_TOKEN` is set and
+  selecting between the two checkout strategies via `if:`.  Rejected
+  because the conditional makes the workflow harder to read for a
+  one-line gain when the secret eventually does land, and an
+  authenticated clone of a public repo is no faster — both go through
+  the same HTTPS endpoint with the same per-tree fetch.
+- **Stayed at `--depth 50`.**  Same reasoning as the original wand
+  entry: 50 commits cover the typical recent-history question for
+  free, and any older reference falls through to the GitHub API
+  shim.  No change.
+- **Did not swap to `gh repo clone` or the `git` HTTPS-with-PAT
+  workaround.**  Both add a moving part for no improvement on a
+  public repo.
+
+### Follow-ups
+
+- Once the workflow run lands successfully on the next push, sample
+  the resulting audit-log entry to confirm `source: "local"` shows
+  up in the wand call traces ( i.e. the local clone is actually
+  being preferred over the API ).  If every wand call still falls
+  through to `source: "github"`, the local checkout path is wrong
+  or the repo isn't being cloned to where `MONITORED_REPO_PATH`
+  expects.
+- If the monitored repo ever goes private, restore the
+  `actions/checkout` step with `repository:`, `token: ${{ secrets.MONITORED_REPO_TOKEN }}`,
+  and `path: monitored-repo`.  The comment in the workflow file
+  flags this as the migration path so it doesn't have to be
+  re-discovered.
+
