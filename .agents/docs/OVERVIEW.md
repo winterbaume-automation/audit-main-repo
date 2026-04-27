@@ -65,8 +65,10 @@ winterbaume-automation/audit-main-repo
 - **GitHub Models API** (`openai/gpt-4o-mini`, OpenAI-compatible endpoint at
   `https://models.inference.ai.azure.com`) — no external AI service required;
   auth reuses the workflow's `GITHUB_TOKEN` with `models: read` permission.
-- **Python 3.12** with only the `requests` package — minimal dependency
-  surface in a security-sensitive script.
+- **Python 3.12 stdlib only** — no third-party runtime dependencies. A
+  small in-tree `_http` module wraps `urllib.request` to give the audit
+  scripts a `requests`-shaped client without a `pip install` step.
+  `pyproject.toml` declares `pytest` only as a dev dependency.
 - **Orphaned branch** for the audit log — keeps history independent of the
   `main` branch so log entries can never be silently dropped by a force-push
   to `main`.

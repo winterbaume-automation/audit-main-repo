@@ -47,9 +47,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: pip install requests
-
       - name: Run audit script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

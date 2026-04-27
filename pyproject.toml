@@ -3,9 +3,7 @@ name = "winterbaume-audit-main-repo"
 version = "0.0.0"
 description = "Automated integrity audit of commits pushed to moriyoshi/winterbaume."
 requires-python = ">=3.12"
-dependencies = [
-    "requests>=2.32",
-]
+dependencies = []
 
 [dependency-groups]
 dev = [

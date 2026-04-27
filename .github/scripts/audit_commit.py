@@ -69,9 +69,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-# `requests` is imported lazily inside the network-touching helpers so that the
-# pure-function layers (parsing, classification, routing) can be exercised by
-# unit tests without the `requests` package installed.
+# `_http` is imported lazily inside the network-touching helpers so that the
+# pure-function layers (parsing, classification, routing) stay free of any
+# import-time side effects when exercised by unit tests.
 
 MODELS_ENDPOINT = "https://models.inference.ai.azure.com"
 AI_MODEL = "openai/gpt-4o-mini"
@@ -587,11 +587,11 @@ def load_manifest(path: Path = MANIFEST_PATH) -> Manifest:
 # ---------------------------------------------------------------------------
 
 def _api_get(url: str, headers: dict):
-    import requests
+    import _http as http
 
     try:
-        resp = requests.get(url, headers=headers, timeout=30)
-    except requests.RequestException as e:
+        resp = http.get(url, headers=headers, timeout=30)
+    except http.HTTPError as e:
         print(f"ERROR: Network error fetching {url}: {e}", file=sys.stderr)
         sys.exit(2)
     if resp.status_code == 404:
@@ -990,7 +990,7 @@ def build_panel_context(decision: RoutingDecision, commit: CommitData) -> str:
 
 def _call_model(system_prompt, user_content, github_token, label):
     """Single chat-completion call with one rate-limit retry."""
-    import requests
+    import _http as http
 
     url = f"{MODELS_ENDPOINT}/chat/completions"
     headers = {
@@ -1010,15 +1010,15 @@ def _call_model(system_prompt, user_content, github_token, label):
 
     print(f"  [{label}] calling {AI_MODEL} ...")
     try:
-        resp = requests.post(url, headers=headers, json=payload, timeout=120)
-    except requests.RequestException as e:
+        resp = http.post(url, headers=headers, json=payload, timeout=120)
+    except http.HTTPError as e:
         raise RuntimeError(f"Network error: {e}") from e
 
     if resp.status_code == 429:
         retry_after = int(resp.headers.get("retry-after", "30"))
         print(f"  [{label}] rate limited — waiting {retry_after}s ...")
         time.sleep(retry_after)
-        resp = requests.post(url, headers=headers, json=payload, timeout=120)
+        resp = http.post(url, headers=headers, json=payload, timeout=120)
 
     if not resp.ok:
         raise RuntimeError(f"API error {resp.status_code}: {resp.text[:500]}")
@@ -1304,9 +1304,9 @@ using {AI_MODEL}.*
         labels.append("structural-finding")
     payload = {"title": title, "body": body, "labels": labels}
 
-    import requests
+    import _http as http
 
-    resp = requests.post(url, headers=headers, json=payload, timeout=30)
+    resp = http.post(url, headers=headers, json=payload, timeout=30)
     if not resp.ok:
         raise RuntimeError(
             f"Failed to create issue: {resp.status_code} {resp.text[:500]}"

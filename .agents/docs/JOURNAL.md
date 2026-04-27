@@ -309,3 +309,106 @@ closes #5 ( per-file truncation flag now surfaced ).
 - Trojan-source / Unicode pre-scan, lockfile delta parser, and
   workflow-file SHA tripwire for this repo's own scripts remain on the
   TODO list.
+
+## 2026-04-27 — CI hygiene: SHA-pinned actions, manual-review framing, stdlib-only scripts
+
+**Author:** moriyoshi (via Claude Code)
+
+### Work done
+
+Three loosely-related cleanups landed in this session, all driven by
+operational papercuts that surfaced once the audit pipeline was running.
+
+- **GitHub Actions pinned to commit SHAs on Node.js 24 releases.**
+  ( commit `333d4eb` )  Both `actions/checkout` and `actions/setup-python`
+  were on `@v4` / `@v5`, which run on Node.js 20 and would have been
+  force-migrated to Node.js 24 on 2026-06-02.  Bumped to v6.0.2 / v6.2.0
+  ( both verified `using: node24` in their `action.yml` ) and replaced
+  the floating tags with the full 40-char commit SHAs, with the version
+  as a trailing comment.  The audit panel itself enforces the same
+  SHA-pin rule against the monitored repo via the `.github/workflows/**`
+  rule in `monitored_repo_classification.json`; the audit repo now meets
+  the same bar.
+- **`panel_skipped` issues now read as manual-review requests.**
+  ( commit `f29e24a` )  The previous wording filed a `[CRITICAL]
+  Integrity finding` title with the explanation buried inside a
+  routing-reason table cell.  No finding actually occurs in that case -
+  the diff just exceeds the model context budget - so the misleading
+  framing made reviewers guess what was being asked of them.  Now
+  `verdict.summary` leads with `**Manual review required.**`, the issue
+  title becomes `[MANUAL REVIEW REQUIRED] Audit panel skipped for
+  {repo}@{sha}`, the body heading is `## Manual review required ( audit
+  panel skipped )`, and the file-list section is retitled
+  `### Change summary ( panel did not run; review every file directly )`
+  so the table reads as the change summary the human reviewer needs.
+  Other routing modes are untouched; `should_file_issue()` already
+  filed an issue at severity `critical` for `panel_skipped`, only the
+  presentation changed.
+- **No more `requests` runtime dependency.**  Added a small in-tree
+  `.github/scripts/_http.py` ( ~80 lines ) that wraps `urllib.request`
+  with the subset of the `requests` API the scripts touched - `get` /
+  `post` / `request`, `Response.{status_code, headers, text, ok,
+  json()}`, plus an `HTTPError` raised on connection-level failure;
+  4xx / 5xx are returned as `Response`, matching `requests` semantics.
+  Both audit scripts now `import _http as http`; the `pip install
+  requests` step is gone from `audit-commit.yml` and
+  `reconcile-main.yml`; `pyproject.toml` declares an empty runtime
+  dependency list.  Verified end-to-end by hitting `api.github.com`
+  and `httpbin.org` for the five behaviours that mattered ( 200 path,
+  JSON parsing, 4xx-as-Response, connection-error-as-HTTPError, POST
+  with JSON body and custom header ).  All 49 pytest cases still pass.
+- **`pyproject.toml` introduced** at repo root, declaring the project
+  as a non-package ( `[tool.uv] package = false` ), Python `>=3.12`,
+  no runtime dependencies, and `pytest` as a dev dependency under
+  `[dependency-groups]`.  `[tool.pytest.ini_options]` sets
+  `testpaths = .github/scripts/tests` and
+  `pythonpath = .github/scripts`, so `uv run pytest` from the repo root
+  finds and imports cleanly.  The pre-existing `tests/conftest.py`
+  `sys.path` hack is now redundant but left in place as a safety net
+  for callers that bypass pytest's config.
+- **`OVERVIEW.md` and `QUALITY_GATE.md` updated** to reflect that the
+  scripts are now stdlib-only.  The "minimal dependency surface" claim
+  in `OVERVIEW.md` and the "pip install requests" gate in
+  `QUALITY_GATE.md` were both factually wrong after the dependency
+  removal.
+
+### Findings and observations
+
+- **Reading "report to the issue if the panel is skipped" as ad-hoc
+  rather than as script behaviour.**  When the user wrote that line, I
+  initially interpreted it as a one-off instruction to file a manual
+  issue flagging the just-pushed audit-repo commit, and did so via
+  `gh issue create` ( now `#1` on this repo ).  The user's intent was
+  for the audit script's `panel_skipped` branch itself to produce that
+  framing.  Lesson: when a sentence reads as a generic policy
+  statement - "if X happens, Y" - inside a software-engineering
+  session, default to interpreting it as "make the code do Y when X
+  happens" rather than "do Y once now".  Issue #1 is left as a
+  standing manual-review record for the audit-repo workflow change
+  ( which is genuinely outside the panel's scope ); whether to keep
+  it is a separate call.
+- **Audit-repo changes are outside the panel's scope by design.**
+  The integrity panel only reviews commits on
+  `moriyoshi/winterbaume`, not on this repo.  Any change to the audit
+  infrastructure itself - workflows, scripts, manifest, classification
+  JSON - bypasses the panel entirely.  Worth flagging because the
+  SHA-pin rule the audit enforces against the monitored repo is
+  meaningful precisely because this repo's workflows themselves had
+  the same hole until today.
+
+### Known limitations and follow-ups
+
+- **`uv.lock` is committed alongside `pyproject.toml`**, but the
+  workflows do not yet `uv sync` - they still rely on the system
+  Python toolchain set up by `actions/setup-python`.  An end-to-end
+  switch to `uv` would pin the dev environment more tightly and
+  surface dependency drift in CI; deferred per the option-A scope
+  this session was framed against.
+- **`tests/conftest.py` sys.path injection** is now redundant given
+  the pytest `pythonpath` config in `pyproject.toml`.  A future
+  cleanup could remove it; left in place for now to avoid surprising
+  anyone who runs the tests outside of `pytest`.
+- **Lockfile delta parser, Trojan-source / Unicode pre-scan, and a
+  workflow-file SHA tripwire for this repo's own scripts** all remain
+  on the TODO list from the prior entry; none addressed in this
+  session.

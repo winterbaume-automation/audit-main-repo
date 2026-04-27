@@ -44,7 +44,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-import requests
+import _http as http
 
 API = "https://api.github.com"
 HEAD_HISTORY_FILE = "head-history.json"
@@ -91,8 +91,8 @@ def _audit_headers(cfg):
 
 def _request(method, url, headers, **kwargs):
     try:
-        resp = requests.request(method, url, headers=headers, timeout=30, **kwargs)
-    except requests.RequestException as e:
+        resp = http.request(method, url, headers=headers, timeout=30, **kwargs)
+    except http.HTTPError as e:
         print(f"ERROR: Network error {method} {url}: {e}", file=sys.stderr)
         sys.exit(2)
     if resp.status_code == 429:
@@ -100,8 +100,8 @@ def _request(method, url, headers, **kwargs):
         print(f"  rate limited - waiting {retry_after}s ...")
         time.sleep(retry_after)
         try:
-            resp = requests.request(method, url, headers=headers, timeout=30, **kwargs)
-        except requests.RequestException as e:
+            resp = http.request(method, url, headers=headers, timeout=30, **kwargs)
+        except http.HTTPError as e:
             print(f"ERROR: Network error on retry {method} {url}: {e}", file=sys.stderr)
             sys.exit(2)
     return resp

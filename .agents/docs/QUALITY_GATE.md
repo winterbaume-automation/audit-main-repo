@@ -32,8 +32,10 @@ Checklist to run before considering any change to this repository complete.
 
 ## Python script
 
-- [ ] No bare `pip install` — the workflow pins the `pip install requests`
-  step; any new dependency must be added there explicitly.
+- [ ] No new third-party runtime dependencies — the audit scripts run on
+  the Python 3.12 stdlib only, via the in-tree `_http` shim. Any new
+  dependency must be added to `pyproject.toml` and installed explicitly
+  in the workflow ( use `uv sync` or a pinned `pip install` step ).
 - [ ] All environment variable reads use `os.environ.get(…)` for optional
   vars and `os.environ[…]` (failing fast) only inside `load_config` where
   the missing-var check already covers them.
