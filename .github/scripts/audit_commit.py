@@ -1227,8 +1227,20 @@ def file_issue(
         )
     transcript = "\n\n".join(transcript_sections) or "_(panel did not run)_"
 
+    panel_skipped = status == "panel_skipped"
+    heading = (
+        "## Manual review required (audit panel skipped)"
+        if panel_skipped
+        else "## Integrity Audit Finding"
+    )
+    files_section_title = (
+        "### Change summary (panel did not run; review every file directly)"
+        if panel_skipped
+        else "### Files reviewed by the panel"
+    )
+
     body = f"""\
-## Integrity Audit Finding
+{heading}
 
 | Field | Value |
 |---|---|
@@ -1250,7 +1262,7 @@ def file_issue(
 |---|---|---|
 {structural_rows}
 
-### Files reviewed by the panel
+{files_section_title}
 
 | Path | Classification | Matched rules | Included | Patch chars |
 |---|---|---|---|---|
@@ -1271,7 +1283,11 @@ def file_issue(
 using {AI_MODEL}.*
 """
 
-    title = f"[{severity_label}] Integrity finding in {repo}@{sha[:12]}"
+    title = (
+        f"[MANUAL REVIEW REQUIRED] Audit panel skipped for {repo}@{sha[:12]}"
+        if panel_skipped
+        else f"[{severity_label}] Integrity finding in {repo}@{sha[:12]}"
+    )
     owner, repo_name = cfg["audit_repo"].split("/", 1)
     url = f"https://api.github.com/repos/{owner}/{repo_name}/issues"
     headers = {
@@ -1401,8 +1417,11 @@ def main():
             "suspicious": False,
             "severity": "none",
             "summary": (
-                f"Panel skipped: even the critical-only subset "
-                f"({decision.reason})."
+                "**Manual review required.** The integrity panel did not run "
+                "because the diff is too large for the model context budget "
+                f"({decision.reason}) "
+                "A human reviewer must read the patch and the file list below "
+                "directly."
             ),
             "findings": [],
         }
