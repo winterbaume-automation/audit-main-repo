@@ -37,16 +37,28 @@ moriyoshi/winterbaume
                     ├─ multi-agent discussion (GitHub Models API)
                     ├─ write audit-log branch
                     └─ file issue (if suspicious)
+
+winterbaume-automation/audit-main-repo
+  schedule (every 30 min)
+    └─ reconcile-main.yml
+         reconcile_main.py
+           ├─ list recent commits on monitored main
+           ├─ diff against logs/ on audit-log branch
+           ├─ POST workflow_dispatch → audit-commit.yml (per missing commit)
+           ├─ compare prev head ↔ current head (GitHub REST API)
+           └─ file critical issue if force push detected
 ```
 
 ## Key components
 
 | Component | Path | Role |
 |---|---|---|
-| Workflow | `.github/workflows/audit-commit.yml` | Entry point, secrets, permissions |
-| Script | `.github/scripts/audit_commit.py` | Orchestrates diff fetch, AI discussion, log write, issue filing |
-| Audit log | `audit-log` branch (orphaned) | Permanent record of every audit run |
-| Issues | Issues tab of this repo | Human-readable findings for suspicious commits |
+| Audit workflow | `.github/workflows/audit-commit.yml` | Entry point for per-commit audit, secrets, permissions |
+| Audit script | `.github/scripts/audit_commit.py` | Orchestrates diff fetch, AI discussion, log write, issue filing |
+| Reconcile workflow | `.github/workflows/reconcile-main.yml` | Scheduled (30 min) safety net, dispatches missing audits |
+| Reconcile script | `.github/scripts/reconcile_main.py` | Lists commits, diffs against log, dispatches, detects force pushes |
+| Audit log | `audit-log` branch (orphaned) | Permanent record of every audit run plus `head-history.json` |
+| Issues | Issues tab of this repo | Human-readable findings for suspicious commits and force pushes |
 
 ## Technology choices
 

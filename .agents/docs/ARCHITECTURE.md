@@ -2,9 +2,18 @@
 
 ## Workflow trigger
 
-The workflow (`audit-commit.yml`) is triggered exclusively via
-`workflow_dispatch` — it is never triggered by events within this repository
-itself.  The caller (a workflow in `moriyoshi/winterbaume`) sends four inputs:
+The audit workflow (`audit-commit.yml`) has two callers:
+
+1. **Push-driven** — a workflow in `moriyoshi/winterbaume` posts
+   `workflow_dispatch` for every push to `main`.  This is the fast path,
+   typically running within seconds of the push.
+2. **Reconciler-driven** — `reconcile-main.yml` runs on a 30 minute cron
+   inside this repo and dispatches `audit-commit.yml` for any commit on the
+   monitored branch that has no log entry yet.  This is the safety net that
+   covers the case where the push trigger is removed, disabled, or bypassed
+   by a force push.
+
+Both callers send the same four inputs:
 
 | Input | Required | Description |
 |---|---|---|
@@ -18,6 +27,8 @@ avoid a redundant API call.
 
 ## Permissions
 
+`audit-commit.yml`:
+
 ```yaml
 permissions:
   contents: write   # push to audit-log branch
@@ -25,8 +36,19 @@ permissions:
   models: read      # GitHub Models API
 ```
 
-All three scopes are granted to the automatic `GITHUB_TOKEN`; no long-lived
-secret is needed for the audit repo itself.
+`reconcile-main.yml`:
+
+```yaml
+permissions:
+  contents: write   # push head-history.json to audit-log branch
+  issues: write     # file force-push alerts
+  actions: write    # dispatch audit-commit.yml for missing commits
+```
+
+All scopes are granted to the automatic `GITHUB_TOKEN`; no long-lived secret
+is needed for the audit repo itself.  Note that `actions: write` only allows
+dispatching workflows in this repo; the reconciler never writes to the
+monitored repo.
 
 ## Concurrency
 
@@ -36,10 +58,16 @@ concurrency:
   cancel-in-progress: false
 ```
 
-Runs are serialised rather than cancelled.  Each run writes a distinct file
-(`logs/{date}/{sha}.json`), so serialisation only prevents a push conflict on
-the `audit-log` branch — it does not cause data loss when commits arrive
-quickly.
+Both `audit-commit.yml` and `reconcile-main.yml` share this group so they
+never race on the orphaned branch.  Runs are serialised rather than
+cancelled.  Each audit run writes a distinct file (`logs/{date}/{sha}.json`)
+and the reconciler only updates `head-history.json`, so serialisation only
+prevents a `git push` conflict — it does not cause data loss when commits or
+ticks pile up.
+
+Workflow dispatches issued by the reconciler are asynchronous: the POST
+returns immediately and the dispatched `audit-commit.yml` run waits in the
+queue, then executes once the reconciler tick has finished.
 
 ## Script architecture (`audit_commit.py`)
 
@@ -168,6 +196,8 @@ git add / commit / push
 
 ## Exit codes
 
+`audit_commit.py`:
+
 | Code | Meaning |
 |---|---|
 | 0 | Success |
@@ -175,6 +205,108 @@ git add / commit / push
 | 2 | Diff fetch failed (404 / 403 / network) |
 | 4 | Audit log push failed |
 | 5 | AI discussion failed (log still written with `status: "ai_error"`) |
+
+`reconcile_main.py`:
+
+| Code | Meaning |
+|---|---|
+| 0 | Success |
+| 1 | Missing required env var |
+| 2 | GitHub API request failed (commits / compare) |
+| 3 | git push of `head-history.json` failed |
+
+## Reconciler script architecture (`reconcile_main.py`)
+
+### 1. Fetch recent commits
+
+```
+GET /repos/{monitored}/commits?sha={branch}&per_page={N}
+```
+
+Returns up to `COMMITS_PER_PAGE` (default 100) commits in newest-first order.
+The newest entry is taken as the current head.
+
+### 2. Audit-log inventory
+
+The `audit-log` branch is fetched and checked out.  `audited_shas()` walks
+`logs/{date}/*.json` to build the set of SHAs already audited.
+
+### 3. Force-push detection
+
+`head-history.json` at the root of the `audit-log` branch is a JSON array of
+entries:
+
+```json
+[
+  {
+    "timestamp": "<ISO 8601>",
+    "head_sha": "<full sha>",
+    "status": "initial | ok | force_push_detected",
+    "note": "<free-form, references issue url on force_push_detected>"
+  }
+]
+```
+
+If the last recorded `head_sha` differs from the current head, the reconciler
+calls:
+
+```
+GET /repos/{monitored}/compare/{prev}...{current}
+```
+
+The response's `status` field describes the ancestry:
+
+| `status` | Interpretation | Action |
+|---|---|---|
+| `identical` | Same commit | Nothing to do |
+| `ahead` | `prev` is an ancestor of `current` | Normal forward progress |
+| `behind` | `current` is an ancestor of `prev` | Branch was reset back — force push |
+| `diverged` | Both have unique commits | History rewrite — force push |
+| `missing_base` (synthetic, on 404) | `prev` no longer findable | Aggressive history rewrite |
+
+For any non-`ahead`/`identical` status, a critical issue is filed with labels
+`integrity-audit`, `severity:critical`, `force-push`, the entry is recorded
+with `status: "force_push_detected"`, and **no audits are dispatched on this
+tick**.  The next tick after the force push lands becomes the new baseline.
+
+### 4. Dispatch missing audits
+
+In normal (non-force-push) ticks, commits returned by the listing that have
+no log entry are dispatched in oldest-first order:
+
+```
+POST /repos/{audit}/actions/workflows/audit-commit.yml/dispatches
+{
+  "ref": "main",
+  "inputs": { commit_sha, commit_author, commit_message, commit_timestamp }
+}
+```
+
+Inputs are derived from the listing payload, matching the format used by the
+push-driven trigger in the monitored repo.
+
+### 5. Persist head history
+
+The current head is appended to `head-history.json` (capped at 500 entries),
+the file is committed and pushed.  If the head SHA is unchanged from the
+previous tick, no commit is created (`git diff --cached --quiet` short-circuit).
+
+### Caveats
+
+- GitHub Actions cron is best-effort; ticks may be delayed by 5-15 minutes
+  and pause entirely after 60 days of repository inactivity.  This widens
+  worst-case audit lag from "seconds after push" to "tens of minutes" in
+  the safety-net path.
+- The 100 commit window is wide enough to cover any plausible push-trigger
+  outage at a 30 minute cadence.  If the trigger is broken for longer than
+  100 commits' worth of activity, older commits will be missed; bumping
+  `COMMITS_PER_PAGE` and paginating is a future enhancement.
+- Race window: if a reconciler tick fires within the few seconds between a
+  push-driven dispatch starting and that run pushing its log entry, the
+  reconciler will dispatch a duplicate audit.  Both runs serialise on the
+  shared concurrency group; the second run re-does AI work and overwrites
+  the log file.  Cost is one duplicate AI discussion per race; correctness
+  is preserved.
 
 ## Secrets reference
 

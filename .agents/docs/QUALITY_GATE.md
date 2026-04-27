@@ -4,15 +4,31 @@ Checklist to run before considering any change to this repository complete.
 
 ## Workflow YAML
 
-- [ ] `audit-commit.yml` parses without errors:
+### `audit-commit.yml`
+
+- [ ] Parses without errors:
   ```bash
   gh workflow list  # confirms the file is valid after push
   ```
 - [ ] All required inputs (`commit_sha`) are marked `required: true`.
 - [ ] `permissions` block includes `contents: write`, `issues: write`,
   `models: read`.
-- [ ] `concurrency.cancel-in-progress` is `false` (queue, not cancel).
+- [ ] `concurrency.group` is `audit-log-branch` and `cancel-in-progress`
+  is `false` (queue, not cancel).
 - [ ] `fetch-depth: 0` is present on the checkout step.
+
+### `reconcile-main.yml`
+
+- [ ] Parses without errors (`gh workflow list`).
+- [ ] `on:` includes both `schedule` (cron) and `workflow_dispatch` for
+  manual triggering.
+- [ ] `permissions` block includes `contents: write`, `issues: write`,
+  `actions: write`.
+- [ ] `concurrency.group` is `audit-log-branch` (shared with
+  `audit-commit.yml`) and `cancel-in-progress` is `false`.
+- [ ] `fetch-depth: 0` is present on the checkout step.
+- [ ] `AUDIT_REPO`, `MONITORED_REPO`, `MONITORED_BRANCH` env vars are
+  set on the reconciler step.
 
 ## Python script
 
@@ -49,6 +65,21 @@ Checklist to run before considering any change to this repository complete.
   at `logs/{date}/{sha}.json`.
 - [ ] A second run with a different SHA appends a new file without touching the
   first.
+
+## Reconciler
+
+- [ ] A manual `gh workflow run reconcile-main.yml` against a fully-audited
+  branch produces no dispatched audits and updates `head-history.json` only
+  if the head moved.
+- [ ] When commits exist on the monitored branch that are not in
+  `logs/`, the reconciler dispatches `audit-commit.yml` for each in
+  oldest-first order.
+- [ ] `head-history.json` is a JSON array; each entry has
+  `timestamp`, `head_sha`, `status`, `note`; `status` is one of
+  `initial`, `ok`, `force_push_detected`.
+- [ ] On force push (status `behind`, `diverged`, or `missing_base`), the
+  reconciler files an issue labelled `integrity-audit`, `severity:critical`,
+  `force-push` and dispatches no audits for that tick.
 
 ## Issue filing
 

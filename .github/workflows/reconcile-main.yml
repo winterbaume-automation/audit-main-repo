@@ -1,0 +1,56 @@
+name: Reconcile Main
+
+# Periodic safety net.  Compares recent commits on the monitored branch
+# against the audit log and dispatches audit-commit.yml for anything
+# missing.  Detects force pushes by tracking the head SHA in
+# head-history.json on the audit-log branch.
+#
+# This workflow is intentionally redundant with the push-driven trigger
+# inside the monitored repo - if that trigger is removed or bypassed, the
+# reconciler is what catches the gap.
+
+on:
+  schedule:
+    # Every 30 minutes.  GitHub-hosted cron is best-effort and may run
+    # late by 5-15 minutes; that is acceptable for a safety net.
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # push head-history.json to the audit-log branch
+  issues: write     # file force-push alerts
+  actions: write    # dispatch audit-commit.yml for missing commits
+
+concurrency:
+  # Share the audit-log-branch group with audit-commit.yml so the two
+  # workflows do not race on the orphaned branch.  Reconciler ticks are
+  # queued, not cancelled.
+  group: audit-log-branch
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout audit repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # needed for orphaned branch operations
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run reconciler
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MONITORED_REPO_TOKEN: ${{ secrets.MONITORED_REPO_TOKEN }}
+          AUDIT_REPO: "winterbaume-automation/audit-main-repo"
+          MONITORED_REPO: "moriyoshi/winterbaume"
+          MONITORED_BRANCH: "main"
+        run: python .github/scripts/reconcile_main.py
