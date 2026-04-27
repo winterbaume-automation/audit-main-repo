@@ -1287,3 +1287,113 @@ failed at the new `Shallow clone monitored repo` step.
   flags this as the migration path so it doesn't have to be
   re-discovered.
 
+
+## 2026-04-27 — Issue body exceeded GitHub's 65,536-char limit
+
+### Trigger
+
+[Run 24981519514](https://github.com/winterbaume-automation/audit-main-repo/actions/runs/24981519514/job/73144610958),
+the first audit fired against `moriyoshi/winterbaume@e9224c15` ( the
+initial commit, 100 files, ~2.5 MB of patch ).  The job exited with
+status success because issue filing is wrapped in a non-fatal
+`try / except`, but the audit script logged
+`ERROR filing issue (non-fatal): Failed to create issue: 422 ... body is too long (maximum is 65536 characters)`
+and no GitHub issue was opened.  The audit-log JSON on the
+`audit-log` branch was still written as expected.
+
+### Findings
+
+- Routing put the run into `panel-skipped` mode ( total 2,498,725
+  chars across 100 files ), and the structural-finding pass produced
+  910 rows.  `file_issue` rendered every structural finding and every
+  routed file as a Markdown-table row, with no upper bound.
+- Worst-case row sizes:
+    - structural rows ~100 chars × 910 ≈ 90 KB,
+    - routing rows ~100 chars × 100 ≈ 10 KB.
+  The 90 KB structural table alone dwarfs GitHub's 65,536-char issue
+  body limit.  The smaller `finding_rows` and the panel transcript
+  were not implicated on this run ( panel skipped, no LLM findings ),
+  but both can grow on future runs and the cap should cover them
+  too.
+- The routing decision and structural-finding lists are already
+  serialised in full into the audit-log JSON committed to the
+  `audit-log` branch, so the issue body does not need to carry the
+  raw data — a link to the JSON is enough for anyone who needs the
+  long tail.
+- The path of that JSON is deterministic at issue-filing time
+  ( `logs/<UTC-date>/<sha>.json` on `audit-log` ), so we can embed
+  the URL even though `write_audit_log` runs *after* `file_issue`
+  in `main`.
+
+### Work done
+
+- Added `_cap_rows()` helper plus two module-level constants
+  ( `_ISSUE_BODY_LIMIT = 65000`, `_ISSUE_TABLE_ROW_CAP = 100` ) at
+  the top of the issue-filing block in `.github/scripts/audit_commit.py`.
+  The helper renders at most 100 rows and appends a single
+  italicised "_… N more rows — see [audit log JSON](...)_" row
+  pointing at the per-commit JSON on the `audit-log` branch when
+  the input exceeded the cap.  Empty input still produces the
+  existing em-dash placeholder row.
+- Routed `finding_rows`, `structural_rows`, and `routing_rows`
+  through the helper.  `transcript` is left alone for now; in
+  panel-skipped mode it is the static `_(panel did not run)_`
+  string, and in panel-ran mode the per-turn JSON dumps are
+  bounded by the model's response size.
+- Added a final safety net immediately before the POST: if the
+  fully assembled body still exceeds `_ISSUE_BODY_LIMIT`, slice it
+  and append a one-paragraph footer pointing back to the audit-log
+  JSON.  This catches future growth in the header / summary /
+  transcript sections that the per-table caps don't bound.
+- Verified the helper end-to-end with a small Python smoke test
+  ( empty input → placeholder row, under-cap input → unchanged,
+  over-cap input → 100 rows + 1 overflow row ).  Existing pytest
+  suite ( 178 tests ) still passes; no test was added because the
+  helper is a pure formatting function and the call sites are not
+  unit-tested today.
+
+### Decisions worth recording
+
+- **Cap each table independently rather than only relying on the
+  body-level truncation.**  A single hard truncation at 65,000
+  chars would leave whichever section happens to come first
+  ( `structural_rows` ) intact and silently chop off the routing
+  table and the agent transcript.  Per-table caps preserve a sample
+  of every section, which matches what the issue is actually for —
+  giving a human reviewer a quick read-out before they dive into
+  the JSON.
+- **Cap at 100 rows.**  Round number, gives ~10 KB worst-case per
+  table, still useful as a sample; lower caps risk hiding the
+  long-tail patterns that humans skim for ( e.g. 30 mode-change
+  findings followed by 70 yaml drifts looks very different from
+  100 of either ).
+- **Link target is the audit-log JSON, not the failing run.**  The
+  JSON is the authoritative source; the workflow run page only
+  surfaces stdout.
+- **Kept the body-level safety net even with per-table caps.**  Cheap
+  ( one length check + one slice ) and protects against future
+  regressions where a new section gets added without a cap, or where
+  the agent transcript balloons.
+
+### Follow-ups
+
+- Re-run [`Audit Commit`](https://github.com/winterbaume-automation/audit-main-repo/actions/workflows/audit-commit.yml)
+  against `e9224c15` ( the initial commit ) by setting
+  `AUDIT_FORCE_RERUN=1` and confirm an issue is now filed with
+  truncation footnotes pointing at
+  `logs/2026-04-27/e9224c153b62a47d2c1b00e174cb0f546fa5e32c.json`.
+- Consider whether the panel-skipped path should ever file an
+  issue at all when the structural-finding count is in the hundreds.
+  The current design assumes a human reads the issue first; at
+  ~900 deterministic findings it might be more useful to route
+  directly to a follow-up reconciliation workflow that batches the
+  findings by type.  Defer until we see a second occurrence — this
+  was the initial-commit case and may not recur on normal pushes.
+- The transcript section is currently uncapped.  If a future
+  multi-round panel run produces megabytes of `tool_use` / `tool_result`
+  JSON, the body-level safety net will kick in but the truncation
+  point will fall mid-`<details>` block, producing slightly ugly
+  Markdown.  If that happens in practice, wrap each transcript
+  turn in a length budget and elide overlong tool-result payloads
+  with a pointer back to the JSON.
+

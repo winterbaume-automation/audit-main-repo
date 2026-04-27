@@ -2938,6 +2938,27 @@ def should_file_issue(
     return bool(reasons), severity
 
 
+_ISSUE_BODY_LIMIT = 65000  # GitHub hard limit is 65,536; leave a buffer.
+_ISSUE_TABLE_ROW_CAP = 100
+
+
+def _cap_rows(rendered: list[str], columns: int, audit_log_url: str) -> str:
+    """Render at most ``_ISSUE_TABLE_ROW_CAP`` rows; append a note pointing to
+    the full audit-log JSON when the list was truncated.
+    """
+    if not rendered:
+        empty_cells = " | ".join(["—"] * columns)
+        return f"| {empty_cells} |"
+    if len(rendered) <= _ISSUE_TABLE_ROW_CAP:
+        return "\n".join(rendered)
+    overflow = len(rendered) - _ISSUE_TABLE_ROW_CAP
+    note_cells = [
+        f"_… {overflow} more rows — see [audit log JSON]({audit_log_url})_"
+    ] + ["—"] * (columns - 1)
+    note_row = "| " + " | ".join(note_cells) + " |"
+    return "\n".join(rendered[:_ISSUE_TABLE_ROW_CAP] + [note_row])
+
+
 def file_issue(
     cfg,
     verdict,
@@ -2953,34 +2974,52 @@ def file_issue(
     summary = (verdict or {}).get("summary") or "Audit raised non-LLM concerns; see tables below."
     findings = (verdict or {}).get("findings", [])
 
-    finding_rows = "\n".join(
-        "| `{type}` | `{file}` | {line} | {description} | {raised_by} |".format(
-            type=f.get("type", "?"),
-            file=f.get("file", "?"),
-            line=f.get("line") or "N/A",
-            description=f.get("description", "?"),
-            raised_by=", ".join(f.get("raised_by", [])),
-        )
-        for f in findings
-    ) or "| — | — | — | No LLM findings. | — |"
+    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    audit_log_url = (
+        f"https://github.com/{cfg['audit_repo']}/blob/audit-log/"
+        f"logs/{date_str}/{sha}.json"
+    )
 
-    structural_rows = "\n".join(
-        "| `{type}` | `{path}` | {description} |".format(
-            type=s.type, path=s.path, description=s.description,
-        )
-        for s in structural
-    ) or "| — | — | No structural findings. |"
+    finding_rows = _cap_rows(
+        [
+            "| `{type}` | `{file}` | {line} | {description} | {raised_by} |".format(
+                type=f.get("type", "?"),
+                file=f.get("file", "?"),
+                line=f.get("line") or "N/A",
+                description=f.get("description", "?"),
+                raised_by=", ".join(f.get("raised_by", [])),
+            )
+            for f in findings
+        ],
+        columns=5,
+        audit_log_url=audit_log_url,
+    )
 
-    routing_rows = "\n".join(
-        "| `{path}` | {classification} | {rules} | {included} | {chars} |".format(
-            path=c.file.path,
-            classification=c.classification,
-            rules=", ".join(c.matched_rules) or "default",
-            included="yes" if c in decision.included else "no",
-            chars=c.file.patch_chars,
-        )
-        for c in (decision.included + decision.excluded)
-    ) or "| — | — | — | — | — |"
+    structural_rows = _cap_rows(
+        [
+            "| `{type}` | `{path}` | {description} |".format(
+                type=s.type, path=s.path, description=s.description,
+            )
+            for s in structural
+        ],
+        columns=3,
+        audit_log_url=audit_log_url,
+    )
+
+    routing_rows = _cap_rows(
+        [
+            "| `{path}` | {classification} | {rules} | {included} | {chars} |".format(
+                path=c.file.path,
+                classification=c.classification,
+                rules=", ".join(c.matched_rules) or "default",
+                included="yes" if c in decision.included else "no",
+                chars=c.file.patch_chars,
+            )
+            for c in (decision.included + decision.excluded)
+        ],
+        columns=5,
+        audit_log_url=audit_log_url,
+    )
 
     transcript_sections = []
     for turn in discussion:
@@ -3067,6 +3106,13 @@ using {AI_MODEL}.*
     ]
     if structural:
         labels.append("structural-finding")
+    if len(body) > _ISSUE_BODY_LIMIT:
+        footer = (
+            f"\n\n---\n_Body truncated to fit GitHub's 65,536-character issue "
+            f"limit. Full data in [audit log JSON]({audit_log_url})._\n"
+        )
+        body = body[: _ISSUE_BODY_LIMIT - len(footer)] + footer
+
     payload = {"title": title, "body": body, "labels": labels}
 
     import _http as http
