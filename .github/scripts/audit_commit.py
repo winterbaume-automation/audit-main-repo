@@ -4,8 +4,10 @@ Integrity audit of a single commit using a multi-agent discussion via the
 GitHub Models API.
 
 Three specialist agents review the diff in sequence — each one sees the prior
-agents' findings and may agree with, challenge, or extend them.  A moderator
-then synthesises the discussion into a single verdict.
+agents' findings and may agree with, challenge, or extend them.  The
+discussion may run for multiple rounds (controlled by ``AUDIT_MAX_ROUNDS``,
+default 1) so the agents can refine each other's findings before a
+moderator synthesises the discussion into a single verdict.
 
 Routing
 -------
@@ -59,6 +61,23 @@ Optional env vars:
                          via the Git Trees API.  Adds 2 API calls per audited
                          commit (one tree per side of the diff), so the check
                          is opt-in.  Default: disabled.
+  AUDIT_MAX_ROUNDS     — maximum number of discussion rounds between the
+                         specialist agents before the moderator runs.  A
+                         round is one full pass through every specialist
+                         (each agent sees the discussion so far on every
+                         turn after the first).  The discussion stops
+                         early when a round produces no new concerns and
+                         every agent in the round agrees on the verdict.
+                         Defaults to 1 (the historical single-pass
+                         behaviour); values < 1 are clamped to 1.  Each
+                         additional round costs roughly one model call
+                         per specialist agent.
+
+                         INTENTIONALLY NOT a workflow_dispatch input —
+                         the value is set by the committed workflow YAML
+                         so an attacker with dispatch permission cannot
+                         inflate model-call cost by passing a huge
+                         number at trigger time.
 
 Exit codes:
   0 — success
@@ -81,6 +100,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal, Optional
 
+import agent_tools
+
 Classification = Literal["critical", "high", "medium", "low"]
 Severity = Literal["none", "low", "medium", "high", "critical"]
 RoutingMode = Literal["whole", "focused", "focused-overflow", "panel-skipped"]
@@ -99,6 +120,7 @@ MANIFEST_PATH = (
 CLASSIFICATION_ORDER = ["critical", "high", "medium", "low"]
 SEVERITY_ORDER = ["none", "low", "medium", "high", "critical"]
 COMMITS_API_PER_PAGE = 100
+DEFAULT_MAX_ROUNDS = 1
 
 # ---------------------------------------------------------------------------
 # Agent definitions
@@ -2409,86 +2431,253 @@ def build_panel_context(decision: RoutingDecision, commit: CommitData) -> str:
 # Model call
 # ---------------------------------------------------------------------------
 
-def _call_model(system_prompt, user_content, github_token, label):
-    """Single chat-completion call with one rate-limit retry."""
+# Total chat-completion invocations a single agent turn may make,
+# counting the initial call plus every follow-up triggered by the model
+# emitting `tool_calls`.  Once exhausted we make one final call without
+# tools and force a JSON answer so the panel still produces a verdict.
+_TOOL_LOOP_HARD_CAP = 8
+
+
+def _post_completion(url: str, headers: dict, payload: dict, label: str):
+    """One chat-completion POST with the existing single rate-limit retry."""
     import _http as http
 
+    try:
+        resp = http.post(url, headers=headers, json=payload, timeout=120)
+    except http.HTTPError as e:
+        raise RuntimeError(f"Network error: {e}") from e
+    if resp.status_code == 429:
+        retry_after = int(resp.headers.get("retry-after", "30"))
+        print(f"  [{label}] rate limited — waiting {retry_after}s ...")
+        time.sleep(retry_after)
+        try:
+            resp = http.post(url, headers=headers, json=payload, timeout=120)
+        except http.HTTPError as e:
+            raise RuntimeError(f"Network error after retry: {e}") from e
+    if not resp.ok:
+        raise RuntimeError(f"API error {resp.status_code}: {resp.text[:500]}")
+    return resp.json()
+
+
+def _call_model(system_prompt, user_content, github_token, label, *, registry=None):
+    """Run one agent turn, optionally with tool-calling support.
+
+    When ``registry`` is provided the model can call any of the wands in
+    ``agent_tools.WAND_SCHEMAS``; the loop dispatches each ``tool_calls``
+    response, appends the wand result as a ``role=tool`` message, and
+    continues until the model produces final JSON content ( or the
+    per-turn budget is exhausted, in which case we re-issue the request
+    without tools and with ``response_format=json_object`` to force the
+    final answer ).
+
+    The historical no-tools shape is preserved when ``registry`` is
+    None: a single call, ``response_format=json_object``, JSON-decoded
+    content returned.  Existing tests that monkeypatch ``_call_model``
+    directly are unaffected.
+    """
     url = f"{MODELS_ENDPOINT}/chat/completions"
     headers = {
         "Authorization": f"Bearer {github_token}",
         "Content-Type": "application/json",
     }
-    payload = {
-        "model": AI_MODEL,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_content},
-        ],
-        "temperature": 0.1,
-        "max_tokens": 2048,
-        "response_format": {"type": "json_object"},
-    }
+    messages: list[dict] = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_content},
+    ]
+
+    use_tools = registry is not None
+    if use_tools:
+        registry.reset()
+        # Splice the tool-use guidance into the system prompt so the
+        # agent's own JSON-shape instructions still come last.  Done at
+        # call time ( rather than baked into AGENTS ) so a registry-less
+        # call ( moderator, or wands disabled ) sees the historical
+        # prompt byte-for-byte.
+        messages[0] = {
+            "role": "system",
+            "content": system_prompt + "\n\n" + agent_tools.render_tool_help(),
+        }
 
     print(f"  [{label}] calling {AI_MODEL} ...")
-    try:
-        resp = http.post(url, headers=headers, json=payload, timeout=120)
-    except http.HTTPError as e:
-        raise RuntimeError(f"Network error: {e}") from e
+    iterations = 0
+    while True:
+        payload = {
+            "model": AI_MODEL,
+            "messages": messages,
+            "temperature": 0.1,
+            "max_tokens": 2048,
+        }
+        if use_tools and iterations < _TOOL_LOOP_HARD_CAP:
+            payload["tools"] = registry.schemas()
+        else:
+            # Either no tools requested, or we've hit the per-turn cap
+            # — force a final JSON answer.
+            payload["response_format"] = {"type": "json_object"}
 
-    if resp.status_code == 429:
-        retry_after = int(resp.headers.get("retry-after", "30"))
-        print(f"  [{label}] rate limited — waiting {retry_after}s ...")
-        time.sleep(retry_after)
-        resp = http.post(url, headers=headers, json=payload, timeout=120)
+        body = _post_completion(url, headers, payload, label)
+        try:
+            msg = body["choices"][0]["message"]
+        except (KeyError, IndexError) as e:
+            raise RuntimeError(f"Malformed completion: {e}; body={body!r}") from e
 
-    if not resp.ok:
-        raise RuntimeError(f"API error {resp.status_code}: {resp.text[:500]}")
+        tool_calls = msg.get("tool_calls") or []
+        if use_tools and tool_calls and iterations < _TOOL_LOOP_HARD_CAP:
+            messages.append({
+                "role": "assistant",
+                "content": msg.get("content"),
+                "tool_calls": tool_calls,
+            })
+            for tc in tool_calls:
+                fn_name = (tc.get("function") or {}).get("name", "")
+                raw_args = (tc.get("function") or {}).get("arguments") or "{}"
+                try:
+                    args = json.loads(raw_args) if isinstance(raw_args, str) else (raw_args or {})
+                except json.JSONDecodeError as e:
+                    args = {}
+                    result = {"error": "bad_arguments", "detail": str(e)}
+                else:
+                    result = registry.dispatch(fn_name, args)
+                print(
+                    f"  [{label}] -> {fn_name}({json.dumps(args)[:200]}) "
+                    f"source={result.get('source', '?')} "
+                    f"error={result.get('error', '-')}"
+                )
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc.get("id"),
+                    "name": fn_name,
+                    "content": json.dumps(result)[: agent_tools.MAX_OUTPUT_CHARS + 1024],
+                })
+            iterations += 1
+            continue
 
-    raw = resp.json()["choices"][0]["message"]["content"]
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(
-            f"Response was not valid JSON: {e}\nRaw: {raw[:300]}"
-        ) from e
+        # Final answer ( or model gave up without calling tools ).
+        raw = msg.get("content") or ""
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError as e:
+            raise RuntimeError(
+                f"Response was not valid JSON: {e}\nRaw: {raw[:300]}"
+            ) from e
 
 
-def _format_discussion_so_far(panel_context: str, prior_turns: list[dict]) -> str:
-    lines = [panel_context, "\n## Discussion so far\n"]
+def _format_discussion_so_far(
+    panel_context: str,
+    prior_turns: list[dict],
+    *,
+    current_round: int = 1,
+    max_rounds: int = 1,
+) -> str:
+    if not prior_turns:
+        return panel_context
+
+    if max_rounds > 1:
+        intro = (
+            f"\n## Discussion so far (round {current_round} of up to {max_rounds})\n\n"
+            "Refine, challenge, or extend prior findings.  Raise any new "
+            "concerns you uncover.  If you have nothing further to add and "
+            "your verdict is unchanged, return concerns=[] and a stable "
+            "verdict so the discussion can converge.\n"
+        )
+    else:
+        intro = "\n## Discussion so far\n"
+
+    lines = [panel_context, intro]
+    show_round = max_rounds > 1
     for turn in prior_turns:
+        round_label = f" (round {turn.get('round', 1)})" if show_round else ""
         lines.append(
-            f"### {turn['agent']}\n\n```json\n{json.dumps(turn['response'], indent=2)}\n```\n"
+            f"### {turn['agent']}{round_label}\n\n"
+            f"```json\n{json.dumps(turn['response'], indent=2)}\n```\n"
         )
     return "\n".join(lines)
 
 
-def run_agent_discussion(panel_context: str, github_token: str):
+def _round_converged(round_turns: list[dict]) -> bool:
+    """A round has converged when every specialist returned ``concerns=[]``
+    AND the verdicts are unanimous.  When both conditions hold there is no
+    new information for the next round to chew on, so further model calls
+    would just burn budget.
     """
-    Run the three specialist agents sequentially (each sees prior findings),
-    then ask the moderator to synthesise.
+    if not round_turns:
+        return False
+    if any(turn["response"].get("concerns") for turn in round_turns):
+        return False
+    verdicts = {turn["response"].get("verdict") for turn in round_turns}
+    return len(verdicts) == 1 and None not in verdicts
 
-    Returns (verdict_dict, discussion_list).
+
+def run_agent_discussion(
+    panel_context: str,
+    github_token: str,
+    *,
+    max_rounds: int = DEFAULT_MAX_ROUNDS,
+    registry: Optional[agent_tools.WandRegistry] = None,
+):
     """
+    Run the specialist agents for up to ``max_rounds`` passes.  Each pass
+    walks the agents in order; every agent after the very first turn sees
+    the discussion so far and may refine, challenge, or extend it.  The
+    moderator synthesises a single verdict at the end.
+
+    Stops early when a round converges (no agent in the round raised any
+    concerns and they all returned the same verdict).
+
+    Specialist agents receive ``registry`` so they can call wands ( git
+    history, blame, file contents, etc. ).  The moderator never gets
+    tools — its job is synthesis over the transcript, not investigation.
+
+    Returns (verdict_dict, discussion_list).  Each discussion entry has
+    keys ``agent``, ``round`` (omitted for the moderator), and
+    ``response``.
+    """
+    if max_rounds < 1:
+        max_rounds = 1
+
     discussion: list[dict] = []
 
-    for i, agent in enumerate(AGENTS):
-        label = agent["name"]
-        if i == 0:
-            user_content = panel_context
-        else:
-            user_content = _format_discussion_so_far(panel_context, discussion)
+    for round_num in range(1, max_rounds + 1):
+        round_start = len(discussion)
+        for i, agent in enumerate(AGENTS):
+            label = agent["name"]
+            if round_num == 1 and i == 0:
+                user_content = panel_context
+            else:
+                user_content = _format_discussion_so_far(
+                    panel_context,
+                    discussion,
+                    current_round=round_num,
+                    max_rounds=max_rounds,
+                )
 
-        response = _call_model(
-            agent["system_prompt"], user_content, github_token, label
-        )
-        discussion.append({"agent": label, "response": response})
+            call_label = f"{label} r{round_num}" if max_rounds > 1 else label
+            response = _call_model(
+                agent["system_prompt"],
+                user_content,
+                github_token,
+                call_label,
+                registry=registry,
+            )
+            discussion.append({"agent": label, "round": round_num, "response": response})
 
-        verdict = response.get("verdict", "?")
-        confidence = response.get("confidence", "?")
-        n_concerns = len(response.get("concerns", []))
-        print(f"  [{label}] verdict={verdict} confidence={confidence} concerns={n_concerns}")
+            verdict = response.get("verdict", "?")
+            confidence = response.get("confidence", "?")
+            n_concerns = len(response.get("concerns", []))
+            print(
+                f"  [{call_label}] verdict={verdict} "
+                f"confidence={confidence} concerns={n_concerns}"
+            )
 
-    moderator_input = _format_discussion_so_far(panel_context, discussion)
+        if round_num < max_rounds and _round_converged(discussion[round_start:]):
+            print(
+                f"  Discussion converged after round {round_num}; "
+                f"skipping remaining {max_rounds - round_num} round(s)."
+            )
+            break
+
+    moderator_input = _format_discussion_so_far(
+        panel_context, discussion, current_round=max_rounds, max_rounds=max_rounds
+    )
     print("  [Moderator] synthesising discussion ...")
     verdict = _call_model(
         MODERATOR_SYSTEM_PROMPT, moderator_input, github_token, "Moderator"
@@ -2909,6 +3098,7 @@ def _build_log_entry(
     discussion: list[dict],
     verdict: dict,
     issue_url: Optional[str],
+    max_rounds: int,
 ) -> dict:
     included_paths = {c.file.path for c in decision.included}
     files_block = []
@@ -2934,8 +3124,13 @@ def _build_log_entry(
             ),
         })
 
+    rounds_used = max(
+        (turn.get("round", 1) for turn in discussion if turn.get("agent") != "Moderator"),
+        default=0,
+    )
+
     return {
-        "schema_version": "4",
+        "schema_version": "5",
         "timestamp": run_timestamp,
         "commit_sha": cfg["commit_sha"],
         "commit_author": cfg["commit_author"],
@@ -2961,6 +3156,11 @@ def _build_log_entry(
         "status": status,
         "ai_model": AI_MODEL if status == "reviewed" else None,
         "agents": [a["name"] for a in AGENTS] + ["Moderator"] if status == "reviewed" else [],
+        "discussion_rounds": {
+            "max": max_rounds,
+            "used": rounds_used,
+            "converged_early": rounds_used < max_rounds and status == "reviewed",
+        },
         "discussion": discussion,
         "verdict": verdict,
         "issue_url": issue_url,
@@ -2971,6 +3171,28 @@ def _force_rerun_requested() -> bool:
     """Return True when ``AUDIT_FORCE_RERUN`` env var requests bypassing the
     preflight skip check.  Recognises ``1``/``true`` (case-insensitive)."""
     return os.environ.get("AUDIT_FORCE_RERUN", "").strip().lower() in ("1", "true")
+
+
+def _max_rounds() -> int:
+    """Return the maximum number of agent discussion rounds.
+
+    Reads ``AUDIT_MAX_ROUNDS``.  Empty / unset / non-integer values fall
+    back to ``DEFAULT_MAX_ROUNDS`` (1).  Values below 1 are clamped to 1
+    so the discussion always runs at least one full pass.
+    """
+    raw = os.environ.get("AUDIT_MAX_ROUNDS", "").strip()
+    if not raw:
+        return DEFAULT_MAX_ROUNDS
+    try:
+        n = int(raw)
+    except ValueError:
+        print(
+            f"WARNING: AUDIT_MAX_ROUNDS={raw!r} is not an integer; "
+            f"using {DEFAULT_MAX_ROUNDS}.",
+            file=sys.stderr,
+        )
+        return DEFAULT_MAX_ROUNDS
+    return max(1, n)
 
 
 def main():
@@ -2995,6 +3217,7 @@ def main():
     verdict: Optional[dict] = None
     discussion: list[dict] = []
     status: Status = "unknown"
+    max_rounds = _max_rounds()
 
     commit = fetch_commit_files(cfg)
     # Disambiguate "no patch" cases (binary vs API-omitted text) and
@@ -3042,9 +3265,30 @@ def main():
         }
     else:
         panel_context = build_panel_context(decision, commit)
-        print("Starting multi-agent integrity discussion ...")
+        registry: Optional[agent_tools.WandRegistry] = None
+        if agent_tools.wands_enabled():
+            registry = agent_tools.build_default_registry(
+                monitored_repo=cfg["monitored_repo"],
+                monitored_token=cfg["monitored_token"],
+                monitored_repo_path=os.environ.get("MONITORED_REPO_PATH") or None,
+                audited_sha=cfg["commit_sha"],
+                max_calls=agent_tools.env_max_calls(),
+            )
+            print(
+                f"Wands enabled: local_checkout="
+                f"{registry.ctx.has_local_checkout()} "
+                f"max_calls_per_turn={registry.max_calls}"
+            )
+        print(
+            f"Starting multi-agent integrity discussion (max_rounds={max_rounds}) ..."
+        )
         try:
-            verdict, discussion = run_agent_discussion(panel_context, cfg["github_token"])
+            verdict, discussion = run_agent_discussion(
+                panel_context,
+                cfg["github_token"],
+                max_rounds=max_rounds,
+                registry=registry,
+            )
             status = "reviewed"
             print(
                 f"Discussion complete. "
@@ -3087,6 +3331,7 @@ def main():
         discussion=discussion,
         verdict=verdict or {},
         issue_url=issue_url,
+        max_rounds=max_rounds,
     )
 
     try:

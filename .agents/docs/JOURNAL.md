@@ -825,3 +825,389 @@ or `_http.request`; no real network calls were made in any test.
   journal entry — `.agents/tmp/consolidated-todos.md` was created
   during this sweep.  Verify it stays untracked before any commit
   involving these changes.
+
+## 2026-04-27 — Multi-round agent discussion ( `AUDIT_MAX_ROUNDS` )
+
+### Context
+
+The integrity panel previously ran a single sequential pass over the
+three specialist agents ( Backdoor Hunter -> Supply Chain Inspector
+-> Integrity Analyst ) before the Moderator synthesised a verdict.
+Each agent saw the prior agents' findings on its first ( and only )
+turn and could not refine its own position once the next agent
+weighed in.  The user asked for an enhancement allowing at most N
+conversation rounds between the agents so the panel could converge
+on a shared view rather than just stack one-shot insights.
+
+### Work done
+
+- **`run_agent_discussion(panel_context, github_token, *, max_rounds)`**
+  in `audit_commit.py` now loops the specialists for up to
+  `max_rounds` passes.  Every turn after the very first sees the full
+  transcript so far, including the agent's own previous response, so
+  agents can refine, challenge, or extend prior findings.  The
+  Moderator still runs exactly once at the end.
+- **Convergence-based early stop.**  A new `_round_converged()`
+  predicate returns true when every specialist in a round returned
+  `concerns=[]` AND all verdicts in the round are unanimous.  When
+  that holds after round k < max_rounds, the loop breaks and the
+  Moderator is called immediately, saving roughly
+  `len(AGENTS) * (max_rounds - k)` model calls.
+- **`_format_discussion_so_far(...)`** gained `current_round` /
+  `max_rounds` keyword arguments.  When `max_rounds > 1` it prefixes
+  the transcript with `## Discussion so far ( round X of up to Y )`
+  and tags each rendered turn with its round number, giving agents
+  enough context to know whether they are revisiting their own work.
+  For `max_rounds == 1` the rendering is byte-identical to the
+  pre-change output, so audit-log diffs over historical runs are
+  unaffected.
+- **`_max_rounds()` env-var helper** parses `AUDIT_MAX_ROUNDS`,
+  falling back to `DEFAULT_MAX_ROUNDS` ( 1 ) on empty / unset /
+  non-integer values, and clamps anything < 1 up to 1.  Garbage
+  values emit a stderr warning rather than raising.
+- **Per-turn `round` tag in the discussion list.**  Every entry
+  appended by the specialist loop now carries `{"agent", "round",
+  "response"}`; the Moderator turn omits `round` ( a single
+  synthesis turn does not belong to any round ).  Existing consumers
+  that read `agent` and `response` are unchanged.
+- **Audit-log schema bumped 4 -> 5.**  `_build_log_entry` now
+  emits a `discussion_rounds` block ( `max`, `used`,
+  `converged_early` ) so a downstream analyst can see at a glance
+  whether the panel hit the budget or terminated early.
+  `converged_early` only goes true on `status == "reviewed"` so
+  ai-error / panel-skipped runs do not falsely advertise
+  convergence.
+- **`AUDIT_MAX_ROUNDS` is intentionally NOT a workflow_dispatch
+  input.**  Initial draft surfaced it as a dispatch input; user
+  pushed back ( "should not be able to be injected externally" ) and
+  the YAML was reworked so the value is hard-coded in
+  `audit-commit.yml`'s `env:` block as `"1"`.  An attacker with
+  dispatch permission therefore cannot inflate model-call cost by
+  passing a huge number at trigger time — bumping the budget
+  requires a reviewable commit to the workflow file.  The module
+  docstring now explicitly calls this out.
+
+### Findings and observations
+
+- **The first specialist ( Backdoor Hunter ) on round 2+ does see a
+  transcript even though its system prompt does not mention "prior
+  agents".**  Pre-change, round 1 turn 1 received only the panel
+  context — no `## Discussion so far` block — and the prompt was
+  written accordingly.  The new code path branches on
+  `round_num == 1 and i == 0` to keep that exact behaviour for the
+  very first turn, then falls through to the transcript-aware path
+  for every subsequent turn.  No prompt edits were needed: the
+  transcript header explicitly tells the agent it is in a follow-up
+  round and may refine prior findings.
+- **`schema_version` was a no-op marker until now.**  No code path
+  reads it back, but the ARCHITECTURE doc tracks it, so bumping
+  rather than silently extending the v4 shape is the conservative
+  call.  If a future analyst wires up a version check, they will see
+  v5 and know `discussion[*].round` and `discussion_rounds` are
+  available.
+- **Convergence predicate intentionally requires unanimity, not a
+  majority.**  Two agents agreeing while the third still flags a
+  concern is exactly the case where another round of debate is most
+  valuable.  Treating "2 of 3 clean" as converged would silence the
+  dissenting analyst, which defeats the point of the multi-agent
+  setup.
+
+### Test surface
+
+| File | Tests added | Notes |
+|---|---|---|
+| `tests/test_discussion_rounds.py` ( new ) | +13 | Stubs `_call_model` via `monkeypatch.setattr` so no network calls fire.  Covers default-1-pass, multi-round looping, transcript propagation into round 2, convergence early-stop, the unanimity / concerns predicates in `_round_converged`, the `max_rounds=0` clamp, and the env-var parser ( default / int / clamp / garbage / whitespace ). |
+
+Total test count rose 129 -> **142 passed** in
+`uv run pytest .github/scripts/tests/`.
+
+### Decisions worth recording
+
+- **Default left at 1 ( single pass ).**  The committed workflow
+  YAML sets `AUDIT_MAX_ROUNDS: "1"`, preserving the historical
+  single-pass behaviour byte-for-byte.  Switching to 2 or 3 is now
+  a one-line YAML edit reviewable in source rather than an
+  argument-passing gymnastics through the dispatch API.
+- **Naming**: the user explicitly preferred "round" over
+  "roundtrip" mid-implementation; all identifiers, env vars, and
+  log fields use "round" consistently.
+- **`max_rounds < 1` is silently clamped, not rejected.**  Both
+  `_max_rounds()` and `run_agent_discussion()` clamp.  Defence in
+  depth: the workflow YAML is the trusted setter, but should it
+  ever ship a `"0"` or `"-1"` by accident, the script still runs
+  one pass rather than degrading to a Moderator-only verdict on no
+  evidence.
+
+### Follow-ups
+
+- **Tune the unanimity predicate against real data.**  Once the
+  workflow flips `AUDIT_MAX_ROUNDS` above 1 in production, the
+  `discussion_rounds.converged_early` field in the audit log lets
+  an analyst measure how often round 1 already converged ( in
+  which case spend on round 2+ would be wasted ) versus how often
+  the extra round changed the verdict.  That data should drive any
+  future change to the convergence predicate.
+- **Consider per-agent stable-verdict tracking.**  The current
+  predicate triggers on a round of zero concerns + unanimity.  An
+  alternative is "agents' verdicts unchanged from the prior round
+  for two rounds in a row".  Defer until we have audit-log data
+  showing the simpler predicate is too eager or too lazy.
+- **Prompt updates for explicit round-awareness** — the system
+  prompts of the three specialists were not edited.  They behave
+  reasonably under multi-round play because the transcript header
+  tells them it is round X of Y, but a tighter pass over the
+  prompts ( "in follow-up rounds, prefer to refine rather than
+  duplicate" ) might reduce token spend.  Defer until we have
+  real multi-round transcripts to inspect.
+
+## 2026-04-27 — Agent wands ( history / blame / file inspection tools )
+
+### Context
+
+The integrity panel ran one chat-completion turn per agent against the
+routed diff and could not look beyond it.  Findings whose confidence
+hinged on context outside the patch — a symbol defined in an excluded
+file, a suspicious commit referenced from the message, the recent log
+of the path under review — had to be surfaced as low-confidence
+guesses or skipped.  The user asked for an MCP-style tool layer that
+gives the specialist agents access to git history with a local-first /
+GitHub-API-fallback shim so older commits ( missing from a shallow
+checkout ) still resolve.
+
+### Work done
+
+- **`.github/scripts/agent_tools.py`** ( new, ~700 lines, stdlib-only ).
+  Six wands wired into the OpenAI tool-calling protocol:
+    - `git_log( ref?, path?, max_count? )` — recent commits
+    - `git_show_commit( sha )` — single-commit metadata + diff
+    - `git_blame( path, ref?, line_start?, line_end? )` — per-line authorship
+    - `git_show_file( path, ref? )` — file contents at a ref
+    - `git_diff_refs( base, head, path? )` — diff between two refs
+    - `git_search_log( query, ref?, max_count? )` — search commit messages
+  Each wand attempts a local subprocess against the shallow checkout
+  at `MONITORED_REPO_PATH` first, falling back to the REST or GraphQL
+  API on a miss.  `git_blame` uses GraphQL ( `repository.object.blame.ranges` )
+  for the remote path because REST has no blame endpoint; per-line
+  content is omitted from the GraphQL fallback to save context, with
+  a note instructing the model to follow up with `git_show_file` if
+  it needs the actual lines.  Output text is capped at 16 KB per call
+  and list-shaped wands are clamped at 100 items / 200 blame ranges.
+
+- **`WandRegistry`** is the dispatch table the chat-completion loop
+  hands tool calls to.  It enforces a per-turn budget
+  ( `AUDIT_WAND_MAX_CALLS`, default 5 ) and wraps every wand error
+  in a structured `{error, detail}` JSON so the model can recover
+  rather than crashing the panel.
+
+- **`audit_commit._call_model`** rewritten as a tool-calling loop.
+  When a registry is provided ( specialists ) the call advertises
+  `tools`, drops `response_format=json_object`, and loops on
+  `tool_calls`: each call is dispatched, the result is appended as
+  a `role=tool` message, and the loop continues until the model
+  produces final JSON content.  A loop hard-cap ( `_TOOL_LOOP_HARD_CAP`
+  = 8 ) re-issues the request without tools and with
+  `response_format=json_object` to force a final answer if the model
+  keeps asking for more context.  The historical no-registry path
+  ( moderator, or wands disabled ) is byte-identical to before.
+
+- **System prompts unchanged on disk.**  Tool guidance is spliced
+  into the system prompt at call time via `agent_tools.render_tool_help()`,
+  so a wands-disabled run renders the historical prompt verbatim.
+
+- **`audit-commit.yml`** now includes a second `actions/checkout`
+  step that shallow-clones the monitored repo to
+  `${{ github.workspace }}/monitored-repo` ( `fetch-depth: 50` ) and
+  exports `MONITORED_REPO_PATH` so wands hit local git first.
+
+- **Tests** ( +34 across two new files ): `test_agent_tools.py`
+  covers ref / path validation, registry budget and error wrapping,
+  every wand's local-first and API-fallback paths via monkeypatched
+  subprocess + `_http` stubs, output truncation, GraphQL blame
+  parsing, and the env-var helpers.  `test_tool_loop.py` covers
+  `_call_model`'s tool-call dispatch, multi-step loops, malformed
+  arguments, unknown tool names, hard-cap recovery, and that
+  `run_agent_discussion` passes the registry to specialists but
+  not the moderator.  Total `uv run pytest` count: 142 -> 176.
+
+### Design decisions
+
+- **Local-first shim, not local-only.**  A 50-commit shallow clone
+  covers the typical "recent log" question for free; older commits
+  ( history searches, year-old blames ) still resolve via the API.
+  The wand returns `source: "local" | "github"` so the model and
+  the audit log know which backend answered.
+
+- **Default-on, opt-out via `AUDIT_DISABLE_WANDS=1`.**  The user's
+  brief framed the wands as core capability, not an experiment.  The
+  per-turn budget and hard cap give cost controls; an env switch is
+  there for debugging the model layer when a regression appears.
+
+- **Moderator stays tool-less.**  Its job is synthesis over the
+  transcript, not investigation.  Giving the moderator tools would
+  let it second-guess specialists with private context they did not
+  see, defeating the audit-trail value of the discussion-then-verdict
+  shape.
+
+- **Per-turn budget is a registry property, not a global counter.**
+  Each agent turn calls `registry.reset()`; the budget then acts as
+  a per-turn governor.  This matches how `_TOOL_LOOP_HARD_CAP` is
+  scoped: the model gets to investigate freely within one turn but
+  cannot starve the next agent's budget.
+
+- **GraphQL only for blame.**  Every other wand has a clean REST
+  equivalent.  Blame is the one operation REST does not expose, so
+  we accept the second auth surface only where it earns its keep.
+
+- **All schemas use `additionalProperties: false`.**  Forces the
+  model to fill exactly the fields we documented; reduces the
+  surface for argument-injection mistakes.
+
+- **No new pip dependency.**  Subprocess + `_http` ( the existing
+  stdlib-only HTTP wrapper ) cover everything.  Stays consistent
+  with the deliberate "no requests, no PyYAML" stance recorded in
+  earlier journal entries.
+
+### Known limitations
+
+- **GraphQL blame requires `MONITORED_REPO_TOKEN`.**  The unauth
+  GraphQL endpoint refuses to return repo data.  When the monitored
+  repo is public AND the wands have to fall back to remote blame
+  AND no token is set, the wand returns a structured `wand_error`
+  result.  Documented; not a blocker because the typical wand call
+  is local-first.
+
+- **Path validation accepts `..` segments.**  Git itself rejects
+  paths that escape the worktree, so the wand layer leans on that.
+  The only paths we hard-block are absolute paths and embedded NUL
+  bytes.
+
+- **Budget defends cost, not adversarial tool spam.**  An agent that
+  tries to dump megabytes of file contents into context can be
+  slowed by the per-turn budget but not stopped — a future
+  enhancement could record a running output-byte count and short-
+  circuit when it exceeds a threshold.
+
+### Follow-ups
+
+- Once the workflow has run for a few weeks with wands enabled,
+  inspect a sample of audit-log discussions for tool-use patterns:
+  which wands the agents actually reach for, whether the local
+  hit rate matches expectations ( a `fetch-depth: 50` shallow
+  clone should serve >90% of `git_log` / `git_blame` requests
+  on recent paths ), and whether the per-turn budget needs tuning.
+
+- Consider exposing a seventh wand for `git_grep` ( regex search
+  across the working tree at a ref ).  Deferred because the
+  current six already cover the use cases the panel has asked
+  about in the threat-model entries; add only when audit-log data
+  shows a real gap.
+
+- The wand result format does not currently distinguish a
+  `local: stale` from `local: fresh` answer — if the shallow
+  clone misses a force-push update between fetch and read, an
+  agent could be served outdated content.  In practice the
+  audit-commit workflow checks out the latest `main` before the
+  panel runs, so this is a theoretical concern.  Worth revisiting
+  if the failure mode ever materialises.
+
+
+## 2026-04-27 — Security self-review of the wand layer ( injection hardening )
+
+### Context
+
+After landing the wand framework in the previous entry, the user
+asked for a self-review of the hand-built GraphQL payload and the
+surrounding REST URL construction.  The framing was correct — building
+JSON / URLs from model-supplied values is the obvious place an
+adversary who has prompt-injected the panel ( e.g. via a crafted
+commit message or filename ) would try to break out.  Recorded here
+both as the audit trail for the fix and so the next reader can see
+which boundaries we have already cleared.
+
+### Findings
+
+| Boundary | Risk | Status |
+|---|---|---|
+| GraphQL query `_BLAME_GRAPHQL` | Query injection | **Safe.**  Query is a static template constant; variables flow via the `variables` dict, which `json.dumps` escapes when the request body is serialised, and the GitHub GraphQL server parses the query into an AST and binds variables as typed values rather than string-substituting them.  No injection vector. |
+| Refs in REST URL paths ( `/commits/{sha}`, `/compare/{base}...{head}`, blame's `/commits/{ref}` resolver ) | Path traversal via `..` | **Was vulnerable.**  `_REF_RE` permitted `..` ( `feature/..`, `foo/../bar`, etc. ) so a prompt-injected `ref` argument could rewrite the URL path to a different API endpoint.  Git itself rejects `..` in valid refs, so the local backend was already safe; the gap was on the REST fallback. |
+| Path in `urllib.parse.quote( path )` | Path traversal via `..` segments | **Was vulnerable.**  `urllib.parse.quote` does not encode dots, so a path like `../../etc/passwd` would pass through the contents-API URL unchanged.  GitHub would 404 most attempts, but it still leaks ( and could become a real escape if the URL routing ever widens ). |
+| Ref interpolated into `_git_show_file_remote` query string ( `?ref={ref}` ) | Query-string injection | **Hygiene gap.**  Already constrained by `_REF_RE` to URL-safe characters, but interpolated unencoded.  A future widening of the ref grammar would silently reopen the gap. |
+| HTTP headers ( `Accept`, `Authorization`, `Content-Type` ) | Header injection | **Safe.**  All values come from constants or `ctx.monitored_token` ( workflow secret ); no model-controlled header values. |
+| Local subprocess invocations ( `git -C <path> ...` ) | Shell injection | **Safe.**  Every `subprocess.run` call uses list-form argv; no `shell=True` anywhere. |
+| Search query in `_git_search_log_remote` | GitHub-search modifier injection ( e.g. `repo:other/repo` ) | **Not a security boundary.**  The worst case is the panel reading commit messages from a different public repo.  Query is `urlencode`-escaped so HTTP-level injection is impossible.  Documented in the journal; no code change. |
+
+### Work done
+
+- **`_validate_ref`** now rejects any ref containing the substring
+  `..`.  Git's own `check-ref-format` rules already forbid `..` in
+  valid refs, so this never blocks legitimate input.  Closes the URL
+  path-traversal vector for every wand whose REST fallback puts a ref
+  in the URL path.
+
+- **`_validate_path`** now rejects any path containing a `..` segment
+  ( split on `/` ).  `..foo` and `foo..bar` remain valid filename
+  fragments — only a standalone `..` segment is blocked.  Closes the
+  REST contents-API traversal vector for `git_show_file`.
+
+- **`_git_show_file_remote` ref query parameter** now goes through
+  `urllib.parse.quote( ref, safe="" )`.  Belt-and-braces on top of the
+  character-whitelist validation; ensures any future widening of the
+  ref grammar cannot silently reopen a query-string injection.
+
+- **`_api_graphql` docstring** explicitly states the parameterised-
+  binding invariant and forbids f-string substitution of user input
+  into the `query` argument.  A future reader who refactors the
+  variable-binding into string interpolation now has a written
+  warning.
+
+- **Tests** ( +2 ): `test_validate_ref_rejects_path_traversal` and
+  `test_validate_path_rejects_dotdot_segments` cover the new
+  rejection rules.  The pre-existing
+  `test_validate_path_rejects_absolute_and_nul` was extended to
+  assert that `..foo` / `strange..name.txt` still pass — i.e. only
+  the path-segment form is blocked.  Total `uv run pytest` count
+  rises 176 -> 178.
+
+### Decisions worth recording
+
+- **Reject `..` at validation, not at URL-construction.**  A
+  per-call URL-canonicalisation pass would also work, but every
+  caller would have to remember to invoke it.  Rejecting at
+  `_validate_ref` / `_validate_path` makes the safety property a
+  property of the validators, which is where every wand already
+  routes its inputs.
+
+- **Search query left unrestricted.**  GitHub's search syntax is rich
+  enough that lock-down would be invasive, and the security boundary
+  here is on the wrong side — the search runs against a public
+  ( or repo-scoped ) endpoint and the worst case is reading a
+  different repo's commit messages.  Recorded in the table above so
+  a future reviewer does not flag this as an oversight.
+
+- **GraphQL query stays as a constant.**  The framework deliberately
+  keeps every wand's GraphQL payload as a hardcoded module-level
+  string with all dynamic values flowing through `variables`.  The
+  docstring on `_api_graphql` now spells this out as a hard rule
+  for future contributors.
+
+### Follow-ups
+
+- The seventh wand idea ( `git_grep` ) deferred in the previous
+  entry will reuse `_validate_path` for its target paths, so the
+  hardening here transfers to it for free when added.
+
+- Worth a once-over of the AGENT discussion transcripts after the
+  first multi-round real run to see whether the model ever passes
+  pathological inputs that hit the rejection branches.  If it does,
+  we have field evidence either of a buggy prompt-injection attack
+  or of legitimate-looking inputs the model misformatted, both of
+  which are useful telemetry.
+
+- Consider adding an `AUDIT_WAND_OUTPUT_BUDGET` env var that caps
+  total tool-result bytes per agent turn ( separate from the
+  per-call `MAX_OUTPUT_CHARS` ).  Defends against a model that
+  spams many small calls to fill context, which the per-turn call
+  budget alone does not bound.  Not urgent; covered for now by the
+  `AUDIT_WAND_MAX_CALLS` limit ( default 5 ) and the
+  `_TOOL_LOOP_HARD_CAP` ( 8 ).
+

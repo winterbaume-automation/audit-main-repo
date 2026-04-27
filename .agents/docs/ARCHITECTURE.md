@@ -152,6 +152,45 @@ Temperature is set to `0.1` for determinism.
 A single rate-limit retry (honouring the `retry-after` header) is attempted
 per API call.
 
+### 4a. Agent wands ( history / blame inspection tools )
+
+Specialist agents ( not the moderator ) can call a small set of "wands"
+during their turn to look beyond the routed diff.  Each wand answers
+one question with a local-first / GitHub-API-fallback shim:
+
+| Wand | Purpose |
+|---|---|
+| `git_log` | Recent commits on a ref, optionally filtered by path |
+| `git_show_commit` | Metadata + unified diff for a specific SHA |
+| `git_blame` | Per-line authorship at a ref ( with optional line range ) |
+| `git_show_file` | File contents at a ref |
+| `git_diff_refs` | Diff between two refs |
+| `git_search_log` | Search commit messages |
+
+Backend selection:
+
+1. If `MONITORED_REPO_PATH` points at a local checkout AND the requested
+   ref / commit resolves there, the wand runs `git -C <path> ...` via
+   subprocess.  Cheap and offline.
+2. Otherwise it calls the GitHub REST API ( or GraphQL for blame, since
+   REST has no blame endpoint ).
+3. Each result includes a `source: "local" | "github"` field so the
+   model and the audit log know which backend answered.
+
+The audit workflow shallow-clones the monitored repo at
+`fetch-depth: 50` so the typical "recent path log" question is answered
+locally; older history references fall through to the API.
+
+Per-call output is capped at 16 KB; list-shaped wands are clamped at
+100 items ( 200 ranges for blame ).  Each agent turn has a per-turn
+tool-call budget ( `AUDIT_WAND_MAX_CALLS`, default 5 ) and a hard
+loop cap ( 8 calls ) after which `_call_model` re-issues the request
+without tools and forces a `response_format: json_object` answer.
+
+The wand layer is enabled by default.  Set `AUDIT_DISABLE_WANDS=1` to
+fall back to the historical no-tools panel ( useful when debugging the
+model layer in isolation ).
+
 ### 5. Issue filing
 
 An issue is filed when **any** of the following holds:

@@ -47,6 +47,20 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Shallow clone of the monitored repo so the agent wand layer
+      # ( agent_tools.py ) can answer git_log / git_blame /
+      # git_show_file requests locally before falling back to the
+      # GitHub API.  fetch-depth: 50 keeps the disk footprint tiny;
+      # any older commit the panel asks about is still served via the
+      # API fallback inside the wand shim.
+      - name: Shallow clone monitored repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: moriyoshi/winterbaume
+          token: ${{ secrets.MONITORED_REPO_TOKEN }}
+          path: monitored-repo
+          fetch-depth: 50
+
       - name: Run audit script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -55,6 +69,16 @@ jobs:
           COMMIT_AUTHOR: ${{ inputs.commit_author }}
           COMMIT_MESSAGE: ${{ inputs.commit_message }}
           COMMIT_TIMESTAMP: ${{ inputs.commit_timestamp }}
+          # Controls how many discussion rounds the agent panel runs.
+          # Hard-coded here (not a workflow_dispatch input) so an attacker
+          # with dispatch permission cannot inflate model-call cost.
+          AUDIT_MAX_ROUNDS: "1"
           AUDIT_REPO: "winterbaume-automation/audit-main-repo"
           MONITORED_REPO: "moriyoshi/winterbaume"
+          # Wand layer: directs git_log / git_blame / git_show_file etc.
+          # at the local shallow checkout above; missing commits fall
+          # back to the GitHub API automatically.  Set
+          # AUDIT_DISABLE_WANDS=1 to take the panel back to the
+          # historical no-tools path.
+          MONITORED_REPO_PATH: ${{ github.workspace }}/monitored-repo
         run: python .github/scripts/audit_commit.py
