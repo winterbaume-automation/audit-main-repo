@@ -1,0 +1,1726 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-01T02:09:45.963268+00:00",
+  "commit_sha": "03aea28bc0e5af2863159b696a6678df8ecaeae1",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Initial.",
+  "commit_timestamp": "2026-05-01T11:09:18+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [],
+  "api_truncated": false,
+  "diff_chars": 3133570,
+  "estimated_tokens": 783392,
+  "routing": {
+    "mode": "focused",
+    "reason": "Total patch 3,133,570 > threshold 400,000; restricted to critical+high (+ cross-refs), 0 chars.",
+    "total_patch_chars": 3133570,
+    "files": [
+      {
+        "path": ".agents/.gitignore",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 33,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/attic/scripts/publish-all.py",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4843,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/bin/cargo.ps1",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3402,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/bin/cargo.sh",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2833,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/bin/check-build-cache.sh",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4456,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/bin/clean-agent-tmp.sh",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2854,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/API_COVERAGE.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 642416,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/ARCHITECTURE.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 36767,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 161269,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/INDEX.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9285,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/aws-doc-test-plan-catalog.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 12130,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/aws-inter-service-integration-priorities.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 10569,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/core-service-expansion-and-coverage.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 29976,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/crate-publishing-and-release.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 4270,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/cross-service-integration-and-engine-boundaries-synthesis.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9091,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/dynamodb-partiql-integration.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 28731,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/ec2-crate-split-and-feature-gating.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9990,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/github-issue-triage-and-automation.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 20573,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/journal-ltm-maintenance-workflows.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 7940,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/moto-parity-testing-and-behavioral-gaps.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5501,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/new-service-implementation-patterns.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 28438,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/parallel-agent-build-and-worktree-practices.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 13255,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/pluggable-backends-and-query-execution-synthesis.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 13317,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/pluggable-service-backends-and-redis-storage.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9935,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/quality-gate-workflow-and-recurring-findings.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 26256,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/query-service-sql-engine-backends.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 15699,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/repo-maintenance-and-agent-workflows-synthesis.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 32620,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/repo-security-and-supply-chain.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 7900,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/rule-evaluator-and-validator-crates.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 8366,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/runtime-state-and-service-infrastructure-synthesis.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9847,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/sccache-wrapper-cross-worktree-cache.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 29630,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/service-implementation-and-validation-synthesis.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 33680,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/smithy-codegen-and-wire-serialization.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 22058,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/state-error-shaping-and-handler-boundaries.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 4681,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/stateful-service-and-blob-store.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 15394,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/stub-handler-audit-and-promotion.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9186,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/terraform-e2e-harness-and-fix-coverage.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 25701,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/terraform-resource-converters.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 25786,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/LTM/workspace-readmes-and-service-examples.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 21108,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/OVERVIEW.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 17239,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/QUALITY_GATE.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 37904,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TERRAFORM_CONVERTER_COVERAGE.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 228836,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 172128,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TRIAGE.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5152,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/INDEX.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 45338,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/accessanalyzer.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 26364,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/account.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 15172,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/acm-pca.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 20954,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/acm.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 15413,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/aiops.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 12128,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/amp.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 32716,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/amplify.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 21869,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/amplifybackend.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 17663,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/amplifyuibuilder.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 17848,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/api-gateway.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 54977,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/apigatewaymanagementapi.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 4475,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/apigatewayv2.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 40460,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/app-mesh.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 29431,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appconfig.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 27525,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appconfigdata.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 7430,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appfabric.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 21711,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appflow.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 20010,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appintegrations.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 18084,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/application-auto-scaling.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 16741,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/application-discovery-service.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 21722,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/application-insights.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 18993,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/application-signals.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 18250,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/applicationcostprofiler.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 8024,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/apprunner.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 23840,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appstream.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 41625,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/appsync.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 36673,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/arc-region-switch.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 14584,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/arc-zonal-shift.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 17317,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/artifact.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9818,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/athena.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 34236,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/auditmanager.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 34201,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/auto-scaling-plans.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 8398,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/auto-scaling.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 35382,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/b2bi.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 23386,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/backup-gateway.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 16709,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/backup.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 59449,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/backupsearch.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 10914,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/batch.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 22485,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bcm-dashboards.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9106,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bcm-data-exports.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 10363,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bcm-pricing-calculator.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 21311,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bcm-recommended-actions.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 3742,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-agent-runtime.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 25501,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-agent.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 46356,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-agentcore-control.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 49888,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-agentcore.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 29132,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-data-automation-runtime.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 7900,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-data-automation.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 14918,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock-runtime.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 12544,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/bedrock.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 61572,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/billing.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 14045,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/billingconductor.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 24817,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/braket.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 16568,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/budgets.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 19630,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/services/chatbot.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 22817,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": true
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No files in commit; nothing to review.",
+    "findings": []
+  },
+  "issue_url": null
+}
