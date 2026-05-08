@@ -1,0 +1,544 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-08T14:50:59.681102+00:00",
+  "commit_sha": "98004a47da2b0c09d46ee8fbfc381df645533ed6",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "release-batch: retry chunks on crates.io 429 rate limits",
+  "commit_timestamp": "2026-05-08T23:50:22+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "a78536db8c09cbd1b476865d920773e4a725634e"
+  ],
+  "api_truncated": false,
+  "diff_chars": 12577,
+  "estimated_tokens": 3144,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 12,577 chars <= threshold 400,000.",
+    "total_patch_chars": 12577,
+    "files": [
+      {
+        "path": ".agents/docs/LTM/crate-publishing-and-release.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 1298,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 154,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "RELEASE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 1684,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-batch/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 278,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-batch/src/main.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9163,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: lockfile changed but could not be parsed deterministically; review by hand."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to enhance functionality related to handling rate limits in a legitimate manner without introducing any hidden backdoors, logic bombs, or obfuscated code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict is noted, but the introduction of 'httpdate' requires further scrutiny."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The addition of the 'httpdate' dependency, while seemingly legitimate, raises concerns about potential typosquatting and the use of an unpinned version, which could introduce risks in the future."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about the 'httpdate' dependency are valid, and the potential for typosquatting should be monitored closely."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about the potential for covert data exfiltration and the reduction of the audit trail, which could undermine the integrity of the system."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about potential covert data exfiltration and audit trail reduction, while the addition of the 'httpdate' dependency, being unpinned, could lead to future risks. These factors contribute to an overall suspicious assessment of the commit."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about the 'httpdate' dependency are valid, and the potential for typosquatting should be monitored closely."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about the potential for covert data exfiltration and the reduction of the audit trail, while the addition of the 'httpdate' dependency, being unpinned, could lead to future risks. These factors contribute to an overall suspicious assessment of the commit."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about the 'httpdate' dependency are valid, and the potential for typosquatting should be monitored closely."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about potential covert data exfiltration and audit trail reduction, while the addition of the 'httpdate' dependency, being unpinned, could lead to future risks. These factors contribute to an overall suspicious assessment of the commit."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about potential covert data exfiltration and audit trail reduction, while the addition of the 'httpdate' dependency, being unpinned, could lead to future risks. These factors contribute to an overall suspicious assessment of the commit."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about the 'httpdate' dependency are valid, and the potential for typosquatting should be monitored closely."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about potential covert data exfiltration and audit trail reduction, while the addition of the 'httpdate' dependency, being unpinned, could lead to future risks. These factors contribute to an overall suspicious assessment of the commit."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer. This could potentially lead to sensitive information being captured and stored without clear justification.",
+            "evidence": "+fn run_with_tee(cmd: &mut Command) -> Result<(ExitStatus, String), Error> {"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "evidence": "+let (status, captured) = run_with_tee(&mut cmd)?;"
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package. While 'httpdate' is a legitimate package, its name closely resembles other well-known packages, and the context of its introduction should be scrutinized.",
+            "evidence": "+ \"httpdate\""
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned. This could lead to unexpected behavior if a future version introduces breaking changes or vulnerabilities.",
+            "evidence": "+httpdate = \"1\""
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about the 'httpdate' dependency are valid, and the potential for typosquatting should be monitored closely."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the 'run_with_tee' function raises concerns about potential covert data exfiltration and audit trail reduction, while the addition of the 'httpdate' dependency, being unpinned, could lead to future risks. These factors contribute to an overall suspicious assessment of the commit."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "medium",
+        "summary": "Concerns raised about potential covert data exfiltration and unpinned dependency in the commit.",
+        "findings": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 63,
+            "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer, which could lead to sensitive information being captured without clear justification.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-batch/src/main.rs",
+            "line": 295,
+            "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.lock",
+            "line": 8541,
+            "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package, and its introduction should be scrutinized.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Backdoor Hunter",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "unpinned_action",
+            "file": "tools/release-batch/Cargo.toml",
+            "line": 8,
+            "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned, potentially leading to unexpected behavior if future versions introduce breaking changes or vulnerabilities.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Backdoor Hunter",
+              "Integrity Analyst"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "medium",
+    "summary": "Concerns raised about potential covert data exfiltration and unpinned dependency in the commit.",
+    "findings": [
+      {
+        "type": "covert_exfiltration",
+        "file": "tools/release-batch/src/main.rs",
+        "line": 63,
+        "description": "The function 'run_with_tee' captures stdout and stderr of the command being executed and stores it in a shared buffer, which could lead to sensitive information being captured without clear justification.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "tools/release-batch/src/main.rs",
+        "line": 295,
+        "description": "The addition of the 'run_with_tee' function may obscure the command's output and error handling, potentially reducing the audit trail of what commands were executed and their results.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.lock",
+        "line": 8541,
+        "description": "The addition of the 'httpdate' dependency raises concerns as it could be a typo-squatted package, and its introduction should be scrutinized.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Backdoor Hunter",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "unpinned_action",
+        "file": "tools/release-batch/Cargo.toml",
+        "line": 8,
+        "description": "The 'httpdate' dependency is specified with a version of '1', which is unpinned, potentially leading to unexpected behavior if future versions introduce breaking changes or vulnerabilities.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Backdoor Hunter",
+          "Integrity Analyst"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/29"
+}
