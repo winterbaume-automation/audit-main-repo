@@ -1397,3 +1397,118 @@ and no GitHub issue was opened.  The audit-log JSON on the
   turn in a length budget and elide overlong tool-result payloads
   with a pointer back to the JSON.
 
+
+## 2026-05-09 — `crates_io_lookup` wand to suppress Cargo typosquatting false positives
+
+### Trigger
+
+[Issue #28](https://github.com/winterbaume-automation/audit-main-repo/issues/28),
+audit of `moriyoshi/winterbaume@eced77affc26` ( "release-batch: retry
+chunks on crates.io 429 rate limits" ).  The Supply Chain Inspector
+flagged the newly added `httpdate` dependency as a typosquat against
+the imagined `http-date`, raising the panel verdict to HIGH.  In
+reality `httpdate` is a long-established Rust crate ( pyfisch/httpdate,
+~125 M downloads, first published 2016 ) and `http-date` is the less
+popular one — the agent had no way to look up the standing of either
+crate from inside the routed diff and defaulted to a lexical guess.
+Integrity Analyst piled on with the same finding, so consolidation
+escalated severity rather than down-weighting it.
+
+### Findings
+
+- The wand layer ( `agent_tools.py` ) already exposes git-history
+  inspection tools, but had nothing for *package-registry* metadata.
+  Asking the model to reason about typosquatting from name lexicon
+  alone is the worst case for it: a pure surface-form judgement with
+  no signal about download counts, age, or repository provenance.
+- crates.io publishes a free anonymous JSON API at
+  `https://crates.io/api/v1/crates/{name}` ( exact lookup ) and
+  `https://crates.io/api/v1/crates?q={query}&per_page=N` ( fuzzy
+  search ).  Both return enough metadata in a single call —
+  description, total downloads, recent downloads, max version,
+  created_at, updated_at, repository, homepage, documentation,
+  keywords — to settle a typosquatting question deterministically
+  for any reasonably-popular crate.
+- The API requires a non-default User-Agent ( the Python-urllib
+  default trips its anti-abuse filter and returns 403 ) and is
+  unauthenticated, so it does not need to share the GitHub-token
+  plumbing of the existing wands.
+
+### Work done
+
+- Added `_wand_crates_io_lookup` to `.github/scripts/agent_tools.py`.
+  The wand takes a single `name` argument, validates it against the
+  Cargo crate-name grammar ( `^[A-Za-z][A-Za-z0-9_-]{0,63}$` ), and:
+    1. Hits `/api/v1/crates/{name}` for an exact lookup.  On a 200,
+       returns `{found: true, crate: {…}, recent_versions: [{…}]}`
+       with the crate metadata trimmed to the fields a panel agent
+       needs ( downloads, repository, age, versions, keywords ) so
+       the tool result stays under the per-call output cap.
+    2. On a 404 from the exact endpoint, falls back to
+       `/api/v1/crates?q={name}&per_page=10` and returns
+       `{found: false, similar: [{…}]}`.  This is the most useful
+       answer when a typosquat *is* genuine: the agent learns the
+       legitimate crate the suspect was imitating in the same call.
+- Wired the wand into `_DEFAULT_WANDS` and `WAND_SCHEMAS`.  The
+  schema description explicitly tells the model to call
+  `crates_io_lookup` BEFORE filing a typosquatting concern on a
+  Cargo dep, and explains how to interpret the result.
+- Added a parallel nudge to the Supply Chain Inspector's system
+  prompt in `.github/scripts/audit_commit.py` so the inspector
+  reaches for the tool on Rust diffs ( and lists the most common
+  false-positive pairs: `httpdate` vs `http-date`, `time` vs
+  `chrono`, `bytes` vs `byteorder` ).
+- Added 7 new tests in `.github/scripts/tests/test_agent_tools.py`:
+  crate-name validator accepts real names and rejects garbage, exact
+  lookup returns trimmed metadata with `User-Agent` set, 404
+  triggers the fuzzy-search fallback ( verifying the surfaced
+  `similar` list ), missing/invalid input raises `WandError` before
+  any HTTP traffic, and the wand is exposed via the default
+  registry.  Full suite ( 185 tests, +7 new ) passes.
+
+### Decisions worth recording
+
+- **Single tool, two modes ( lookup → search ) rather than two
+  separate tools.**  The agent's question is always "is this crate
+  legitimate?", and the answer requires either the crate's own
+  metadata ( found ) or the metadata of nearby crates ( not found ).
+  Splitting into `crates_io_get` + `crates_io_search` would force
+  the agent to make two tool calls in the typosquatting case, eating
+  into the per-turn budget and making the prompt harder to follow.
+- **Trim the response payload aggressively.**  The crates.io exact
+  endpoint returns *every* version of the crate ( `serde` has 250+ )
+  plus full categories and keyword bodies.  We cap to the five most
+  recent versions and drop fields the panel does not need
+  ( `crate.id`, `crate.links`, per-version `dl_path`, audit dates,
+  `crate.recent_downloads_period` ).  Keeps a typical response
+  under ~2 KB.
+- **No auth, public API only.**  The crates.io endpoints used here
+  are anonymous and rate-limited per IP, not per token.  Wiring in
+  a token would have implied a new secret, a new failure mode if
+  the secret expires, and no benefit ( anonymous quota is generous
+  and our per-turn budget caps the call rate anyway ).
+- **Validate the crate name before any HTTP call.**  The Cargo
+  grammar is much narrower than the URL-path safe set, so any
+  shell-metacharacter or traversal-style input is structurally
+  invalid and would only ever come from a model hallucination or a
+  prompt-injected diff.  Reject it early, never make the request.
+
+### Follow-ups
+
+- Re-run the audit on `eced77affc26` after this change lands and
+  confirm the Supply Chain Inspector now calls `crates_io_lookup`
+  for `httpdate`, sees the ~125 M downloads, and either drops the
+  typosquatting concern outright or downgrades it to low confidence.
+- Consider extending the same pattern to npm ( `https://registry.npmjs.org/{name}` )
+  and PyPI ( `https://pypi.org/pypi/{name}/json` ) when the next
+  false-positive lands on a Node or Python diff.  Each ecosystem's
+  registry has a comparable anonymous JSON endpoint; the fan-out is
+  three short wands rather than three rewrites.  Defer until we
+  actually see the false positive — speculative tooling tends to
+  rot.
+- The wand is offline-unfriendly ( no local fallback ) by design —
+  crates.io has no equivalent of a shallow checkout — so a
+  network-isolated audit run will see the wand as `error`.  If we
+  ever sandbox audits with no outbound network, gate the wand
+  behind a config flag rather than letting it spam errors.
+

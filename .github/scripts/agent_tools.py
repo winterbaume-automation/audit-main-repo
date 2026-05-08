@@ -82,6 +82,21 @@ _REF_RE = re.compile(r"^[A-Za-z0-9_./~^@-]{1,200}$")
 # the worktree boundary; this matters for the API path.
 _PATH_RE = re.compile(r"^(?!/)[^\x00]{1,1024}$")
 
+# Cargo crate names are `[A-Za-z][A-Za-z0-9_-]*` up to 64 characters in
+# practice ( crates.io enforces 64 ).  Restricting the character set
+# here lets us safely interpolate the name into the crates.io URL path
+# and keeps obvious junk ( spaces, slashes, backticks ) from reaching
+# the API.
+_CRATE_NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{0,63}$")
+
+# crates.io requires every API client to send a descriptive User-Agent.
+# Anonymous requests with the default ``Python-urllib/x.y`` UA are
+# returned a 403.  Including a contact URL also matches the project's
+# data-access policy.
+_CRATES_IO_USER_AGENT = (
+    "winterbaume-audit ( https://github.com/winterbaume-automation/audit-main-repo )"
+)
+
 
 class WandError(RuntimeError):
     """Raised by a wand when both local and API backends fail.
@@ -140,6 +155,12 @@ def _validate_ref(ref: str) -> str:
         # `..` in valid refs, so this never blocks legitimate input.
         raise WandError(f"Invalid ref ( contains '..' ): {ref!r}")
     return ref
+
+
+def _validate_crate_name(name: str) -> str:
+    if not isinstance(name, str) or not _CRATE_NAME_RE.match(name):
+        raise WandError(f"Invalid crate name: {name!r}")
+    return name
 
 
 def _validate_path(path: str) -> str:
@@ -841,6 +862,126 @@ def _git_search_log_remote(
 
 
 # ---------------------------------------------------------------------------
+# Wand: crates_io_lookup
+#
+# A repeating false-positive class on Rust commits is the panel flagging
+# a perfectly legitimate crate ( e.g. ``httpdate``, 100 M+ downloads ) as
+# typosquatting because the name happens to resemble another package
+# ( ``http-date`` ).  This wand lets agents verify a crate's standing on
+# crates.io before they file the concern: an established crate with
+# millions of downloads, a published repository, and a multi-year
+# history is not a typosquat regardless of how it looks lexically.
+#
+# Behaviour: exact lookup first ( ``/api/v1/crates/{name}`` ).  On 404
+# fall back to the fuzzy search endpoint ( ``/api/v1/crates?q=…`` ) so
+# the agent learns what the *real* crate they almost matched is.  This
+# is the single most useful piece of information when triaging a
+# suspected typosquat, because it surfaces the legitimate name the
+# attacker would have been imitating.
+# ---------------------------------------------------------------------------
+
+def _crates_io_get(url: str) -> dict:
+    """GET a crates.io API endpoint.  Returns ``{"_status": 404}`` on a
+    404 ( so the lookup-then-search flow can branch ) and raises
+    ``WandError`` for any other failure."""
+    import _http as http
+
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": _CRATES_IO_USER_AGENT,
+    }
+    try:
+        resp = http.get(url, headers=headers, timeout=API_TIMEOUT_SECS)
+    except http.HTTPError as e:
+        raise WandError(f"network error ( crates.io ): {e}") from e
+    if resp.status_code == 404:
+        return {"_status": 404}
+    if not resp.ok:
+        raise WandError(f"crates.io {resp.status_code}: {resp.text[:200]}")
+    try:
+        return resp.json()
+    except Exception as e:
+        raise WandError(f"non-JSON crates.io response: {e}") from e
+
+
+def _summarise_crate(c: dict) -> dict:
+    """Trim a crate metadata blob to the fields a panel agent needs to
+    judge legitimacy.  Drops large arrays ( all versions, all
+    categories' full bodies ) that would otherwise bloat the tool
+    result and crowd the model's context."""
+    return {
+        "name": c.get("name"),
+        "description": c.get("description"),
+        "downloads": c.get("downloads"),
+        "recent_downloads": c.get("recent_downloads"),
+        "max_version": c.get("max_version") or c.get("newest_version"),
+        "max_stable_version": c.get("max_stable_version"),
+        "created_at": c.get("created_at"),
+        "updated_at": c.get("updated_at"),
+        "repository": c.get("repository"),
+        "homepage": c.get("homepage"),
+        "documentation": c.get("documentation"),
+        "keywords": c.get("keywords"),
+        "categories": c.get("categories"),
+    }
+
+
+def _wand_crates_io_lookup(_ctx: WandContext, args: dict) -> dict:
+    name = args.get("name")
+    if not isinstance(name, str):
+        raise WandError("crates_io_lookup requires `name`")
+    name = name.strip()
+    _validate_crate_name(name)
+
+    quoted = urllib.parse.quote(name, safe="")
+    body = _crates_io_get(f"https://crates.io/api/v1/crates/{quoted}")
+    if body.get("_status") != 404:
+        crate = body.get("crate") or {}
+        versions = body.get("versions") or []
+        version_summary: list[dict] = []
+        for v in versions[:5]:
+            version_summary.append({
+                "num": v.get("num"),
+                "created_at": v.get("created_at"),
+                "yanked": v.get("yanked"),
+                "downloads": v.get("downloads"),
+                "license": v.get("license"),
+            })
+        return {
+            "source": "crates_io",
+            "name": name,
+            "found": True,
+            "crate": _summarise_crate(crate),
+            "recent_versions": version_summary,
+        }
+
+    # Fuzzy-search fallback: surface up to 10 lexically similar crates so
+    # the agent can identify the *real* crate the suspected typosquat
+    # would be imitating.
+    search_url = (
+        "https://crates.io/api/v1/crates?"
+        + urllib.parse.urlencode({"q": name, "per_page": "10"})
+    )
+    body = _crates_io_get(search_url)
+    if body.get("_status") == 404:
+        return {
+            "source": "crates_io",
+            "name": name,
+            "found": False,
+            "similar": [],
+            "note": "crate not found and fuzzy search returned 404",
+        }
+    crates = body.get("crates") or []
+    similar = [_summarise_crate(c) for c in crates[:10]]
+    return {
+        "source": "crates_io",
+        "name": name,
+        "found": False,
+        "similar": similar,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Tool schemas ( OpenAI function-calling )
 # ---------------------------------------------------------------------------
 
@@ -971,6 +1112,39 @@ WAND_SCHEMAS: list[dict] = [
     {
         "type": "function",
         "function": {
+            "name": "crates_io_lookup",
+            "description": (
+                "Look up a Rust crate on crates.io to verify whether a "
+                "Cargo dependency is legitimate.  Tries an exact-name "
+                "lookup first; on a miss, falls back to a fuzzy search "
+                "and returns up to ten similarly-named crates.  Use this "
+                "BEFORE flagging a Cargo dependency as typosquatting — "
+                "an established crate with millions of downloads, a "
+                "published repository, and a multi-year history is "
+                "almost certainly genuine even when the name looks "
+                "unusual.  Conversely, an unknown name whose fuzzy "
+                "match is a popular crate is a strong typosquatting "
+                "signal."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": (
+                            "Crate name as it appears in Cargo.toml or "
+                            "Cargo.lock ( e.g. `serde`, `httpdate` )."
+                        ),
+                    },
+                },
+                "required": ["name"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "git_search_log",
             "description": (
                 "Search commit messages on the monitored repo.  Use to look "
@@ -1012,6 +1186,7 @@ _DEFAULT_WANDS: dict[str, WandFn] = {
     "git_show_file": _wand_git_show_file,
     "git_diff_refs": _wand_git_diff_refs,
     "git_search_log": _wand_git_search_log,
+    "crates_io_lookup": _wand_crates_io_lookup,
 }
 
 

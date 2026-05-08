@@ -20,6 +20,7 @@ from agent_tools import (
     WandContext,
     WandError,
     WandRegistry,
+    _validate_crate_name,
     _validate_path,
     _validate_ref,
     build_default_registry,
@@ -543,6 +544,147 @@ def test_git_search_log_rejects_empty_query():
     ctx = WandContext(monitored_repo="o/r")
     with pytest.raises(WandError):
         agent_tools._wand_git_search_log(ctx, {"query": ""})
+
+
+# ---------------------------------------------------------------------------
+# crates_io_lookup
+# ---------------------------------------------------------------------------
+
+def test_validate_crate_name_accepts_real_names():
+    assert _validate_crate_name("serde") == "serde"
+    assert _validate_crate_name("httpdate") == "httpdate"
+    assert _validate_crate_name("tokio-util") == "tokio-util"
+    assert _validate_crate_name("rust_decimal") == "rust_decimal"
+
+
+def test_validate_crate_name_rejects_garbage():
+    for bad in ("", " ", "1bad", "../etc", "foo bar", "name?", "a" * 65):
+        with pytest.raises(WandError):
+            _validate_crate_name(bad)
+
+
+def test_crates_io_lookup_returns_metadata_on_exact_match(monkeypatch):
+    """Exact lookup ( e.g. ``httpdate`` ) returns the established crate's
+    full metadata so the panel can see the download count, repository,
+    and creation date — the data needed to clear a false typosquatting
+    flag."""
+    ctx = WandContext(monitored_repo="o/r")
+
+    seen: list[str] = []
+
+    def get_handler(url, headers, timeout):
+        seen.append(url)
+        assert "/api/v1/crates/httpdate" in url
+        # crates.io requires a non-default UA; the wand sets one.
+        assert "User-Agent" in headers
+        return FakeResponse(200, json.dumps({
+            "crate": {
+                "name": "httpdate",
+                "description": "HTTP date parsing and formatting",
+                "downloads": 123_456_789,
+                "recent_downloads": 5_000_000,
+                "max_version": "1.0.3",
+                "max_stable_version": "1.0.3",
+                "created_at": "2016-04-08T00:00:00Z",
+                "updated_at": "2024-09-01T00:00:00Z",
+                "repository": "https://github.com/pyfisch/httpdate",
+                "homepage": None,
+                "documentation": "https://docs.rs/httpdate",
+                "keywords": ["http", "date"],
+                "categories": ["date-and-time"],
+            },
+            "versions": [
+                {
+                    "num": "1.0.3",
+                    "created_at": "2024-09-01T00:00:00Z",
+                    "yanked": False,
+                    "downloads": 100_000,
+                    "license": "MIT OR Apache-2.0",
+                },
+            ],
+        }))
+
+    _stub_http(monkeypatch, get_handler=get_handler)
+    out = agent_tools._wand_crates_io_lookup(ctx, {"name": "httpdate"})
+    assert out["found"] is True
+    assert out["source"] == "crates_io"
+    assert out["crate"]["downloads"] == 123_456_789
+    assert out["crate"]["repository"] == "https://github.com/pyfisch/httpdate"
+    assert out["recent_versions"][0]["num"] == "1.0.3"
+    # Only the exact endpoint should have been hit — no fuzzy fallback.
+    assert len(seen) == 1
+
+
+def test_crates_io_lookup_falls_back_to_fuzzy_search_on_404(monkeypatch):
+    """A genuine typosquat: the named crate does not exist, so the wand
+    fans out to the search endpoint and surfaces lexically similar
+    crates ( the *real* crate the typosquat is imitating )."""
+    ctx = WandContext(monitored_repo="o/r")
+
+    def get_handler(url, headers, timeout):
+        if "/api/v1/crates/htttp-date" in url:
+            return FakeResponse(404, "{}")
+        assert "q=htttp-date" in url and "per_page=10" in url
+        return FakeResponse(200, json.dumps({
+            "crates": [
+                {
+                    "name": "http-date",
+                    "downloads": 50_000,
+                    "max_version": "0.5.0",
+                    "created_at": "2020-01-01T00:00:00Z",
+                    "repository": "https://github.com/example/http-date",
+                },
+                {
+                    "name": "httpdate",
+                    "downloads": 123_456_789,
+                    "max_version": "1.0.3",
+                    "created_at": "2016-04-08T00:00:00Z",
+                    "repository": "https://github.com/pyfisch/httpdate",
+                },
+            ],
+        }))
+
+    _stub_http(monkeypatch, get_handler=get_handler)
+    out = agent_tools._wand_crates_io_lookup(ctx, {"name": "htttp-date"})
+    assert out["found"] is False
+    assert out["source"] == "crates_io"
+    assert len(out["similar"]) == 2
+    assert out["similar"][1]["name"] == "httpdate"
+    assert out["similar"][1]["downloads"] == 123_456_789
+
+
+def test_crates_io_lookup_validates_name(monkeypatch):
+    """Invalid crate names ( shell metacharacters, traversal, empty ) are
+    rejected before any HTTP traffic is generated.  The stubbed http
+    raises if it is called at all, so a regression that drops the
+    validator would fail this test loudly."""
+    ctx = WandContext(monitored_repo="o/r")
+    _stub_http(monkeypatch)  # both handlers None — any call asserts
+    for bad in ("", " ", "../etc", "foo bar", "name?", "a" * 100):
+        with pytest.raises(WandError):
+            agent_tools._wand_crates_io_lookup(ctx, {"name": bad})
+
+
+def test_crates_io_lookup_requires_name():
+    ctx = WandContext(monitored_repo="o/r")
+    with pytest.raises(WandError):
+        agent_tools._wand_crates_io_lookup(ctx, {})
+
+
+def test_crates_io_lookup_wired_into_default_registry(monkeypatch):
+    """The new wand is exposed through the default registry — agents
+    can call it by name without any further wiring."""
+    monkeypatch.delenv("AUDIT_DISABLE_WANDS", raising=False)
+    reg = build_default_registry(
+        monitored_repo="o/r",
+        monitored_token="",
+        monitored_repo_path=None,
+        audited_sha=None,
+    )
+    assert "crates_io_lookup" in reg.wands
+    assert any(
+        s["function"]["name"] == "crates_io_lookup" for s in reg.schemas()
+    )
 
 
 # ---------------------------------------------------------------------------

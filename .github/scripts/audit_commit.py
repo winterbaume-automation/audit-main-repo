@@ -187,7 +187,15 @@ Look specifically for:
   Cargo.toml / pom.xml / Gemfile / composer.json / …): are they plausible?
   Do their names resemble well-known packages with a subtle typo
   (typosquatting)?  Are they pinned to an unexpectedly old or bleeding-edge
-  version?
+  version?  For Rust / Cargo dependencies you have the `crates_io_lookup`
+  tool — call it BEFORE filing a typosquatting concern, because many
+  legitimate crates have terse names that lexically resemble other crates
+  ( e.g. `httpdate` vs `http-date`, `time` vs `chrono`, `bytes` vs `byteorder` ).
+  An established crate ( millions of downloads, a published repository,
+  a multi-year history ) is not a typosquat.  Only flag typosquatting on
+  a Cargo dep when crates.io says either "not found" *or* the named crate
+  has marginal popularity AND a fuzzy-match candidate is an obviously
+  bigger, longer-lived crate.
 - Lockfile manipulation: hashes or resolved URLs changed without a
   corresponding manifest change; checksums removed or set to obviously wrong
   values.
