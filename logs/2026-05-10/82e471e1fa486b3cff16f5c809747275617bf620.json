@@ -1,0 +1,288 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-10T23:38:43.607597+00:00",
+  "commit_sha": "82e471e1fa486b3cff16f5c809747275617bf620",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: specify `--allow-dirty` to cargo dist",
+  "commit_timestamp": "2026-05-11T08:37:53+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "ce5f73b3b82d4af31424fd290c9397266bbbf0e5"
+  ],
+  "api_truncated": false,
+  "diff_chars": 607,
+  "estimated_tokens": 151,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 607 chars <= threshold 400,000.",
+    "total_patch_chars": 607,
+    "files": [
+      {
+        "path": ".github/workflows/release.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 607,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises concerns about the potential for executing uncommitted code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: I agree with the concern regarding the '--allow-dirty' flag, as it indeed poses a risk by allowing execution of uncommitted changes that may include malicious code."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The addition of the '--allow-dirty' flag in the command increases the risk of executing untracked code, which could be exploited for malicious purposes, aligning with the prior analysis."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "auth_downgrade",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag may inadvertently lower the security posture by permitting the execution of uncommitted code, which could bypass normal review and auditing processes.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I concur with both prior analyses regarding the risks associated with the '--allow-dirty' flag, as it indeed allows for the execution of potentially harmful uncommitted code."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises significant concerns about the potential for executing untracked and unreviewed code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises concerns about the potential for executing uncommitted code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: I agree with the concern regarding the '--allow-dirty' flag, as it indeed poses a risk by allowing execution of uncommitted changes that may include malicious code.",
+          "Integrity Analyst auth_downgrade: I concur with both prior analyses regarding the risks associated with the '--allow-dirty' flag, as it indeed allows for the execution of potentially harmful uncommitted code."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises significant concerns about the potential for executing untracked and unreviewed code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "auth_downgrade",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag may inadvertently lower the security posture by permitting the execution of uncommitted code, which could bypass normal review and auditing processes.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I agree with the concerns raised about the '--allow-dirty' flag, as it poses a significant risk by allowing the execution of uncommitted code that may not have undergone proper review."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises significant concerns about the potential for executing untracked and unreviewed code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises concerns about the potential for executing uncommitted code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: I agree with the concern regarding the '--allow-dirty' flag, as it indeed poses a risk by allowing execution of uncommitted changes that may include malicious code.",
+          "Integrity Analyst auth_downgrade: I concur with both prior analyses regarding the risks associated with the '--allow-dirty' flag, as it indeed allows for the execution of potentially harmful uncommitted code."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises significant concerns about the potential for executing untracked and unreviewed code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "auth_downgrade",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag may inadvertently lower the security posture by permitting the execution of uncommitted code, which could bypass normal review and auditing processes.",
+            "evidence": "+          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --allow-dirty --output-format=json > plan-dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I agree with the concerns raised about the '--allow-dirty' flag, as it poses a significant risk by allowing the execution of uncommitted code that may not have undergone proper review."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag raises significant concerns about the potential for executing untracked and unreviewed code, which could be exploited for malicious purposes."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "high",
+        "summary": "Introduction of '--allow-dirty' flag poses significant security risks.",
+        "findings": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "auth_downgrade",
+            "file": ".github/workflows/release.yml",
+            "line": 49,
+            "description": "The addition of the '--allow-dirty' flag may inadvertently lower the security posture by permitting the execution of uncommitted code, which could bypass normal review and auditing processes.",
+            "raised_by": [
+              "Integrity Analyst"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "high",
+    "summary": "Introduction of '--allow-dirty' flag poses significant security risks.",
+    "findings": [
+      {
+        "type": "hidden_backdoor",
+        "file": ".github/workflows/release.yml",
+        "line": 49,
+        "description": "The addition of the '--allow-dirty' flag could allow the 'dist' command to run with uncommitted changes, potentially enabling the execution of malicious code that is not tracked in the repository.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "auth_downgrade",
+        "file": ".github/workflows/release.yml",
+        "line": 49,
+        "description": "The addition of the '--allow-dirty' flag may inadvertently lower the security posture by permitting the execution of uncommitted code, which could bypass normal review and auditing processes.",
+        "raised_by": [
+          "Integrity Analyst"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/32"
+}
