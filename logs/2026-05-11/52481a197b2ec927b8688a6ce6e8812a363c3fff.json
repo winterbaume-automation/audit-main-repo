@@ -1,0 +1,108 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-11T10:49:53.599393+00:00",
+  "commit_sha": "52481a197b2ec927b8688a6ce6e8812a363c3fff",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: cosmetic title correction",
+  "commit_timestamp": "2026-05-11T02:11:12Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "7425d7911b43e15be43a992ccff6266710527169"
+  ],
+  "api_truncated": false,
+  "diff_chars": 149,
+  "estimated_tokens": 37,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 149 chars <= threshold 400,000.",
+    "total_patch_chars": 149,
+    "files": [
+      {
+        "path": ".github/workflows/skill-slug-drift.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 149,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff only involve a modification of the workflow name, which does not indicate any malicious intent or hidden functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict is agreed upon."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are limited to a modification of the workflow name, which does not suggest any malicious activity or alterations to functionality."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I agree with both prior analysts that the changes are limited to a modification of the workflow name and do not indicate any integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff only shows a change in the name of the workflow, which does not affect the security posture or introduce any integrity issues."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised regarding the workflow name modification.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised regarding the workflow name modification.",
+    "findings": []
+  },
+  "issue_url": null
+}
