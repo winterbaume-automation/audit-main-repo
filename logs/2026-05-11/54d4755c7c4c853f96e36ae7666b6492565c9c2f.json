@@ -1,0 +1,109 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-11T08:54:33.328108+00:00",
+  "commit_sha": "54d4755c7c4c853f96e36ae7666b6492565c9c2f",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "docs: recommend pre-built server binaries over cargo run",
+  "commit_timestamp": "2026-05-11T17:53:05+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "736cec78b9b454a707558f7ff64e6a4c6471666f"
+  ],
+  "api_truncated": false,
+  "diff_chars": 854,
+  "estimated_tokens": 213,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 854 chars <= threshold 400,000.",
+    "total_patch_chars": 854,
+    "files": [
+      {
+        "path": "docs/guide/server-mode.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "documentation"
+        ],
+        "patch_chars": 854,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff are related to documentation updates for starting the server and do not introduce any suspicious code or functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict is agreed upon."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes are purely documentation updates regarding how to start the server, with no alterations to code or dependencies that would raise security concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both Backdoor Hunter and Supply Chain Inspector's clean verdicts."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are solely related to documentation on how to start the server, with no code changes or security implications present."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "Documentation updates for starting the server are clean.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "Documentation updates for starting the server are clean.",
+    "findings": []
+  },
+  "issue_url": null
+}
