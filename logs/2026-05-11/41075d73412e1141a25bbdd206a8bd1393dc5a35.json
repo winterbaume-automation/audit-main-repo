@@ -1,0 +1,58 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-11T16:55:27.561371+00:00",
+  "commit_sha": "41075d73412e1141a25bbdd206a8bd1393dc5a35",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: update dependencies",
+  "commit_timestamp": "2026-05-12T01:55:01+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "4a7f7f41ff18d0002590596c2b1d1379b2620ad7"
+  ],
+  "api_truncated": false,
+  "diff_chars": 355310,
+  "estimated_tokens": 88827,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 355,310 chars <= threshold 400,000.",
+    "total_patch_chars": 355310,
+    "files": [
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 355310,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: API error 400: {\n  \"error\": {\n    \"message\": \"This model's maximum context length is 128000 tokens. However, your messages resulted in 131534 tokens (130896 in the messages, 638 in the functions). Please reduce the length of the messages or functions.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"messages\",\n    \"code\": \"context_length_exceeded\"\n  }\n}",
+    "findings": []
+  },
+  "issue_url": null
+}
