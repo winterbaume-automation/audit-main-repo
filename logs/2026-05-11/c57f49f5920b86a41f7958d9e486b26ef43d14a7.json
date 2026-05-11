@@ -1,0 +1,444 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-11T01:16:53.499204+00:00",
+  "commit_sha": "c57f49f5920b86a41f7958d9e486b26ef43d14a7",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix: even more --allow-dirty's",
+  "commit_timestamp": "2026-05-11T10:16:18+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "3e92f4da23c9b70b00facd14a3e8fc0ae9bf9ee5"
+  ],
+  "api_truncated": false,
+  "diff_chars": 1855,
+  "estimated_tokens": 463,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 1,855 chars <= threshold 400,000.",
+    "total_patch_chars": 1855,
+    "files": [
+      {
+        "path": ".github/workflows/release.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 1855,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I confirm the concerns raised about the '--allow-dirty' flag as it poses a significant risk to the integrity of the build process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I confirm the concerns raised about the '--allow-dirty' flag as it poses a significant risk to the integrity of the build process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I confirm the concerns raised about the '--allow-dirty' flag as it poses a significant risk to the integrity of the build process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "install_hook_abuse",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I confirm the concerns raised about the '--allow-dirty' flag as it poses a significant risk to the integrity of the build process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag in multiple places may allow the build process to proceed with uncommitted changes, potentially enabling the inclusion of unauthorized modifications in the artifacts.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --allow-dirty --output-format=json ${{ matrix.dist_args }} > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "evidence": "+          dist build ${{ needs.plan.outputs.tag-flag }} --allow-dirty --output-format=json \"--artifacts=global\" > dist-manifest.json"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "evidence": "+          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --allow-dirty --output-format=json > dist-manifest.json"
+          }
+        ],
+        "responses_to_prior": [
+          "I confirm the concerns raised about the '--allow-dirty' flag as it poses a significant risk to the integrity of the build process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of the '--allow-dirty' flag in multiple build commands raises significant concerns about the integrity of the build process, as it permits uncommitted changes to be included in the artifacts, potentially facilitating the introduction of malicious code."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "high",
+        "summary": "Introduction of '--allow-dirty' flag raises significant security concerns regarding unreviewed code in build artifacts.",
+        "findings": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 99,
+            "description": "The addition of the '--allow-dirty' flag may allow the build process to proceed with uncommitted changes, potentially enabling unauthorized modifications in the artifacts.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 146,
+            "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/release.yml",
+            "line": 193,
+            "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "high",
+    "summary": "Introduction of '--allow-dirty' flag raises significant security concerns regarding unreviewed code in build artifacts.",
+    "findings": [
+      {
+        "type": "hidden_backdoor",
+        "file": ".github/workflows/release.yml",
+        "line": 99,
+        "description": "The addition of the '--allow-dirty' flag may allow the build process to proceed with uncommitted changes, potentially enabling unauthorized modifications in the artifacts.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "hidden_backdoor",
+        "file": ".github/workflows/release.yml",
+        "line": 146,
+        "description": "The '--allow-dirty' flag allows builds to include uncommitted changes, which could be exploited to introduce malicious code without detection.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "hidden_backdoor",
+        "file": ".github/workflows/release.yml",
+        "line": 193,
+        "description": "The use of the '--allow-dirty' flag in the host command could lead to the deployment of unreviewed code, posing a security risk.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/34"
+}
