@@ -1,0 +1,306 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-11T05:54:31.867985+00:00",
+  "commit_sha": "9c6d86ee2f86724ee7fc1e6b7e9a195d1a62ad45",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: add OGP matter",
+  "commit_timestamp": "2026-05-11T14:53:47+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "6b26b75eab91509280917cc2ef084d5690e9beb9"
+  ],
+  "api_truncated": false,
+  "diff_chars": 4978,
+  "estimated_tokens": 1244,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 4,978 chars <= threshold 400,000.",
+    "total_patch_chars": 4978,
+    "files": [
+      {
+        "path": ".github/workflows/deploy-docs.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 233,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "docs/.vitepress/config.mts",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 4745,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "docs/public/ogp.jpg",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 0,
+        "is_binary": true,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "binary_change",
+      "path": "docs/public/ogp.jpg",
+      "description": "Binary file added (NUL bytes detected in blob); content is not visible to the LLM panel.  Verify the blob (sha=cec54da8e1590294291d8512941ad25f1a95c8aa) by hand."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the commit appear to be legitimate updates to the documentation site configuration and deployment workflow, with no indications of hidden backdoors, logic bombs, or other malicious intent."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "secret_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is set to a specific URL, which could potentially expose sensitive information if not handled properly in the deployment process.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I found a concern regarding the exposure of an environment variable that could lead to secret exfiltration."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "While the changes appear to be legitimate, the introduction of an environment variable that could expose sensitive information raises concerns about potential secret exfiltration."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is set to a specific URL, which could potentially expose sensitive information if not handled properly in the deployment process.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "responses_to_prior": [
+          "I agree with the Supply Chain Inspector's concern regarding the exposure of the environment variable, as it could lead to unintended information disclosure."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of the environment variable VITEPRESS_SITE_URL raises concerns about potential exposure of sensitive information, which warrants further scrutiny despite the overall legitimacy of the changes."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could be exploited if the deployment process does not properly secure or validate this variable.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The hardcoded environment variable could potentially expose sensitive information or be misused in the deployment process, raising concerns about the integrity of the changes."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "secret_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could expose sensitive information if not handled properly in the deployment process.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor concern: I agree with the concern regarding the hardcoded environment variable, as it could lead to potential exposure of sensitive information during the deployment process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of a hardcoded environment variable raises concerns about potential secret exfiltration, which warrants further scrutiny despite the overall legitimacy of the changes."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could expose sensitive information if not handled properly in the deployment process.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "responses_to_prior": [
+          "I concur with the concerns raised about the hardcoded environment variable, as it poses a risk of exposing sensitive information during deployment."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The hardcoded environment variable VITEPRESS_SITE_URL raises valid concerns about potential covert data exfiltration, necessitating careful handling to avoid unintended information disclosure."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could be exploited if the deployment process does not properly secure or validate this variable.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The hardcoded environment variable could potentially expose sensitive information or be misused in the deployment process, raising concerns about the integrity of the changes."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "secret_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could expose sensitive information if not handled properly in the deployment process.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor concern: I agree with the concern regarding the hardcoded environment variable, as it could lead to potential exposure of sensitive information during the deployment process."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of a hardcoded environment variable raises concerns about potential secret exfiltration, which warrants further scrutiny despite the overall legitimacy of the changes."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could expose sensitive information if not handled properly in the deployment process.",
+            "evidence": "env:\n          VITEPRESS_SITE_URL: https://winterbau.me/"
+          }
+        ],
+        "responses_to_prior": [
+          "I agree with the concerns raised about the hardcoded environment variable, as it poses a risk of exposing sensitive information during deployment."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The hardcoded environment variable VITEPRESS_SITE_URL raises valid concerns about potential covert data exfiltration, necessitating careful handling to avoid unintended information disclosure."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "medium",
+        "summary": "Hardcoded environment variable raises concerns about potential information exposure.",
+        "findings": [
+          {
+            "type": "secret_exfiltration",
+            "file": ".github/workflows/deploy-docs.yml",
+            "line": 47,
+            "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could expose sensitive information if not handled properly in the deployment process.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "medium",
+    "summary": "Hardcoded environment variable raises concerns about potential information exposure.",
+    "findings": [
+      {
+        "type": "secret_exfiltration",
+        "file": ".github/workflows/deploy-docs.yml",
+        "line": 47,
+        "description": "The environment variable VITEPRESS_SITE_URL is hardcoded with a specific URL, which could expose sensitive information if not handled properly in the deployment process.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/38"
+}
