@@ -1,0 +1,1648 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-12T02:33:34.032518+00:00",
+  "commit_sha": "e1d78c1834bf17ec04ea127cc7e7b5b7dbde5d10",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: update API coverage",
+  "commit_timestamp": "2026-05-12T11:33:05+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "535016a3022b3cd564e2a491491d2f90dcc86ce2"
+  ],
+  "api_truncated": false,
+  "diff_chars": 835772,
+  "estimated_tokens": 208943,
+  "routing": {
+    "mode": "focused",
+    "reason": "Total patch 835,772 > threshold 400,000; restricted to critical+high (+ cross-refs), 0 chars.",
+    "total_patch_chars": 835772,
+    "files": [
+      {
+        "path": ".agents/docs/API_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 61829,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TERRAFORM_CONVERTER_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 678209,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 20810,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-accessanalyzer/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-account/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-acm/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 764,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-acmpca/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-aiops/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-amp/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-amplify/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-amplifybackend/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-amplifyuibuilder/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-apigateway/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 989,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-apigatewaymanagement/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 760,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-apigatewayv2/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 766,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appconfig/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appconfigdata/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appfabric/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appflow/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appintegrations/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-applicationautoscaling/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-applicationcostprofiler/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-applicationdiscoveryservice/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-applicationinsights/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-applicationsignals/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appmesh/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-apprunner/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-appsync/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-arczonalshift/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-artifact/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-athena/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 764,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-auditmanager/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-autoscaling/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-autoscalingplans/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-backup/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 768,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-backupgateway/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-backupsearch/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-batch/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 765,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-bcmdashboards/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-bcmdataexports/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-bcmrecommendedactions/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-bedrock/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 766,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-bedrockagent/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-billing/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-braket/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-budgets/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-chatbot/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-chimesdkmeetings/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloud9/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-clouddirectory/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudformation/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudfront/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 766,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudfrontkeyvaluestore/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudhsmv2/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudsearchdomain/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudtrail/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 764,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudtraildata/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudwatch/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 879,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cloudwatchlogs/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 883,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codeartifact/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codebuild/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codecommit/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codedeploy/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codegurureviewer/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codegurusecurity/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codepipeline/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-codestarnotifications/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cognitoidentity/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cognitoidentityprovider/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 991,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-cognitosync/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-comprehend/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 765,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-config/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-connect/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 765,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-connectcampaigns/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-connectcontactlens/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-connectparticipant/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-controlcatalog/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-costandusagereport/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-costexplorer/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-costoptimizationhub/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-databasemigration/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 766,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-databrew/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-datapipeline/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-datasync/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-dax/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-directconnect/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-directory/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 761,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-dlm/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 759,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-dsql/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 762,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-dynamodb/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 879,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-dynamodbstreams/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 758,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-ebs/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 760,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-ec2/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 884,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-ec2instanceconnect/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 759,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-ecr/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 878,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-ecs/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 765,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-efs/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-eks/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 764,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-elasticache/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 763,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": true
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No files in commit; nothing to review.",
+    "findings": []
+  },
+  "issue_url": null
+}
