@@ -1,0 +1,1388 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-12T16:37:38.169203+00:00",
+  "commit_sha": "c696a8e4d4fbe7068d844841f80cba485bc4214d",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "terraform: add 36 converters across 6 services",
+  "commit_timestamp": "2026-05-11T16:00:09Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "22e1f4cc58d4d0d52dc02173f10793e59dc33784"
+  ],
+  "api_truncated": false,
+  "diff_chars": 244951,
+  "estimated_tokens": 61237,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 244,951 chars <= threshold 400,000.",
+    "total_patch_chars": 244951,
+    "files": [
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 4951,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-server/src/main.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6392,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/bedrockagent.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 8930,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/eks.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5956,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/elasticache.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5779,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/emr.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6288,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/lakeformation.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3982,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/redshift.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5309,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/bedrockagent.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 42385,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/eks.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 36635,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 17536,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/emr.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 34239,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 25674,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 17708,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/bedrockagent.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6357,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/eks.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3693,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/elasticache.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4718,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/emr.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3652,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/lakeformation.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1589,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/redshift.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3178,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not contain any suspicious code patterns or modifications that indicate the presence of backdoors, logic bombs, or other malicious functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff appear to be legitimate updates to resource definitions and do not indicate any supply chain integrity issues."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications.",
+          "Supply Chain Inspector clean verdict: I also concur with the findings that the changes appear legitimate."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications.",
+          "Supply Chain Inspector clean verdict: I also concur with the findings that the changes appear legitimate."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications.",
+          "Supply Chain Inspector clean verdict: I also concur with the findings that the changes appear legitimate."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications.",
+          "Supply Chain Inspector clean verdict: I also concur with the findings that the changes appear legitimate."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications.",
+          "Supply Chain Inspector clean verdict: I also concur with the findings that the changes appear legitimate."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for user-group associations; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for global replication groups; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for reserved cache nodes; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_elasticache for serverless caches; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for data cells filters; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "evidence": "let warn_msg = \"no state slot in winterbaume_lakeformation for opt-ins; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "evidence": "let warn_msg = \"aws_redshift_data_share_consumer_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_access is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "evidence": "let warn_msg = \"aws_redshift_endpoint_authorization is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "evidence": "let warn_msg = \"aws_redshift_integration is not tracked by redshift state; inject is a no-op\".to_string();"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "evidence": "let warn_msg = \"aws_redshift_snapshot_schedule_association is not tracked by redshift state; inject is a no-op\".to_string();"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the diff does not contain any suspicious patterns or modifications.",
+          "Supply Chain Inspector clean verdict: I also concur with the findings that the changes appear legitimate."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The presence of multiple converters that indicate they have no backing state slots raises significant concerns about the auditability and traceability of changes made to these resources. This could lead to potential integrity issues as changes may go untracked, making it difficult to hold parties accountable for modifications."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "high",
+        "summary": "Multiple converters lack backing state slots, raising auditability concerns.",
+        "findings": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+            "line": 58,
+            "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+            "line": 29,
+            "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+            "line": 268,
+            "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "high",
+    "summary": "Multiple converters lack backing state slots, raising auditability concerns.",
+    "findings": [
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+        "line": 58,
+        "description": "The converter for `aws_elasticache_user_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user groups.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+        "line": 58,
+        "description": "The converter for `aws_elasticache_user_group_association` also indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to user group associations.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+        "line": 58,
+        "description": "The converter for `aws_elasticache_global_replication_group` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to global replication groups.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+        "line": 58,
+        "description": "The converter for `aws_elasticache_reserved_cache_node` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to reserved cache nodes.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/elasticache.rs",
+        "line": 58,
+        "description": "The converter for `aws_elasticache_serverless_cache` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to serverless caches.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+        "line": 29,
+        "description": "The converter for `aws_lakeformation_data_cells_filter` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data cells filters.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/lakeformation.rs",
+        "line": 29,
+        "description": "The converter for `aws_lakeformation_opt_in` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to opt-ins.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "line": 268,
+        "description": "The converter for `aws_redshift_data_share_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share authorizations.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "line": 268,
+        "description": "The converter for `aws_redshift_data_share_consumer_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to data share consumer associations.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "line": 268,
+        "description": "The converter for `aws_redshift_endpoint_access` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint access.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "line": 268,
+        "description": "The converter for `aws_redshift_endpoint_authorization` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to endpoint authorizations.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "line": 268,
+        "description": "The converter for `aws_redshift_integration` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to integrations.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-terraform/src/converters/redshift.rs",
+        "line": 268,
+        "description": "The converter for `aws_redshift_snapshot_schedule_association` indicates that it has no backing state slot, which means that any changes made to this resource will not be tracked or audited in the state. This could lead to a lack of accountability and visibility for changes made to snapshot schedule associations.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/41"
+}
