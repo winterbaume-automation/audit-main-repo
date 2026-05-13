@@ -1,0 +1,160 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-13T01:01:36.713652+00:00",
+  "commit_sha": "e5a50384dd305168709c64b63833adfda217322c",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Merge branch 'tf-coverage-heuristic-fixes'",
+  "commit_timestamp": "2026-05-13T10:01:12+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": true,
+  "parents": [
+    "95afc7654c58fc4816fc05453a316a6781513e95",
+    "5f740f7f29a633db374a6e5c284f975329b0da1f"
+  ],
+  "api_truncated": false,
+  "diff_chars": 873949,
+  "estimated_tokens": 218487,
+  "routing": {
+    "mode": "focused",
+    "reason": "Total patch 873,949 > threshold 400,000; restricted to critical+high (+ cross-refs), 0 chars.",
+    "total_patch_chars": 873949,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 10487,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TERRAFORM_CONVERTER_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 750252,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5199,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/skills/api-coverage/scripts/generate_terraform_converter_coverage.py",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9490,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/skills/api-coverage/scripts/generate_terraform_resource_coverage.py",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1393,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "docs/reference/services.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "documentation"
+        ],
+        "patch_chars": 513,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "docs/reference/terraform.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "documentation"
+        ],
+        "patch_chars": 96615,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": true
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No files in commit; nothing to review.",
+    "findings": []
+  },
+  "issue_url": null
+}
