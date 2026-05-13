@@ -1,0 +1,793 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-13T06:41:26.146758+00:00",
+  "commit_sha": "e588530fae3950715c504f13cdec14cdc04000bc",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: release {{crate_name}} v{{version}}",
+  "commit_timestamp": "2026-05-13T15:40:36+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "15d40e701e2ec401c904df8a4e6c0cb3ea4d771e"
+  ],
+  "api_truncated": false,
+  "diff_chars": 3891,
+  "estimated_tokens": 972,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 3,891 chars <= threshold 400,000.",
+    "total_patch_chars": 3891,
+    "files": [
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 907,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 2269,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-bedrock-flow-parser/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 187,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-core/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 172,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-iam-rule-eval/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 181,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-partiql/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 175,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-bedrock-flow-parser 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-core 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-iam-rule-eval 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-partiql 0.1.0 \u2192 0.2.0."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the commit involve updating package versions in the Cargo files, which is a common practice when maintaining dependencies. There are no indications of hidden backdoors, logic bombs, or any other malicious modifications."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' and its associated dependencies have very low download counts and recent updates, raising concerns about their legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: The packages have low download counts and recent updates, indicating potential risks."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' and its associated dependencies have very low download counts and recent updates, raising concerns about their legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: The packages have low download counts and recent updates, indicating potential risks."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has a low download count and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has a low download count and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: The packages have low download counts and recent updates, indicating potential risks."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has a low download count and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: The packages have low download counts and recent updates, indicating potential risks."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has a low download count and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' has very low download counts (12) and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts (19) and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-accessanalyzer\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts (19) and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-account\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts (20) and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-bedrock-flow-parser\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has a low download count (364) and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-core\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-iam-rule-eval\""
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "evidence": "name = \"winterbaume-partiql\""
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: The packages have low download counts and recent updates, indicating potential risks."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes involve updating to new versions of packages that have very low download counts and recent updates, which raises concerns about their legitimacy and potential typosquatting."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "The concerns regarding typosquatting are valid given the low download counts and recent updates of the packages."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The updates to the package versions raise concerns about their legitimacy due to their low download counts and recent activity, indicating potential risks."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "medium",
+        "summary": "Multiple packages with low download counts and recent updates raise typosquatting concerns.",
+        "findings": [
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-core' has a low download count and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          },
+          {
+            "type": "typosquatting",
+            "file": "Cargo.toml",
+            "line": 1,
+            "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst",
+              "Backdoor Hunter"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "medium",
+    "summary": "Multiple packages with low download counts and recent updates raise typosquatting concerns.",
+    "findings": [
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume-accessanalyzer' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume-account' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume-bedrock-flow-parser' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume-core' has a low download count and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume-iam-rule-eval' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      },
+      {
+        "type": "typosquatting",
+        "file": "Cargo.toml",
+        "line": 1,
+        "description": "The package 'winterbaume-partiql' has very low download counts and recent updates, raising concerns about its legitimacy and potential typosquatting.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst",
+          "Backdoor Hunter"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/42"
+}
