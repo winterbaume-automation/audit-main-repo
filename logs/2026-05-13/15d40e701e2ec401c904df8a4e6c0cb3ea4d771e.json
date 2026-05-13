@@ -1,0 +1,140 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-13T02:57:12.438619+00:00",
+  "commit_sha": "15d40e701e2ec401c904df8a4e6c0cb3ea4d771e",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: add missing README.md and trademark notice.",
+  "commit_timestamp": "2026-05-13T11:56:23+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "134a916af1e4d2ea298257f594b01cf892bef9be"
+  ],
+  "api_truncated": false,
+  "diff_chars": 2829,
+  "estimated_tokens": 707,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 2,829 chars <= threshold 400,000.",
+    "total_patch_chars": 2829,
+    "files": [
+      {
+        "path": "crates/winterbaume-terraform/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 857,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/README.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 1108,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate/README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 864,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff consist mainly of added text in README files, which do not indicate any malicious intent or backdoor functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are limited to README modifications and do not indicate any malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes are purely informational and do not involve any code or dependency modifications that could compromise the integrity of the project."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior assessments that the changes are limited to README modifications and do not indicate any malicious intent or integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are solely informational in nature, with no alterations to code or dependencies that could affect the system's integrity."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "All changes are limited to informational updates in README files.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "All changes are limited to informational updates in README files.",
+    "findings": []
+  },
+  "issue_url": null
+}
