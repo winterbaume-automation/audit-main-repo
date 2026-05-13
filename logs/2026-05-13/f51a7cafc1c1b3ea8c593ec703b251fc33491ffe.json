@@ -1,0 +1,229 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-13T20:32:02.622841+00:00",
+  "commit_sha": "f51a7cafc1c1b3ea8c593ec703b251fc33491ffe",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: release {{crate_name}} v{{version}}",
+  "commit_timestamp": "2026-05-14T05:31:10+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "4e78f923e9a27b0bfa837d64c946c40873c8ead7"
+  ],
+  "api_truncated": false,
+  "diff_chars": 5634,
+  "estimated_tokens": 1408,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 5,634 chars <= threshold 400,000.",
+    "total_patch_chars": 5634,
+    "files": [
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 922,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 3834,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-dynamodb/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 176,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-sfn/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 171,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-workspaces/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 178,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-workspacesweb/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 181,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-xray/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 172,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-dynamodb 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-sfn 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-workspaces 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-workspacesweb 0.1.0 \u2192 0.2.0."
+    },
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-xray 0.1.0 \u2192 0.2.0."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the commit involve updating package versions in the Cargo files, which is a common practice for dependency management. There are no indications of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The updated dependencies in the Cargo files are legitimate and correspond to existing crates with recent activity and downloads. There are no signs of typosquatting or other integrity issues."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I agree with the findings that the changes are related to updating package versions, which is a standard practice in dependency management."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are solely version updates for existing dependencies, which do not raise any integrity concerns or indicate trust erosion."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "All changes are legitimate version updates with no integrity concerns.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "All changes are legitimate version updates with no integrity concerns.",
+    "findings": []
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/87"
+}
