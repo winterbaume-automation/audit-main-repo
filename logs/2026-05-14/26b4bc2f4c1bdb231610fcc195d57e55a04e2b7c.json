@@ -1,0 +1,156 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-14T12:16:11.134461+00:00",
+  "commit_sha": "26b4bc2f4c1bdb231610fcc195d57e55a04e2b7c",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix: coverage calculation logic",
+  "commit_timestamp": "2026-05-14T21:15:31+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "6f9911f7eee7c5021889942c4dddbb217a68a5fa"
+  ],
+  "api_truncated": false,
+  "diff_chars": 4491,
+  "estimated_tokens": 1122,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 4,491 chars <= threshold 400,000.",
+    "total_patch_chars": 4491,
+    "files": [
+      {
+        "path": ".agents/skills/update-readme/scripts/update_readme.py",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1492,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "README.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 650,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "docs/reference/services.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "documentation"
+        ],
+        "patch_chars": 1896,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "docs/services/tfstate-resource-models.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "documentation"
+        ],
+        "patch_chars": 453,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be related to documentation updates and regex modifications without any indications of hidden backdoors, logic bombs, or malicious intent."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are related to documentation updates and regex modifications without any indications of malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are primarily focused on documentation and regex adjustments, showing no signs of supply chain vulnerabilities or malicious alterations."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both Backdoor Hunter and Supply Chain Inspector's assessments that the changes are primarily documentation-related and do not indicate any malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are focused on documentation updates and regex changes, with no evidence of covert data exfiltration, audit trail reduction, cryptographic weakening, or authorization downgrades."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised; changes are documentation-related and benign.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised; changes are documentation-related and benign.",
+    "findings": []
+  },
+  "issue_url": null
+}
