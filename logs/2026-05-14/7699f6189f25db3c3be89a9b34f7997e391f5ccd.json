@@ -1,0 +1,418 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-14T20:59:41.072965+00:00",
+  "commit_sha": "7699f6189f25db3c3be89a9b34f7997e391f5ccd",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "terraform: add 71 converters across 7 services",
+  "commit_timestamp": "2026-05-11T14:20:28Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "46dd0e70dca4ac5534c20175d3539e6d0acddf1f"
+  ],
+  "api_truncated": false,
+  "diff_chars": 338283,
+  "estimated_tokens": 84570,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 338,283 chars <= threshold 400,000.",
+    "total_patch_chars": 338283,
+    "files": [
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 7019,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-server/src/main.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 17024,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/config.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 7862,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/datasync.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 10339,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/guardduty.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6937,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/pinpoint.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9267,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/rds.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 7346,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/servicecatalog.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 11584,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/ssm.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9842,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/config.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 39671,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/datasync.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 29959,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/guardduty.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 45691,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/pinpoint.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 11801,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/rds.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5603,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/servicecatalog.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 21597,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/ssm.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 48346,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/config.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5767,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/datasync.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 10165,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/guardduty.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3616,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/pinpoint.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 7600,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/rds.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4128,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/servicecatalog.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9855,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/ssm.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 7264,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not exhibit any signs of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. The modifications appear to be legitimate updates to resource definitions and converters without any suspicious patterns."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes do not exhibit signs of hidden backdoors or malicious patterns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are consistent with legitimate updates to resource definitions and converters, and there are no indicators of supply chain compromise."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I concur with the assessment that the changes do not exhibit signs of hidden backdoors or malicious patterns.",
+          "Supply Chain Inspector clean verdict: I agree that the modifications are consistent with legitimate updates and show no indicators of supply chain compromise."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be legitimate updates to resource definitions and converters, with no signs of trust erosion or covert malicious intent."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised; all changes appear legitimate.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised; all changes appear legitimate.",
+    "findings": []
+  },
+  "issue_url": null
+}
