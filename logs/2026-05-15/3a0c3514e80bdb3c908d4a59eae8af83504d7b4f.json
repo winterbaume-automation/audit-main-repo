@@ -1,0 +1,136 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-15T20:41:35.590581+00:00",
+  "commit_sha": "3a0c3514e80bdb3c908d4a59eae8af83504d7b4f",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "ec2: add 100 Terraform resource converters to close the EC2 coverage gap",
+  "commit_timestamp": "2026-05-11T11:36:06Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "3b42f93fe24b2ad530f76b6c7ae9f83265c8b109"
+  ],
+  "api_truncated": false,
+  "diff_chars": 769278,
+  "estimated_tokens": 192319,
+  "routing": {
+    "mode": "focused",
+    "reason": "Total patch 769,278 > threshold 400,000; restricted to critical+high (+ cross-refs), 0 chars.",
+    "total_patch_chars": 769278,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 8682,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5104,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-server/src/main.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 12907,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/ec2.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 117155,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/ec2.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 566366,
+        "is_binary": false,
+        "patch_omitted": true,
+        "patch_synthesised": true,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/ec2.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 59064,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": false,
+        "exclusion_reason": "below_focused_threshold"
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": true
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No files in commit; nothing to review.",
+    "findings": []
+  },
+  "issue_url": null
+}
