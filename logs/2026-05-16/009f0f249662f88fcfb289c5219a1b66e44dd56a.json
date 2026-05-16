@@ -1,0 +1,139 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-16T23:12:06.905863+00:00",
+  "commit_sha": "009f0f249662f88fcfb289c5219a1b66e44dd56a",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "api-coverage: add per-service Terraform resource-type coverage report",
+  "commit_timestamp": "2026-05-10T14:24:10Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "64dabeffe6fa688204be1c72adcd745d39e50f1a"
+  ],
+  "api_truncated": false,
+  "diff_chars": 66195,
+  "estimated_tokens": 16548,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 66,195 chars <= threshold 400,000.",
+    "total_patch_chars": 66195,
+    "files": [
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "added",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 45792,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/skills/api-coverage/SKILL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 5493,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/skills/api-coverage/scripts/generate_terraform_resource_coverage.py",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 14910,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff contains documentation and script changes related to Terraform resource coverage reporting, with no indications of hidden backdoors, logic bombs, obfuscated payloads, or any malicious intent."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are related to documentation and scripts for Terraform resource coverage reporting, with no malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes are focused on documentation and scripts for generating coverage reports, with no suspicious modifications to dependencies, CI/CD configurations, or other supply chain concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both Backdoor Hunter and Supply Chain Inspector's assessments that the changes are related to documentation and scripts for Terraform resource coverage reporting, with no indications of malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff consists solely of documentation and script changes aimed at improving Terraform resource coverage reporting, with no signs of trust-erosion or integrity issues."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in Terraform resource coverage reporting changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in Terraform resource coverage reporting changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
