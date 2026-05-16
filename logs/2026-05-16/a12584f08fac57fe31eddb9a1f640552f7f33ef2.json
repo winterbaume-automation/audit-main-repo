@@ -1,0 +1,151 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-16T11:36:29.332764+00:00",
+  "commit_sha": "a12584f08fac57fe31eddb9a1f640552f7f33ef2",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "iam: add 7 multi-target / exclusive converters; coverage now 32/34 (94%)",
+  "commit_timestamp": "2026-05-10T23:41:16Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "e2ac3ee91521b23de5d49a109a3249383c8fe82e"
+  ],
+  "api_truncated": false,
+  "diff_chars": 42966,
+  "estimated_tokens": 10741,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 42,966 chars <= threshold 400,000.",
+    "total_patch_chars": 42966,
+    "files": [
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 2109,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/iam.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5007,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/iam.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 34066,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/iam.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1784,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not show any signs of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. All changes appear to be legitimate modifications related to AWS IAM resources."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes appear legitimate and do not show signs of backdoor activity."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are consistent with updates related to AWS IAM resources, and there are no indications of supply chain vulnerabilities or malicious alterations."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both the Backdoor Hunter and Supply Chain Inspector's assessments that the changes appear legitimate and do not indicate any integrity issues."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are consistent with updates related to AWS IAM resources, and there are no indications of covert data exfiltration, audit trail reduction, cryptographic weakening, authorization downgrades, or misleading comments."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "All changes in the diff are legitimate and do not indicate any malicious activity.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "All changes in the diff are legitimate and do not indicate any malicious activity.",
+    "findings": []
+  },
+  "issue_url": null
+}
