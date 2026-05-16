@@ -1,0 +1,318 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-16T15:42:17.192874+00:00",
+  "commit_sha": "e2ac3ee91521b23de5d49a109a3249383c8fe82e",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "iam: add 7 sub-resource modifier converters + bring 2 attachments under spec",
+  "commit_timestamp": "2026-05-10T15:39:02Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "73ecd94aee773f2afceaf28b1c2c80b5ae5316b1"
+  ],
+  "api_truncated": false,
+  "diff_chars": 49134,
+  "estimated_tokens": 12283,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 49,134 chars <= threshold 400,000.",
+    "total_patch_chars": 49134,
+    "files": [
+      {
+        "path": ".agents/docs/TERRAFORM_RESOURCE_COVERAGE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 2644,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/specs/iam.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6836,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/iam.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 36658,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-tfstate-resource-models/src/iam.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2996,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not contain any suspicious modifications, hidden backdoors, or obfuscated code. All changes appear to be legitimate updates to documentation and code related to AWS IAM resources."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are related to documentation updates and legitimate code modifications for AWS IAM resources, with no signs of suspicious activity or supply chain risks."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "auth_downgrade",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The change in the logic for handling role and user policy attachments appears to broaden the conditions under which policies can be attached without sufficient checks, potentially allowing unauthorized policy attachments.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean"
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "While the majority of changes appear legitimate, the modification in the IAM policy attachment logic raises concerns about potential unauthorized access or policy attachment, which could undermine the security posture."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "trojan",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments allows for broader conditions under which policies can be attached, potentially enabling unauthorized policy attachments without adequate checks.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes include a modification that could lead to unauthorized policy attachments, which raises concerns about the integrity of the IAM policy management process."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "malicious_build_step",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments allows for broader conditions under which policies can be attached, potentially enabling unauthorized policy attachments without adequate checks.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean",
+          "Integrity Analyst auth_downgrade"
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes include a modification that could lead to unauthorized policy attachments, which raises concerns about the integrity of the IAM policy management process."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "auth_downgrade",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments broadens the conditions under which policies can be attached, potentially allowing unauthorized policy attachments without sufficient checks.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean",
+          "Integrity Analyst auth_downgrade confirmed",
+          "Backdoor Hunter trojan confirmed",
+          "Supply Chain Inspector malicious_build_step confirmed"
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes in the IAM policy attachment logic continue to raise significant concerns about potential unauthorized access or policy attachment, which could undermine the security posture of the system."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "trojan",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments allows for broader conditions under which policies can be attached, potentially enabling unauthorized policy attachments without adequate checks.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes include a modification that could lead to unauthorized policy attachments, which raises concerns about the integrity of the IAM policy management process."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "malicious_build_step",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments allows for broader conditions under which policies can be attached, potentially enabling unauthorized policy attachments without adequate checks.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean",
+          "Integrity Analyst auth_downgrade confirmed",
+          "Backdoor Hunter trojan confirmed",
+          "Supply Chain Inspector malicious_build_step confirmed"
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes in the IAM policy attachment logic continue to raise significant concerns about potential unauthorized access or policy attachment, which could undermine the security posture of the system."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "auth_downgrade",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments broadens the conditions under which policies can be attached, potentially allowing unauthorized policy attachments without sufficient checks.",
+            "evidence": "if let Some(role) = view.roles.get_mut(&model.role) {"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean",
+          "Integrity Analyst auth_downgrade confirmed",
+          "Backdoor Hunter trojan confirmed",
+          "Supply Chain Inspector malicious_build_step confirmed"
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The changes in the IAM policy attachment logic continue to raise significant concerns about potential unauthorized access or policy attachment, which could undermine the security posture of the system."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "high",
+        "summary": "Potential unauthorized policy attachments due to modified IAM policy handling logic",
+        "findings": [
+          {
+            "type": "trojan",
+            "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+            "line": 695,
+            "description": "The modification in the logic for handling role and user policy attachments allows for broader conditions under which policies can be attached, potentially enabling unauthorized policy attachments without adequate checks.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "high",
+    "summary": "Potential unauthorized policy attachments due to modified IAM policy handling logic",
+    "findings": [
+      {
+        "type": "trojan",
+        "file": "crates/winterbaume-terraform/src/converters/iam.rs",
+        "line": 695,
+        "description": "The modification in the logic for handling role and user policy attachments allows for broader conditions under which policies can be attached, potentially enabling unauthorized policy attachments without adequate checks.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/92"
+}
