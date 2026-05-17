@@ -1,0 +1,124 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-17T23:42:57.625891+00:00",
+  "commit_sha": "581d07ec55104d3864fdbb5f7416608bb3df8e04",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: invariant-audit fleet sweep + fallback prefix fix",
+  "commit_timestamp": "2026-05-17T05:22:07Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "2c94ccc97cf224b37f3b7729c26afe80dcfcf247"
+  ],
+  "api_truncated": false,
+  "diff_chars": 8621,
+  "estimated_tokens": 2155,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 8,621 chars <= threshold 400,000.",
+    "total_patch_chars": 8621,
+    "files": [
+      {
+        "path": ".agents/bin/audit-state-fields.sh",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 789,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 7832,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not exhibit any signs of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. The modifications appear to be legitimate updates to the audit script without any suspicious elements."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not exhibit any signs of supply chain vulnerabilities, such as dependency issues, CI/CD pipeline tampering, or other suspicious patterns. The modifications appear to be legitimate updates to the audit script without any concerning elements."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean",
+          "Supply Chain Inspector: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not reveal any integrity concerns such as covert data exfiltration, audit trail reduction, cryptographic weakening, or authorization downgrades. The modifications appear to be legitimate updates to the audit script without any suspicious elements."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the audit script modifications.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the audit script modifications.",
+    "findings": []
+  },
+  "issue_url": null
+}
