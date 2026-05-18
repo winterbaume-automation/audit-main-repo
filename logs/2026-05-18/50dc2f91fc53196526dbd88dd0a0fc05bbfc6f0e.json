@@ -1,0 +1,638 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-18T22:41:22.455972+00:00",
+  "commit_sha": "50dc2f91fc53196526dbd88dd0a0fc05bbfc6f0e",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "state-coherence: kinesisvideoarchivedmedia + sagemakerruntime parent-state validation",
+  "commit_timestamp": "2026-05-17T17:24:32Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "06c97256a6fb08089dfed59b84985b66c3a28662"
+  ],
+  "api_truncated": false,
+  "diff_chars": 50834,
+  "estimated_tokens": 12708,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 50,834 chars <= threshold 400,000.",
+    "total_patch_chars": 50834,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 10135,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 9581,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 686,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 748,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 663,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kinesisvideoarchivedmedia/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 13059,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kinesisvideoarchivedmedia/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5107,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-sagemaker/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 749,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 640,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-sagemakerruntime/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3842,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-sagemakerruntime/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5624,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: lockfile changed but could not be parsed deterministically; review by hand."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not show any signs of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. All changes appear to be legitimate updates to the codebase."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "lockfile_tampering",
+            "file": "Cargo.lock",
+            "line": null,
+            "description": "New dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' were added to the lockfile without corresponding changes in the Cargo.toml files of the respective crates, indicating potential manipulation.",
+            "evidence": "dependencies = [ 'aws-sdk-kinesisvideo', 'aws-sdk-sagemaker', ... ]"
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-kinesisvideo = { workspace = true }"
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-sagemaker = { workspace = true }"
+          }
+        ],
+        "responses_to_prior": [],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "While the changes appear to be legitimate updates, the addition of new dependencies in the lockfile without corresponding changes in the manifest files raises concerns about potential manipulation or oversight in dependency management."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "Cargo.lock",
+            "line": null,
+            "description": "The addition of new dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' in the lockfile without corresponding changes in the Cargo.toml files raises concerns about the integrity of the dependency management process.",
+            "evidence": "dependencies = [ 'aws-sdk-kinesisvideo', 'aws-sdk-sagemaker', ... ]"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-kinesisvideo = { workspace = true }"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-sagemaker = { workspace = true }"
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about potential manipulation in the lockfile are valid, as the changes do not align with typical dependency management practices."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes introduce new dependencies without clear documentation or corresponding updates in the manifest files, which could indicate oversight or manipulation in the dependency management process."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<KinesisVideoState>> {"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<SageMakerState>> {"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The addition of `shared_state()` methods in both Kinesis Video and SageMaker services exposes internal state holders, which could potentially be exploited if access is not properly restricted. This raises concerns about the integrity and security of the services."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "lockfile_tampering",
+            "file": "Cargo.lock",
+            "line": null,
+            "description": "New dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' were added to the lockfile without corresponding changes in the Cargo.toml files of the respective crates, indicating potential manipulation.",
+            "evidence": "dependencies = [ 'aws-sdk-kinesisvideo', 'aws-sdk-sagemaker', ... ]"
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-kinesisvideo = { workspace = true }"
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-sagemaker = { workspace = true }"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<KinesisVideoState>> {"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<SageMakerState>> {"
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about potential manipulation in the lockfile are valid, as the changes do not align with typical dependency management practices.",
+          "The addition of `shared_state()` methods in both Kinesis Video and SageMaker services raises valid concerns about unauthorized access to internal state holders."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes introduce new dependencies without clear documentation or corresponding updates in the manifest files, and the exposure of internal state holders could potentially be exploited if access is not properly restricted."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "Cargo.lock",
+            "line": null,
+            "description": "The addition of new dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' in the lockfile without corresponding changes in the Cargo.toml files raises concerns about the integrity of the dependency management process.",
+            "evidence": "dependencies = [ 'aws-sdk-kinesisvideo', 'aws-sdk-sagemaker', ... ]"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-kinesisvideo = { workspace = true }"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-sagemaker = { workspace = true }"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<KinesisVideoState>> {"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<SageMakerState>> {"
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about potential manipulation in the lockfile are valid, as the changes do not align with typical dependency management practices.",
+          "The addition of `shared_state()` methods in both Kinesis Video and SageMaker services raises valid concerns about unauthorized access to internal state holders."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes introduce new dependencies without clear documentation or corresponding updates in the manifest files, and the exposure of internal state holders could potentially be exploited if access is not properly restricted."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<KinesisVideoState>> {"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<SageMakerState>> {"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The addition of `shared_state()` methods in both Kinesis Video and SageMaker services exposes internal state holders, which could potentially be exploited if access is not properly restricted. This raises concerns about the integrity and security of the services."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "lockfile_tampering",
+            "file": "Cargo.lock",
+            "line": null,
+            "description": "New dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' were added to the lockfile without corresponding changes in the Cargo.toml files of the respective crates, indicating potential manipulation.",
+            "evidence": "dependencies = [ 'aws-sdk-kinesisvideo', 'aws-sdk-sagemaker', ... ]"
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-kinesisvideo = { workspace = true }"
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "evidence": "+winterbaume-sagemaker = { workspace = true }"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<KinesisVideoState>> {"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<SageMakerState>> {"
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about potential manipulation in the lockfile are valid, as the changes do not align with typical dependency management practices.",
+          "The addition of `shared_state()` methods in both Kinesis Video and SageMaker services raises valid concerns about unauthorized access to internal state holders."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes introduce new dependencies without clear documentation or corresponding updates in the manifest files, and the exposure of internal state holders could potentially be exploited if access is not properly restricted."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<KinesisVideoState>> {"
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "evidence": "pub fn shared_state(&self) -> Arc<BackendState<SageMakerState>> {"
+          }
+        ],
+        "responses_to_prior": [
+          "The concerns raised about potential manipulation in the lockfile are valid, as the changes do not align with typical dependency management practices.",
+          "The addition of `shared_state()` methods in both Kinesis Video and SageMaker services raises valid concerns about unauthorized access to internal state holders."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes introduce new dependencies without clear documentation or corresponding updates in the manifest files, and the exposure of internal state holders could potentially be exploited if access is not properly restricted."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "medium",
+        "summary": "Potential manipulation in dependency management and exposure of internal state holders raises security concerns.",
+        "findings": [
+          {
+            "type": "lockfile_tampering",
+            "file": "Cargo.lock",
+            "line": null,
+            "description": "New dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' were added to the lockfile without corresponding changes in the Cargo.toml files of the respective crates, indicating potential manipulation.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "vendored_alteration",
+            "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+            "line": null,
+            "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+            "raised_by": [
+              "Supply Chain Inspector",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Integrity Analyst"
+            ]
+          },
+          {
+            "type": "hidden_backdoor",
+            "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+            "line": 34,
+            "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Integrity Analyst"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "medium",
+    "summary": "Potential manipulation in dependency management and exposure of internal state holders raises security concerns.",
+    "findings": [
+      {
+        "type": "lockfile_tampering",
+        "file": "Cargo.lock",
+        "line": null,
+        "description": "New dependencies 'aws-sdk-kinesisvideo' and 'aws-sdk-sagemaker' were added to the lockfile without corresponding changes in the Cargo.toml files of the respective crates, indicating potential manipulation.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "vendored_alteration",
+        "file": "crates/winterbaume-kinesisvideoarchivedmedia/Cargo.toml",
+        "line": null,
+        "description": "The addition of 'winterbaume-kinesisvideo' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "vendored_alteration",
+        "file": "crates/winterbaume-sagemakerruntime/Cargo.toml",
+        "line": null,
+        "description": "The addition of 'winterbaume-sagemaker' as a workspace dependency in the Cargo.toml file indicates a new dependency relationship that could introduce risks if not properly vetted.",
+        "raised_by": [
+          "Supply Chain Inspector",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "hidden_backdoor",
+        "file": "crates/winterbaume-kinesisvideo/src/handlers.rs",
+        "line": 34,
+        "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the Kinesis Video service.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Integrity Analyst"
+        ]
+      },
+      {
+        "type": "hidden_backdoor",
+        "file": "crates/winterbaume-sagemaker/src/handlers.rs",
+        "line": 34,
+        "description": "The method `shared_state()` exposes the internal state holder, which could be misused if not properly controlled, allowing unauthorized access to the state of the SageMaker service.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Integrity Analyst"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/97"
+}
