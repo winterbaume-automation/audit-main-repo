@@ -1,0 +1,138 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-19T22:46:56.852658+00:00",
+  "commit_sha": "44cff8c476c71886f4db8ecc44c1bc0397cb4719",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: prep umbrella v0.3.0 and server v0.2.1 dep-refresh release",
+  "commit_timestamp": "2026-05-19T02:15:39Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "2feb417558c6b92fbc2ebb940eea8ffdfcbc6364"
+  ],
+  "api_truncated": false,
+  "diff_chars": 2477,
+  "estimated_tokens": 619,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 2,477 chars <= threshold 400,000.",
+    "total_patch_chars": 2477,
+    "files": [
+      {
+        "path": "CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 1529,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-server/CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 901,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "release-plan-overrides.toml",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 47,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be related to versioning and dependency management without any indications of malicious intent or hidden functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are related to versioning and dependency management without any indications of malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the changelogs and the addition of the release plan overrides file are consistent with standard practices for managing dependencies and versioning, showing no signs of compromise."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior analysts that the changes are focused on versioning and dependency management, with no evidence of trust erosion or malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the changelogs and the addition of the release plan overrides file are standard practices for managing dependencies and versioning, showing no signs of compromise."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified; changes are related to versioning and dependency management.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified; changes are related to versioning and dependency management.",
+    "findings": []
+  },
+  "issue_url": null
+}
