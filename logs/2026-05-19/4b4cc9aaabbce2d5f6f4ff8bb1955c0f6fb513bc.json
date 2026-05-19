@@ -1,0 +1,131 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-19T07:17:25.598641+00:00",
+  "commit_sha": "4b4cc9aaabbce2d5f6f4ff8bb1955c0f6fb513bc",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: release",
+  "commit_timestamp": "2026-05-19T16:09:25+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "33656643134df2ed67942b83a5a05f6e08a7cc5a"
+  ],
+  "api_truncated": false,
+  "diff_chars": 401,
+  "estimated_tokens": 100,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 401 chars <= threshold 400,000.",
+    "total_patch_chars": 401,
+    "files": [
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 182,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-server/Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 219,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume-server 0.2.0 \u2192 0.2.1."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes involve a version bump for a legitimate crate, 'winterbaume-server', which has a valid repository and recent activity. There are no indications of malicious modifications or hidden backdoors."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are a legitimate version bump for the 'winterbaume-server' crate, which has a valid repository and recent activity."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The version bump for 'winterbaume-server' to 0.2.1 is legitimate, as the crate is found on crates.io with a valid repository and recent activity. There are no signs of malicious intent or backdoor modifications."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior assessments that the changes are a legitimate version bump for the 'winterbaume-server' crate, with no indications of malicious modifications."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The updates reflect a standard version increment for a legitimate crate, and there are no signs of trust erosion or integrity issues."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised regarding the version bump for 'winterbaume-server'.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised regarding the version bump for 'winterbaume-server'.",
+    "findings": []
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/104"
+}
