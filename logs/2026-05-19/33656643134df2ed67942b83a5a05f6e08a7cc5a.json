@@ -1,0 +1,131 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-19T06:27:35.635879+00:00",
+  "commit_sha": "33656643134df2ed67942b83a5a05f6e08a7cc5a",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore: release",
+  "commit_timestamp": "2026-05-19T15:21:22+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "5bb6c719e63f8125f6e40f28ff5cea9aec0e5af8"
+  ],
+  "api_truncated": false,
+  "diff_chars": 357,
+  "estimated_tokens": 89,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 357 chars <= threshold 400,000.",
+    "total_patch_chars": 357,
+    "files": [
+      {
+        "path": "Cargo.lock",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "workspace_lockfile",
+          "lockfile"
+        ],
+        "patch_chars": 190,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "Cargo.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "cargo_manifest"
+        ],
+        "patch_chars": 167,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [
+    {
+      "type": "lockfile_delta",
+      "path": "Cargo.lock",
+      "description": "Cargo.lock: winterbaume 0.2.0 \u2192 0.3.0."
+    }
+  ],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes involve updating the version of legitimate Rust packages that are actively maintained and have a clear purpose related to AWS service mocking. No suspicious modifications or hidden backdoors were detected."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes involve updating the version of a legitimate Rust package."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The updated version of the 'winterbaume' crate is legitimate, actively maintained, and has a clear purpose related to AWS service mocking. The version change does not raise any supply chain integrity concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior assessments that the changes are legitimate and do not raise any integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are simply version updates for a legitimate Rust package, with no indications of covert changes or integrity issues."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "Version updates for legitimate Rust packages with no concerns raised.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "Version updates for legitimate Rust packages with no concerns raised.",
+    "findings": []
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/103"
+}
