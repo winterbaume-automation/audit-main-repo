@@ -1,0 +1,123 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-19T10:51:05.912339+00:00",
+  "commit_sha": "5bb6c719e63f8125f6e40f28ff5cea9aec0e5af8",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "release-harness batch: use --sign-commit, not legacy top-level --sign",
+  "commit_timestamp": "2026-05-19T05:35:49Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "6adeee58688a29bc54777a0b9a1f50e83b516f5d"
+  ],
+  "api_truncated": false,
+  "diff_chars": 5588,
+  "estimated_tokens": 1397,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 5,588 chars <= threshold 400,000.",
+    "total_patch_chars": 5588,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 2776,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-harness/src/batch.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2812,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the commit appear to be focused on correcting argument handling for the `cargo release` command without introducing any hidden backdoors, logic bombs, or obfuscated code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are focused on correcting argument handling for the `cargo release` command."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the commit are straightforward and pertain to fixing argument handling without any indications of malicious intent or supply chain vulnerabilities."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior analysts that the changes are focused on correcting argument handling for the `cargo release` command and do not introduce any integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The commit addresses specific argument handling issues without any signs of covert changes that could undermine system integrity."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the commit regarding backdoors or malicious intent.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the commit regarding backdoors or malicious intent.",
+    "findings": []
+  },
+  "issue_url": null
+}
