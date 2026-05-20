@@ -1,0 +1,120 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-20T10:37:43.483762+00:00",
+  "commit_sha": "2feb417558c6b92fbc2ebb940eea8ffdfcbc6364",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "release-harness plan: use declared deps for the dep graph so optional deps count",
+  "commit_timestamp": "2026-05-19T01:58:56Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "585344150a055348f5f4cf9e78c3e3284f6dc79b"
+  ],
+  "api_truncated": false,
+  "diff_chars": 12639,
+  "estimated_tokens": 3159,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 12,639 chars <= threshold 400,000.",
+    "total_patch_chars": 12639,
+    "files": [
+      {
+        "path": "tools/release-harness/src/metadata.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 797,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-harness/src/plan.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 11842,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be legitimate modifications related to package dependency management without any indications of hidden backdoors, logic bombs, or other malicious functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes appear legitimate and do not indicate any malicious activity."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff focus on enhancing the package dependency management structure and do not introduce any suspicious patterns or vulnerabilities from a supply chain integrity perspective."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both Backdoor Hunter and Supply Chain Inspector's assessments that the changes are legitimate and do not indicate any malicious intent or integrity issues."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are focused on improving the structure and management of package dependencies, with no signs of covert data exfiltration, audit trail reduction, cryptographic weakening, or other integrity concerns."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified; changes are legitimate and enhance package dependency management.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified; changes are legitimate and enhance package dependency management.",
+    "findings": []
+  },
+  "issue_url": null
+}
