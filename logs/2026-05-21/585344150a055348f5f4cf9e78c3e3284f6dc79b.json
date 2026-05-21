@@ -1,0 +1,121 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-21T00:19:09.189535+00:00",
+  "commit_sha": "585344150a055348f5f4cf9e78c3e3284f6dc79b",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "release-harness plan: detect stale workspace deps from prior release runs",
+  "commit_timestamp": "2026-05-19T01:36:48Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "a0a5cfa9fbb0b9160257260310d0ec62c101d8f7"
+  ],
+  "api_truncated": false,
+  "diff_chars": 13713,
+  "estimated_tokens": 3428,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 13,713 chars <= threshold 400,000.",
+    "total_patch_chars": 13713,
+    "files": [
+      {
+        "path": "tools/release-harness/src/git.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1046,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-harness/src/plan.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 12667,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not exhibit any signs of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. The modifications appear to be legitimate enhancements to the codebase."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not exhibit any signs of supply chain vulnerabilities, such as dependency issues, CI/CD pipeline tampering, or suspicious code execution patterns. The modifications appear to be legitimate enhancements to the codebase."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean",
+          "Supply Chain Inspector: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff do not exhibit any signs of trust erosion, such as covert data exfiltration, audit trail reduction, cryptographic weakening, or authorization downgrades. The modifications appear to be legitimate enhancements to the codebase."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the code changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the code changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
