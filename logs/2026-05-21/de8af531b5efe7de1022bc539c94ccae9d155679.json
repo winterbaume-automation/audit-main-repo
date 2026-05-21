@@ -1,0 +1,107 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-21T19:31:00.179418+00:00",
+  "commit_sha": "de8af531b5efe7de1022bc539c94ccae9d155679",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "release-harness plan: propagate bumps through the reverse-dep graph",
+  "commit_timestamp": "2026-05-19T01:19:17Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "ab54a1ed7cf1b32d6d71a641ba7c88f180b7527f"
+  ],
+  "api_truncated": false,
+  "diff_chars": 18785,
+  "estimated_tokens": 4696,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 18,785 chars <= threshold 400,000.",
+    "total_patch_chars": 18785,
+    "files": [
+      {
+        "path": "tools/release-harness/src/plan.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 18785,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be focused on enhancing functionality related to dependency management without introducing any suspicious elements such as hidden backdoors, logic bombs, or obfuscated code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are primarily aimed at improving the functionality of dependency management, and there are no indications of suspicious activities or vulnerabilities related to supply chain integrity."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff focus on enhancing functionality related to dependency management and do not introduce any elements that would undermine trust or security."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the code changes related to dependency management.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the code changes related to dependency management.",
+    "findings": []
+  },
+  "issue_url": null
+}
