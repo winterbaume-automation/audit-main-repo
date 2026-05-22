@@ -1,0 +1,379 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-22T22:16:27.708542+00:00",
+  "commit_sha": "343030d81d6e5336955e42f76c287e1a9e22b662",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "release-harness: support codex / copilot / cursor-agent as polish backends",
+  "commit_timestamp": "2026-05-18T07:02:24Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "02bf6da790d88117cfd88c4ccde3d74d08ad671c"
+  ],
+  "api_truncated": false,
+  "diff_chars": 15607,
+  "estimated_tokens": 3901,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 15,607 chars <= threshold 400,000.",
+    "total_patch_chars": 15607,
+    "files": [
+      {
+        "path": "tools/release-harness/src/changelog.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5768,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-harness/src/main.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 668,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "tools/release-harness/src/polisher.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9171,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "logic_bomb",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises concerns about potential exploitation if any of these backends are compromised or if a malicious backend is introduced. The ability to execute commands and capture output without strict validation could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: The concern about the use of various AI coding CLIs is valid, as it introduces potential risks if any of these backends are compromised.",
+          "Backdoor Hunter logic_bomb: The ability to capture stdout from the AI CLI without strict validation does raise concerns about potential harmful consequences."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation if any of these backends are compromised or if a malicious backend is introduced. The ability to execute commands and capture output without strict validation could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The implementation of multiple AI coding CLIs for editorial polish could lead to unintended data exfiltration if any of these backends are compromised or if they are configured to send data to external servers.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI without logging or monitoring the output, which could hide malicious content or commands executed by the backend.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: The concern about the use of various AI coding CLIs is valid, as it introduces potential risks if any of these backends are compromised.",
+          "Backdoor Hunter logic_bomb: The ability to capture stdout from the AI CLI without strict validation does raise concerns about potential harmful consequences.",
+          "Supply Chain Inspector malicious_build_step: The concerns raised about the potential for exploitation through the use of AI coding CLIs are significant and warrant further scrutiny."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation and data exfiltration if any of these backends are compromised. The lack of logging or monitoring of the output further exacerbates the risk of undetected malicious activity."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "logic_bomb",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation if any of these backends are compromised or if a malicious backend is introduced. The ability to execute commands and capture output without strict validation could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: The concern about the use of various AI coding CLIs is valid, as it introduces potential risks if any of these backends are compromised.",
+          "Backdoor Hunter logic_bomb: The ability to capture stdout from the AI CLI without strict validation does raise concerns about potential harmful consequences.",
+          "Supply Chain Inspector malicious_build_step: The concerns raised about the potential for exploitation through the use of AI coding CLIs are significant and warrant further scrutiny."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation if any of these backends are compromised. The ability to execute commands and capture output without strict validation could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "covert_exfiltration",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The implementation of multiple AI coding CLIs for editorial polish could lead to unintended data exfiltration if any of these backends are compromised or if they are configured to send data to external servers.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI without logging or monitoring the output, which could hide malicious content or commands executed by the backend.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: The concern about the use of various AI coding CLIs is valid, as it introduces potential risks if any of these backends are compromised.",
+          "Backdoor Hunter logic_bomb: The ability to capture stdout from the AI CLI without strict validation does raise concerns about potential harmful consequences.",
+          "Supply Chain Inspector malicious_build_step: The concerns raised about the potential for exploitation through the use of AI coding CLIs are significant and warrant further scrutiny."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation and data exfiltration if any of these backends are compromised. The lack of logging or monitoring of the output further exacerbates the risk of undetected malicious activity."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "hidden_backdoor",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "logic_bomb",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation if any of these backends are compromised or if a malicious backend is introduced. The ability to execute commands and capture output without strict validation could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "evidence": "Each backend takes a single prompt over the wire and returns plain text on stdout."
+          },
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "evidence": "Run `backend` against `prompt`, capture stdout, and normalise the response."
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: The concern about the use of various AI coding CLIs is valid, as it introduces potential risks if any of these backends are compromised.",
+          "Backdoor Hunter logic_bomb: The ability to capture stdout from the AI CLI without strict validation does raise concerns about potential harmful consequences.",
+          "Supply Chain Inspector malicious_build_step: The concerns raised about the potential for exploitation through the use of AI coding CLIs are significant and warrant further scrutiny."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The introduction of multiple AI backends for editorial polish raises significant concerns about potential exploitation if any of these backends are compromised. The ability to execute commands and capture output without strict validation could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter hidden_backdoor: The concern about the use of various AI coding CLIs is valid, as it introduces potential risks if any of these backends are compromised.",
+          "Backdoor Hunter logic_bomb: The ability to capture stdout from the AI CLI without strict validation does raise concerns about potential harmful consequences.",
+          "Supply Chain Inspector malicious_build_step: The concerns raised about the potential for exploitation through the use of AI coding CLIs are significant and warrant further scrutiny."
+        ],
+        "verdict": "suspicious",
+        "confidence": "high",
+        "reasoning": "The ongoing concerns regarding the introduction of multiple AI backends for editorial polish remain significant, particularly regarding potential exploitation and the lack of validation in command execution, which could lead to harmful consequences."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "high",
+        "summary": "Potential exploitation risks from multiple AI coding CLIs for editorial polish.",
+        "findings": [
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 10,
+            "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "malicious_build_step",
+            "file": "tools/release-harness/src/polisher.rs",
+            "line": 257,
+            "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+            "raised_by": [
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "high",
+    "summary": "Potential exploitation risks from multiple AI coding CLIs for editorial polish.",
+    "findings": [
+      {
+        "type": "malicious_build_step",
+        "file": "tools/release-harness/src/polisher.rs",
+        "line": 10,
+        "description": "The code allows the use of various AI coding CLIs for editorial polish, which could potentially be exploited if an attacker were to introduce a malicious CLI that could execute arbitrary code.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "malicious_build_step",
+        "file": "tools/release-harness/src/polisher.rs",
+        "line": 257,
+        "description": "The `polish` function captures stdout from the AI CLI, which could be manipulated to execute harmful commands or return malicious content if the backend is compromised.",
+        "raised_by": [
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/105"
+}
