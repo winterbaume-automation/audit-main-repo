@@ -1,0 +1,197 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-24T09:12:00.441555+00:00",
+  "commit_sha": "91f449e653a510ae00f10823897f007d18f9c6ea",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(kms): enforce request-side KeyId on Decrypt and SourceKeyId on ReEncrypt",
+  "commit_timestamp": "2026-05-23T17:41:56Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "f21ec2a07b8f79a623516d520cc0e7a29f127bbc"
+  ],
+  "api_truncated": false,
+  "diff_chars": 51236,
+  "estimated_tokens": 12809,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 51,236 chars <= threshold 400,000.",
+    "total_patch_chars": 51236,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 18307,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 11306,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-e2e-tests/tests/terraform/kms.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4318,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kms/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1305,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kms/src/state.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2154,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kms/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4140,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-kms/tests/scenario_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9706,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff focus on fixing a bug related to key validation in KMS operations and do not exhibit any signs of malicious intent or backdoor functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are focused on addressing a specific bug related to key validation in KMS operations, with no indications of malicious intent or supply chain vulnerabilities."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean",
+          "Supply Chain Inspector: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are aimed at fixing a bug related to key validation in KMS operations, and there are no indications of trust-erosion or malicious intent."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised regarding malicious intent or vulnerabilities.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised regarding malicious intent or vulnerabilities.",
+    "findings": []
+  },
+  "issue_url": null
+}
