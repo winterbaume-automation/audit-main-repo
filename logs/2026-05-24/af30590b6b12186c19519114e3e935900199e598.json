@@ -1,0 +1,225 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-24T20:35:20.575479+00:00",
+  "commit_sha": "af30590b6b12186c19519114e3e935900199e598",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(lambda): honour RevisionId on Update*, PublishVersion, layer-version policy",
+  "commit_timestamp": "2026-05-24T05:46:19Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "adbed84cded301a1da0726ccad84f81164bbff6d"
+  ],
+  "api_truncated": false,
+  "diff_chars": 53837,
+  "estimated_tokens": 13459,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 53,837 chars <= threshold 400,000.",
+    "total_patch_chars": 53837,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5372,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 11381,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-e2e-tests/tests/terraform/lambda.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 7479,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3696,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/state.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 10098,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/types.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1011,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/views.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2024,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 11785,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/lambda.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 991,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be focused on enhancing functionality and adding tests without any indications of hidden backdoors, logic bombs, or other malicious modifications."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are focused on enhancing functionality and adding tests, with no indications of dependency issues, CI/CD pipeline tampering, or other supply chain concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean",
+          "Supply Chain Inspector: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff focus on enhancing functionality and adding tests, with no indications of trust-erosion modifications or hidden vulnerabilities."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the reviewed changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the reviewed changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
