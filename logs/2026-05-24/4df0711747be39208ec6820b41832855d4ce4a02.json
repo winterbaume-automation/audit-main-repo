@@ -1,0 +1,485 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-24T16:34:54.674189+00:00",
+  "commit_sha": "4df0711747be39208ec6820b41832855d4ce4a02",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Merge branch 'fix/lambda-sweep'",
+  "commit_timestamp": "2026-05-25T01:34:26+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": true,
+  "parents": [
+    "9e1bdc40b61013bfe9a019d0c413290f8e94ecba",
+    "fc41bffd7888112adab9b1fb5fde2f079345151f"
+  ],
+  "api_truncated": false,
+  "diff_chars": 130178,
+  "estimated_tokens": 32544,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 130,178 chars <= threshold 400,000.",
+    "total_patch_chars": 130178,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 13292,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 14108,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-e2e-tests/tests/terraform/lambda.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 15916,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 8860,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/state.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 17806,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/types.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1011,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/src/views.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3813,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-lambda/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 25326,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/lambda.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4911,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9217,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/tests/terraform_cli_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 15918,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 3,
+    "converged_early": false
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not contain any suspicious modifications related to backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. All changes appear to be legitimate enhancements and fixes related to AWS Lambda functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are legitimate enhancements and fixes."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff do not introduce any suspicious modifications related to supply chain integrity. All modifications appear to be legitimate improvements and fixes related to AWS Lambda functionality, with no signs of dependency manipulation, CI/CD pipeline tampering, or other integrity concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are legitimate enhancements and fixes.",
+          "Supply Chain Inspector clean verdict: I concur with the findings that the modifications do not introduce supply chain integrity concerns."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "While the changes appear to enhance functionality, the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes enhance functionality but the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter audit_trail_removal concern: I agree that the removal of historical revision IDs could undermine the audit trail.",
+          "Supply Chain Inspector clean verdict: I concur with the findings that the modifications do not introduce supply chain integrity concerns.",
+          "Integrity Analyst audit_trail_removal concerns: I acknowledge the importance of maintaining an audit trail for permissions and the potential risks associated with their removal."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes enhance functionality but the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 2,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter audit_trail_removal concern: I agree that the removal of historical revision IDs could undermine the audit trail.",
+          "Supply Chain Inspector clean verdict: I concur with the findings that the modifications do not introduce supply chain integrity concerns.",
+          "Integrity Analyst audit_trail_removal concerns: I acknowledge the importance of maintaining an audit trail for permissions and the potential risks associated with their removal."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes enhance functionality but the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Backdoor Hunter",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes enhance functionality but the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter audit_trail_removal concern: I agree that the removal of historical revision IDs could undermine the audit trail.",
+          "Supply Chain Inspector clean verdict: I concur with the findings that the modifications do not introduce supply chain integrity concerns.",
+          "Integrity Analyst audit_trail_removal concerns: I acknowledge the importance of maintaining an audit trail for permissions and the potential risks associated with their removal."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes enhance functionality but the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 3,
+      "response": {
+        "concerns": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "evidence": "self.function_policy_revisions.remove(&resolved);"
+          }
+        ],
+        "responses_to_prior": [
+          "Backdoor Hunter audit_trail_removal concern: I agree that the removal of historical revision IDs could undermine the audit trail.",
+          "Supply Chain Inspector clean verdict: I concur with the findings that the modifications do not introduce supply chain integrity concerns.",
+          "Integrity Analyst audit_trail_removal concerns: I acknowledge the importance of maintaining an audit trail for permissions and the potential risks associated with their removal."
+        ],
+        "verdict": "suspicious",
+        "confidence": "medium",
+        "reasoning": "The changes enhance functionality but the removal of historical revision IDs related to permissions could undermine the audit trail, making it harder to track changes and potentially leading to unauthorized access if not properly managed."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": true,
+        "severity": "medium",
+        "summary": "Removal of historical revision IDs could undermine audit trails for permission changes.",
+        "findings": [
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 160,
+            "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          },
+          {
+            "type": "audit_trail_removal",
+            "file": "crates/winterbaume-lambda/src/state.rs",
+            "line": 300,
+            "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+            "raised_by": [
+              "Integrity Analyst",
+              "Backdoor Hunter",
+              "Supply Chain Inspector"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": true,
+    "severity": "medium",
+    "summary": "Removal of historical revision IDs could undermine audit trails for permission changes.",
+    "findings": [
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-lambda/src/state.rs",
+        "line": 160,
+        "description": "The removal of the function_policy_revisions entry when a function is deleted could lead to a loss of audit trail for permission changes associated with that function, making it difficult to track historical changes.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      },
+      {
+        "type": "audit_trail_removal",
+        "file": "crates/winterbaume-lambda/src/state.rs",
+        "line": 300,
+        "description": "The optimistic concurrency checks for permissions do not retain historical revision IDs after a permission is removed, which could hinder the ability to audit permission changes over time.",
+        "raised_by": [
+          "Integrity Analyst",
+          "Backdoor Hunter",
+          "Supply Chain Inspector"
+        ]
+      }
+    ]
+  },
+  "issue_url": "https://github.com/winterbaume-automation/audit-main-repo/issues/110"
+}
