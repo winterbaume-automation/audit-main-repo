@@ -1,0 +1,102 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-25T00:01:19.137693+00:00",
+  "commit_sha": "60a072d7bb1c2fc787941e474b0bb4e5a421c936",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(release-harness): scope umbrella crate changelog log with `.` instead of `/`",
+  "commit_timestamp": "2026-05-25T09:00:51+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "4df0711747be39208ec6820b41832855d4ce4a02"
+  ],
+  "api_truncated": false,
+  "diff_chars": 742,
+  "estimated_tokens": 185,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 742 chars <= threshold 400,000.",
+    "total_patch_chars": 742,
+    "files": [
+      {
+        "path": "tools/release-harness/src/changelog.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 742,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff appear to be straightforward adjustments to the path handling logic without any indications of hidden backdoors, logic bombs, or other malicious intent."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff are authored by a consistent contributor and appear to be straightforward adjustments to the path handling logic without any indications of hidden backdoors, logic bombs, or other malicious intent."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are simple adjustments to path handling logic, and there are no indications of covert data exfiltration, audit trail reduction, cryptographic weakening, or authorization downgrades."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the changes to path handling logic.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the changes to path handling logic.",
+    "findings": []
+  },
+  "issue_url": null
+}
