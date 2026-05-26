@@ -1,0 +1,106 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-05-26T19:31:50.565393+00:00",
+  "commit_sha": "8bceaac908a682be94f4424bfe9c210d2cd0dfc9",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "mise.toml: surface all four release-harness subcommands as tasks",
+  "commit_timestamp": "2026-05-18T05:30:01Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "9f9e156b0a804b3bc4035b95bdea0a5b1fff3c50"
+  ],
+  "api_truncated": false,
+  "diff_chars": 3361,
+  "estimated_tokens": 840,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 3,361 chars <= threshold 400,000.",
+    "total_patch_chars": 3361,
+    "files": [
+      {
+        "path": "mise.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3361,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the commit appear to be legitimate modifications related to renaming and restructuring tasks without any indications of hidden backdoors, logic bombs, or other malicious intent."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are legitimate and do not indicate any malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the commit are consistent with renaming and restructuring tasks, and there are no signs of suspicious activity or potential vulnerabilities."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior analysts that the changes appear legitimate and do not raise any integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are straightforward renaming and restructuring of tasks, with no indications of covert data exfiltration, audit trail reduction, cryptographic weakening, or other integrity issues."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised regarding the legitimacy of the changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised regarding the legitimacy of the changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
