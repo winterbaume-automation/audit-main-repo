@@ -1,0 +1,148 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-06-04T18:32:38.919831+00:00",
+  "commit_sha": "8d7a5ce1b7d2a3e87c34bfc66921f4b7bd372c7a",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(cloudcontrol): apply CFN resource-type schema to AWS::ElasticLoadBalancingV2::TargetGroup GetResource",
+  "commit_timestamp": "2026-06-04T03:17:07Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "e8216882bac9544f64fce5003fb1f3fdf413f2a1"
+  ],
+  "api_truncated": false,
+  "diff_chars": 14986,
+  "estimated_tokens": 3746,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 14,986 chars <= threshold 400,000.",
+    "total_patch_chars": 14986,
+    "files": [
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/elbv2_target_group.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4984,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/mod.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 607,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4606,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/scenario_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4789,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not contain any suspicious code patterns indicative of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code. The changes appear to be legitimate additions and modifications related to AWS resource shaping."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes appear legitimate and do not contain suspicious patterns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff are focused on adding and modifying functionality related to AWS resource shaping, with no indications of supply chain vulnerabilities or malicious intent."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior analyses that the changes are legitimate and do not exhibit any integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are focused on enhancing functionality related to AWS resource shaping, with no signs of covert data exfiltration, audit trail reduction, cryptographic weakening, or other integrity issues."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No suspicious modifications detected in the AWS resource shaping changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No suspicious modifications detected in the AWS resource shaping changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
