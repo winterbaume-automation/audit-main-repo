@@ -1,0 +1,254 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-06-04T01:43:04.405670+00:00",
+  "commit_sha": "aad98c29e24099d5cff7a9878e390a1c6a2c4417",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Merge branch 'fix/cloudcontrol-cfn-schema-shaping'",
+  "commit_timestamp": "2026-06-04T10:42:40+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": true,
+  "parents": [
+    "ea4b0aab94d2707bc405a1c4325d0f319d5545df",
+    "a67a737dd962723acf579df8dd3fa0cf72265be7"
+  ],
+  "api_truncated": false,
+  "diff_chars": 79501,
+  "estimated_tokens": 19875,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 79,501 chars <= threshold 400,000.",
+    "total_patch_chars": 79501,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 17593,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 12688,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/dynamodb_table.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3236,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/ecs_cluster.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2684,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/kms_key.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2840,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/mod.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2823,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2627,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/lib.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 94,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/state.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4222,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 12276,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/scenario_test.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 18418,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not contain any suspicious modifications or patterns indicative of backdoors, logic bombs, obfuscated payloads, trojan functionality, or dead code."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes made in the diff do not introduce any new dependencies, modify existing ones, or exhibit any patterns that would raise supply chain integrity concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean",
+          "Supply Chain Inspector clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not introduce any modifications that undermine the integrity, security, or trustworthiness of the system."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns raised regarding the integrity or security of the changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns raised regarding the integrity or security of the changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
