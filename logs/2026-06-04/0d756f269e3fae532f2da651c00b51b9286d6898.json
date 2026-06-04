@@ -1,0 +1,148 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-06-04T15:51:49.829897+00:00",
+  "commit_sha": "0d756f269e3fae532f2da651c00b51b9286d6898",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(cloudcontrol): apply CFN resource-type schema to AWS::DynamoDB::Table GetResource",
+  "commit_timestamp": "2026-06-03T21:44:28Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "0c48af6b0f815ae6f7087689235494f77d819f4e"
+  ],
+  "api_truncated": false,
+  "diff_chars": 12911,
+  "estimated_tokens": 3227,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 12,911 chars <= threshold 400,000.",
+    "total_patch_chars": 12911,
+    "files": [
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/dynamodb_table.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3236,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/mod.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 680,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 3670,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/scenario_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5325,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be legitimate additions and modifications related to AWS DynamoDB table shaping without any indications of hidden backdoors, logic bombs, or other malicious functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes appear legitimate and do not indicate any malicious activity."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications and additions in the diff are consistent with expected functionality for AWS DynamoDB table shaping, and there are no signs of supply chain compromise."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both the Backdoor Hunter and Supply Chain Inspector's assessments that the changes are legitimate and do not indicate any malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the diff are consistent with the expected functionality for AWS DynamoDB table shaping, and there are no indications of trust-erosion changes."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No indications of malicious modifications in AWS DynamoDB table shaping changes.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No indications of malicious modifications in AWS DynamoDB table shaping changes.",
+    "findings": []
+  },
+  "issue_url": null
+}
