@@ -1,0 +1,149 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-06-04T15:52:14.980379+00:00",
+  "commit_sha": "133bf2612166a15645a078814e6c6ba0392d208e",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(cloudcontrol): apply CFN resource-type schema to AWS::ElasticLoadBalancingV2::LoadBalancer GetResource",
+  "commit_timestamp": "2026-06-04T03:18:52Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "8d7a5ce1b7d2a3e87c34bfc66921f4b7bd372c7a"
+  ],
+  "api_truncated": false,
+  "diff_chars": 18641,
+  "estimated_tokens": 4660,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 18,641 chars <= threshold 400,000.",
+    "total_patch_chars": 18641,
+    "files": [
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/elbv2_load_balancer.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 7798,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/src/cfn_schema/mod.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 659,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 4377,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/tests/scenario_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 5807,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff does not show any signs of hidden backdoors, logic bombs, obfuscated payloads, trojan functionality, or suspicious dead code. The changes appear to be legitimate additions and modifications related to AWS Elastic Load Balancer functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff are legitimate additions and modifications related to AWS Elastic Load Balancer functionality, with no signs of supply chain compromise or suspicious activity."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter: clean",
+          "Supply Chain Inspector: clean"
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The diff shows legitimate additions and modifications related to AWS Elastic Load Balancer functionality, with no signs of trust erosion or integrity concerns."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns found in the diff related to backdoors, supply chain issues, or integrity.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns found in the diff related to backdoors, supply chain issues, or integrity.",
+    "findings": []
+  },
+  "issue_url": null
+}
