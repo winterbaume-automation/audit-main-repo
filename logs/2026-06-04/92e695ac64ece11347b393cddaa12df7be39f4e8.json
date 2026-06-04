@@ -1,0 +1,140 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-06-04T05:14:57.160562+00:00",
+  "commit_sha": "92e695ac64ece11347b393cddaa12df7be39f4e8",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "chore(changelog): update.",
+  "commit_timestamp": "2026-06-04T02:02:18Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "aad98c29e24099d5cff7a9878e390a1c6a2c4417"
+  ],
+  "api_truncated": false,
+  "diff_chars": 1885,
+  "estimated_tokens": 471,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 1,885 chars <= threshold 400,000.",
+    "total_patch_chars": 1885,
+    "files": [
+      {
+        "path": "CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 777,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-cloudcontrol/CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 861,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-server/CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 247,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the commit are limited to updating changelogs for various crates, with no indications of hidden backdoors, logic bombs, or other malicious modifications."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are limited to updating changelogs and do not indicate any malicious activity."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are solely related to changelog updates for various crates, with no evidence of suspicious activity or changes to code that could compromise integrity."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both prior assessments that the changes are limited to changelog updates and do not indicate any malicious activity."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications are strictly related to updating changelogs for various crates, with no signs of covert data exfiltration, audit trail reduction, cryptographic weakening, or any other integrity concerns."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "All changes are limited to updating changelogs with no indications of malicious activity.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "All changes are limited to updating changelogs with no indications of malicious activity.",
+    "findings": []
+  },
+  "issue_url": null
+}
