@@ -1,0 +1,106 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-07-03T05:03:01.071874+00:00",
+  "commit_sha": "4b28d0786491fd6b39e96a4f7d569c85e0f4854b",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(mise): correct usage_options interpolation in release tasks",
+  "commit_timestamp": "2026-07-03T03:59:45Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "c0d0a62f5dbe0f10628157e6db244e30a79b2fc5"
+  ],
+  "api_truncated": false,
+  "diff_chars": 1431,
+  "estimated_tokens": 357,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 1,431 chars <= threshold 400,000.",
+    "total_patch_chars": 1431,
+    "files": [
+      {
+        "path": "mise.toml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1431,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "reviewed",
+  "ai_model": "openai/gpt-4o-mini",
+  "agents": [
+    "Backdoor Hunter",
+    "Supply Chain Inspector",
+    "Integrity Analyst",
+    "Moderator"
+  ],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 1,
+    "converged_early": true
+  },
+  "discussion": [
+    {
+      "agent": "Backdoor Hunter",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The changes in the diff appear to be straightforward modifications to the command syntax without any indications of malicious intent or hidden functionality."
+      }
+    },
+    {
+      "agent": "Supply Chain Inspector",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "Backdoor Hunter clean verdict: I agree with the assessment that the changes are straightforward and do not indicate any malicious intent."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the command syntax are consistent with normal updates and do not raise any supply chain integrity concerns."
+      }
+    },
+    {
+      "agent": "Integrity Analyst",
+      "round": 1,
+      "response": {
+        "concerns": [],
+        "responses_to_prior": [
+          "I concur with both previous analysts that the changes are straightforward and do not indicate any malicious intent or integrity concerns."
+        ],
+        "verdict": "clean",
+        "confidence": "high",
+        "reasoning": "The modifications in the command syntax are typical updates without any signs of trust erosion or hidden functionality."
+      }
+    },
+    {
+      "agent": "Moderator",
+      "response": {
+        "suspicious": false,
+        "severity": "none",
+        "summary": "No concerns identified in the Git diff review.",
+        "findings": []
+      }
+    }
+  ],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "No concerns identified in the Git diff review.",
+    "findings": []
+  },
+  "issue_url": null
+}
