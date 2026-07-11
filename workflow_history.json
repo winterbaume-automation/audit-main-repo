@@ -3358,5 +3358,12 @@
     "trigger_audit_yml_sha": "ea805ff8f6974dc6333cc3aa57de0ee2a89af301",
     "status": "ok",
     "note": ""
+  },
+  {
+    "timestamp": "2026-07-11T09:01:15.546996+00:00",
+    "audit_commit_yml_sha": null,
+    "trigger_audit_yml_sha": "ea805ff8f6974dc6333cc3aa57de0ee2a89af301",
+    "status": "tampered",
+    "note": "audit-commit.yml removed: file disappeared (was 8091848b9a0b)"
   }
 ]
