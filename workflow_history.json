@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-06-24T17:23:17.792756+00:00",
-    "audit_commit_yml_sha": "8091848b9a0b88f34b2a905760aaf474e3535181",
-    "trigger_audit_yml_sha": "ea805ff8f6974dc6333cc3aa57de0ee2a89af301",
-    "status": "ok",
-    "note": ""
-  },
-  {
     "timestamp": "2026-06-24T19:05:00.831742+00:00",
     "audit_commit_yml_sha": "8091848b9a0b88f34b2a905760aaf474e3535181",
     "trigger_audit_yml_sha": "ea805ff8f6974dc6333cc3aa57de0ee2a89af301",
@@ -3494,6 +3487,13 @@
   },
   {
     "timestamp": "2026-08-10T15:26:52.487207+00:00",
+    "audit_commit_yml_sha": "8091848b9a0b88f34b2a905760aaf474e3535181",
+    "trigger_audit_yml_sha": "ea805ff8f6974dc6333cc3aa57de0ee2a89af301",
+    "status": "ok",
+    "note": ""
+  },
+  {
+    "timestamp": "2026-08-10T16:13:46.877490+00:00",
     "audit_commit_yml_sha": "8091848b9a0b88f34b2a905760aaf474e3535181",
     "trigger_audit_yml_sha": "ea805ff8f6974dc6333cc3aa57de0ee2a89af301",
     "status": "ok",
