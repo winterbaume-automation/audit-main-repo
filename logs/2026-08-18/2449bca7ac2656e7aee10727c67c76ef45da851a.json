@@ -1,0 +1,58 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-08-18T09:53:29.566168+00:00",
+  "commit_sha": "2449bca7ac2656e7aee10727c67c76ef45da851a",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "docs: record the issue-#19 follow-up work and three gaps it surfaced",
+  "commit_timestamp": "2026-08-17T09:55:44Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "ee993fc75c08dc88aa93f5b93a5d4f982942c41c"
+  ],
+  "api_truncated": false,
+  "diff_chars": 5681,
+  "estimated_tokens": 1420,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 5,681 chars <= threshold 400,000.",
+    "total_patch_chars": 5681,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5681,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: API error 410: {\"error\":{\"code\":\"github_models_retirement_brownout\",\"message\":\"GitHub Models is temporarily unavailable as part of a scheduled retirement brownout.\"}}\n",
+    "findings": []
+  },
+  "issue_url": null
+}
