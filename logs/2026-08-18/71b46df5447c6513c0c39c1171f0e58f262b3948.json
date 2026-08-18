@@ -1,0 +1,58 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-08-18T08:58:30.978467+00:00",
+  "commit_sha": "71b46df5447c6513c0c39c1171f0e58f262b3948",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "docs(todo): record the CI ruleset required-check-name mismatch and its fix",
+  "commit_timestamp": "2026-08-17T11:50:26Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "2449bca7ac2656e7aee10727c67c76ef45da851a"
+  ],
+  "api_truncated": false,
+  "diff_chars": 5600,
+  "estimated_tokens": 1400,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 5,600 chars <= threshold 400,000.",
+    "total_patch_chars": 5600,
+    "files": [
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5600,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: API error 410: {\"error\":{\"code\":\"github_models_retirement_brownout\",\"message\":\"GitHub Models is temporarily unavailable as part of a scheduled retirement brownout.\"}}\n",
+    "findings": []
+  },
+  "issue_url": null
+}
