@@ -1,0 +1,57 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-08-30T12:01:58.275425+00:00",
+  "commit_sha": "379cdecb50086817fb2195256ba001761f286ed1",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "docs(release): correct the cargo-dist target platform table",
+  "commit_timestamp": "2026-08-21T16:13:28Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "60f967d25b2bb6e4ca34ee81229e2d82876a88b3"
+  ],
+  "api_truncated": false,
+  "diff_chars": 1768,
+  "estimated_tokens": 442,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 1,768 chars <= threshold 400,000.",
+    "total_patch_chars": 1768,
+    "files": [
+      {
+        "path": "RELEASE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 1768,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: API error 410: {\"error\":{\"code\":\"github_models_retirement_brownout\",\"message\":\"GitHub Models is temporarily unavailable as part of a scheduled retirement brownout.\"}}\n",
+    "findings": []
+  },
+  "issue_url": null
+}
