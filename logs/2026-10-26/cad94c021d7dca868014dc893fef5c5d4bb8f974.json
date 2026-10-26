@@ -1,0 +1,57 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-10-26T01:21:57.368030+00:00",
+  "commit_sha": "cad94c021d7dca868014dc893fef5c5d4bb8f974",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "ci: skip CI jobs for Markdown-only changes",
+  "commit_timestamp": "2026-10-25T22:50:31Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "a1b22d0972b6b535ae1f89df2faeef459b59cd28"
+  ],
+  "api_truncated": false,
+  "diff_chars": 2031,
+  "estimated_tokens": 507,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 2,031 chars <= threshold 400,000.",
+    "total_patch_chars": 2031,
+    "files": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 2031,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: Expecting value: line 1 column 1 (char 0)",
+    "findings": []
+  },
+  "issue_url": null
+}
