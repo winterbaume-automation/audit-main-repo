@@ -1,0 +1,57 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-10-26T13:24:46.802627+00:00",
+  "commit_sha": "731361c18ae0288d3a478dad5a923de49c734901",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "docs(changelog): correct terraform v0.2.5 dependency versions",
+  "commit_timestamp": "2026-10-25T21:52:43Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "e59e8c8b76e96b9e69a19bc125cdce1aff637b22"
+  ],
+  "api_truncated": false,
+  "diff_chars": 401,
+  "estimated_tokens": 100,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 401 chars <= threshold 400,000.",
+    "total_patch_chars": 401,
+    "files": [
+      {
+        "path": "crates/winterbaume-terraform/CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 401,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: Expecting value: line 1 column 1 (char 0)",
+    "findings": []
+  },
+  "issue_url": null
+}
