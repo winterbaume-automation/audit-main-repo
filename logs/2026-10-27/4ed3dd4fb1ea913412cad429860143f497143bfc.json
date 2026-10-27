@@ -1,0 +1,73 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-10-27T08:02:26.364406+00:00",
+  "commit_sha": "4ed3dd4fb1ea913412cad429860143f497143bfc",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "docs(changelog): correct cross-crate version references for 2026-10-27",
+  "commit_timestamp": "2026-10-27T01:33:23Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "8d8639aa45b244826441597c50c2417784ae16bd"
+  ],
+  "api_truncated": false,
+  "diff_chars": 696,
+  "estimated_tokens": 174,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 696 chars <= threshold 400,000.",
+    "total_patch_chars": 696,
+    "files": [
+      {
+        "path": "crates/winterbaume-server/CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 415,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/CHANGELOG.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation"
+        ],
+        "patch_chars": 281,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: Expecting value: line 1 column 1 (char 0)",
+    "findings": []
+  },
+  "issue_url": null
+}
