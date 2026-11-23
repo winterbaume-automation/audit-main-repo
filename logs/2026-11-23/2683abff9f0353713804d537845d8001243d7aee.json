@@ -1,0 +1,111 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-11-23T02:55:07.560578+00:00",
+  "commit_sha": "2683abff9f0353713804d537845d8001243d7aee",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "fix(dynamodb): store the tags given to CreateTable",
+  "commit_timestamp": "2026-11-21T03:32:22Z",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": false,
+  "parents": [
+    "c2f0c9de327cac09d41b1a8058d16ca2e3d7cf8d"
+  ],
+  "api_truncated": false,
+  "diff_chars": 20245,
+  "estimated_tokens": 5061,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 20,245 chars <= threshold 400,000.",
+    "total_patch_chars": 20245,
+    "files": [
+      {
+        "path": "crates/winterbaume-dynamodb-redis/src/lib.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2183,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-dynamodb-redis/tests/tags_test.rs",
+        "previous_path": null,
+        "status": "added",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 8932,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-dynamodb/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1195,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-dynamodb/src/state.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 1555,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-dynamodb/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6380,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: Expecting value: line 1 column 1 (char 0)",
+    "findings": []
+  },
+  "issue_url": null
+}
