@@ -1,0 +1,205 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-11-25T07:19:52.049733+00:00",
+  "commit_sha": "c4bc95582ff3edef17fb3ae370da64ad6847a2bc",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Merge pull request #75 from moriyoshi/fix/eventbridge-put-rule-tags-67",
+  "commit_timestamp": "2026-11-25T16:19:31+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": true,
+  "parents": [
+    "906b2b73374192bbe8a82d3595779f20df123210",
+    "50c04cb2d9ce637618462a74adf23e13541b8350"
+  ],
+  "api_truncated": false,
+  "diff_chars": 119166,
+  "estimated_tokens": 29791,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 119,166 chars <= threshold 400,000.",
+    "total_patch_chars": 119166,
+    "files": [
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 3362,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/TODO.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5633,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/services/eventbridge.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 10650,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-e2e-tests/tests/terraform/events.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2967,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-eventbridge/src/handlers.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 14942,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-eventbridge/src/state.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 16400,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-eventbridge/src/types.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 2205,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-eventbridge/src/views.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 9802,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-eventbridge/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 40078,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/src/converters/events.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6753,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": "crates/winterbaume-terraform/tests/integration_test.rs",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "medium",
+        "matched_rules": [],
+        "patch_chars": 6374,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: Expecting value: line 1 column 1 (char 0)",
+    "findings": []
+  },
+  "issue_url": null
+}
