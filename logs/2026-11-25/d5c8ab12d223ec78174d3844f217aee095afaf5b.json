@@ -1,0 +1,125 @@
+{
+  "schema_version": "5",
+  "timestamp": "2026-11-25T14:40:39.767200+00:00",
+  "commit_sha": "d5c8ab12d223ec78174d3844f217aee095afaf5b",
+  "commit_author": "Moriyoshi Koizumi <mozo@mozo.jp>",
+  "commit_message": "Merge pull request #79 from moriyoshi/ci/content-addressed-pass-markers",
+  "commit_timestamp": "2026-11-25T23:40:21+09:00",
+  "monitored_repo": "moriyoshi/winterbaume",
+  "audit_repo": "winterbaume-automation/audit-main-repo",
+  "is_merge": true,
+  "parents": [
+    "f79b3353ec2e49259267572719a15b4a29955435",
+    "a36a9dd745d14a77adb09ce175802b833ae65b68"
+  ],
+  "api_truncated": false,
+  "diff_chars": 24314,
+  "estimated_tokens": 6078,
+  "routing": {
+    "mode": "whole",
+    "reason": "Total patch 24,314 chars <= threshold 400,000.",
+    "total_patch_chars": 24314,
+    "files": [
+      {
+        "path": ".agents/docs/ARCHITECTURE.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 2313,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/JOURNAL.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 3131,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".agents/docs/LTM/ci-release-and-package-metadata.md",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "low",
+        "matched_rules": [
+          "documentation",
+          "agent_documentation"
+        ],
+        "patch_chars": 5619,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 12817,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      },
+      {
+        "path": ".github/workflows/release.yml",
+        "previous_path": null,
+        "status": "modified",
+        "classification": "critical",
+        "matched_rules": [
+          "ci_workflow"
+        ],
+        "patch_chars": 434,
+        "is_binary": false,
+        "patch_omitted": false,
+        "patch_synthesised": false,
+        "patch_unavailable": false,
+        "included_in_panel": true,
+        "exclusion_reason": null
+      }
+    ]
+  },
+  "structural_findings": [],
+  "status": "ai-error",
+  "ai_model": null,
+  "agents": [],
+  "discussion_rounds": {
+    "max": 3,
+    "used": 0,
+    "converged_early": false
+  },
+  "discussion": [],
+  "verdict": {
+    "suspicious": false,
+    "severity": "none",
+    "summary": "AI discussion failed: Expecting value: line 1 column 1 (char 0)",
+    "findings": []
+  },
+  "issue_url": null
+}
